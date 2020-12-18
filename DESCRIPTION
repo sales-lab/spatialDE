@@ -21,3 +21,6 @@ Suggests:
     BiocStyle,
     rmarkdown
 VignetteBuilder: knitr
+biocViews:
+    Software,
+    Transcriptomics
