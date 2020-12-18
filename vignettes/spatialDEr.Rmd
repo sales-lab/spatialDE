@@ -1,0 +1,31 @@
+---
+title: "Introduction to spatialDEr"
+author: 
+  - name: Your name
+    affiliation:
+    - Your institution
+    email: your.email@somewhere.com
+output: 
+  BiocStyle::html_document:
+    self_contained: yes
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r doc_date()`"
+vignette: >
+  %\VignetteIndexEntry{Introduction to spatialDEr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(spatialDEr)
+```
