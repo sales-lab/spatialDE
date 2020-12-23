@@ -1,5 +1,5 @@
 ---
-title: "Introduction to spatialDEr"
+title: "Introduction to spatialDE"
 author: 
   - name: Your name
     affiliation:
@@ -14,7 +14,7 @@ output:
     code_folding: show
 date: "`r doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{Introduction to spatialDEr}
+  %\VignetteIndexEntry{Introduction to spatialDE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,5 +27,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(spatialDEr)
+library(spatialDE)
 ```
