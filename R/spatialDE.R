@@ -15,9 +15,9 @@ list_spatialDE_methods <- function() {
     names
 }
 
-#' @note the function 'spatialDE$run' run with tqdm python library, which
+#' @note both functions of SpatialDE run with tqdm python library, which
 #' allow to view a progress bar and it's not suitable for R.
-#' TODO: hide progress bar.
+#' TODO: hide prints of progress bar
 #' 
 #' @importFrom reticulate import
 spatialDE_run <- function(coordinates, res) {
