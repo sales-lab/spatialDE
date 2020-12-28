@@ -15,11 +15,18 @@ list_spatialDE_methods <- function() {
     names
 }
 
+#' Wrapper for SpatialDE.run python function
+#' 
+#' @param coordinates dataframe with sample coordinates. Each row is a sample,
+#' the columns with coordinates must be named 'x' and 'y'. 
+#'
+#' @param res dataframe resulting from naiveDE_regress_out function
+#'
 #' @note both functions of SpatialDE run with tqdm python library, which
 #' allow to view a progress bar and it's not suitable for R.
 #' TODO: hide prints of progress bar
 #' 
-#' @importFrom reticulate import
+#' @importFrom reticulate import r_to_py
 spatialDE_run <- function(coordinates, res) {
     spatialDE <- import("SpatialDE")
     
@@ -30,7 +37,12 @@ spatialDE_run <- function(coordinates, res) {
     return(results)
 }
 
-#' @importFrom reticulate import
+#' Wrapper for SpatialDE.model_search python function
+#' 
+#' @param de_results dataframe resulting from spatialDE_run filtered based on
+#' qvalue < threshold (e.g. qvalue < 0.05)
+#'
+#' @importFrom reticulate import r_to_py
 spatialDE_model_search <- function(coordinates, res, de_results) {
     spatialDE <- import("SpatialDE")
     

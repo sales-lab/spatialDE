@@ -1,6 +1,11 @@
+#' Wrapper for SpatialDE.run python function
+#' 
 #' @description Wrapped functions from NaiveDE python package
 #' [NaiveDE](https://github.com/Teichlab/NaiveDE)
 #' 
+#' @param df dataframe with the expression values. Columns are genes, and Rows
+#' are samples
+#'
 #' @importFrom reticulate import r_to_py
 naiveDE_stabilize <- function(df) {
   naiveDE <- import("NaiveDE")
@@ -14,6 +19,13 @@ naiveDE_stabilize <- function(df) {
   return(tstabilized)
 }
 
+#' Wrapper for NaiveDE.regress_out python function
+#' 
+#' @param sample_info dataframe with samples as rows, 
+#' 'x', 'y' coordinates and  total raw counts as columns. 
+#'
+#' @param dfm dataframe resulting from naiveDE_stabilize
+#'
 #' @importFrom reticulate import r_to_py
 naiveDE_regress_out <- function(sample_info, dfm) {
   naiveDE <- import("NaiveDE")
