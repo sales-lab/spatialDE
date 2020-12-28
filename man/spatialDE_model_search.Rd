@@ -7,6 +7,11 @@
 spatialDE_model_search(coordinates, res, de_results)
 }
 \arguments{
+\item{coordinates}{dataframe with sample coordinates. Each row is a sample,
+the columns with coordinates must be named 'x' and 'y'.}
+
+\item{res}{dataframe resulting from naiveDE_regress_out function}
+
 \item{de_results}{dataframe resulting from spatialDE_run filtered based on
 qvalue < threshold (e.g. qvalue < 0.05)}
 }

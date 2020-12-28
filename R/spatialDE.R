@@ -39,6 +39,11 @@ spatialDE_run <- function(coordinates, res) {
 
 #' Wrapper for SpatialDE.model_search python function
 #' 
+#' @param coordinates dataframe with sample coordinates. Each row is a sample,
+#' the columns with coordinates must be named 'x' and 'y'. 
+#'
+#' @param res dataframe resulting from naiveDE_regress_out function
+#' 
 #' @param de_results dataframe resulting from spatialDE_run filtered based on
 #' qvalue < threshold (e.g. qvalue < 0.05)
 #'
