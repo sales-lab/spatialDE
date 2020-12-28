@@ -2,3 +2,5 @@
 
 export(list_spatialDE_methods)
 importFrom(basilisk,BasiliskEnvironment)
+importFrom(reticulate,import)
+importFrom(reticulate,r_to_py)
