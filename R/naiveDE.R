@@ -3,38 +3,37 @@
 #' @description Wrapped functions from NaiveDE python package
 #' [NaiveDE](https://github.com/Teichlab/NaiveDE)
 #'
-#' @param df dataframe with the expression values. Columns are genes, and Rows
-#' are samples
+#' @param counts `matrix` or `data.frame` with the expression values.
+#' Columns should be samples, and Rows genes
 #'
 #' @importFrom reticulate import r_to_py
-.naiveDE_stabilize <- function(df) {
+.naiveDE_stabilize <- function(counts) {
     naiveDE <- import("NaiveDE")
 
-    dft <- as.data.frame(t(df))
-    dft_py <- r_to_py(dft)
+    df_py <- r_to_py(as.data.frame(counts))
 
-    stabilized <- naiveDE$stabilize(dft_py)
+    stabilized <- naiveDE$stabilize(df_py)
 
-    tstabilized <- as.data.frame(t(stabilized))
-    return(tstabilized)
+    ## Return stabilized counts as matrix
+    as.matrix(stabilized)
 }
 
 #' Wrapper for NaiveDE.regress_out python function
 #'
-#' @param sample_info dataframe with samples as rows,
+#' @param sample_info `data.frame` with samples as rows,
 #' 'x', 'y' coordinates and  total raw counts as columns.
 #'
-#' @param dfm dataframe resulting from naiveDE_stabilize
+#' @param stabilized_counts `matrix` or `data.frame` resulting from
+#' naiveDE_stabilize
 #'
 #' @importFrom reticulate import r_to_py
-.naiveDE_regress_out <- function(sample_info, dfm) {
+.naiveDE_regress_out <- function(sample_info, stabilized_counts) {
     naiveDE <- import("NaiveDE")
 
     sample_info_py <- r_to_py(sample_info)
-    tdfm_py <- r_to_py(as.data.frame(t(dfm)))
+    df_py <- r_to_py(as.data.frame(stabilized_counts))
 
-    res <- naiveDE$regress_out(sample_info_py, tdfm_py, "np.log(total_counts)")
+    res <- naiveDE$regress_out(sample_info_py, df_py, "np.log(total_counts)")
 
-    tres <- as.data.frame(t(res))
-    return(tres)
+    as.matrix(res)
 }
