@@ -6,6 +6,17 @@
 #' @param counts `matrix` or `data.frame` with the expression values.
 #' Columns should be samples, and Rows genes
 #'
+#' @export
+stabilize <- function(counts) {
+    out <- basilisk::basiliskRun(
+        env = spatialDE_env,
+        fun = .naiveDE_stabilize,
+        counts = counts
+    )
+    out
+}
+
+
 #' @importFrom reticulate import r_to_py
 .naiveDE_stabilize <- function(counts) {
     naiveDE <- import("NaiveDE")
@@ -18,6 +29,8 @@
     as.matrix(stabilized)
 }
 
+
+
 #' Wrapper for NaiveDE.regress_out python function
 #'
 #' @param sample_info `data.frame` with samples as rows,
@@ -26,6 +39,17 @@
 #' @param stabilized_counts `matrix` or `data.frame` resulting from
 #' naiveDE_stabilize
 #'
+#' @export
+regress_out <- function(sample_info, stabilized_counts) {
+    out <- basilisk::basiliskRun(
+        env = spatialDE_env,
+        fun = .naiveDE_regress_out,
+        sample_info = sample_info, stabilized_counts = stabilized_counts
+    )
+    out
+}
+
+
 #' @importFrom reticulate import r_to_py
 .naiveDE_regress_out <- function(sample_info, stabilized_counts) {
     naiveDE <- import("NaiveDE")
