@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatialDE.R
 \name{run_model_search}
 \alias{run_model_search}
-\title{Wrapper for SpatialDE.model_search python function}
+\title{Compare model fits with different models}
 \usage{
 run_model_search(coordinates, regressed_counts, de_results)
 }
@@ -10,11 +10,34 @@ run_model_search(coordinates, regressed_counts, de_results)
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
-\item{regressed_counts}{\code{data.frame} resulting from \code{naiveDE_regress_out}}
+\item{regressed_counts}{\code{data.frame} resulting from \code{\link[=regress_out]{regress_out()}}}
 
-\item{de_results}{\code{data.frame} resulting from \code{spatialDE_run} filtered based
-on qvalue < threshold (e.g. qvalue < 0.05)}
+\item{de_results}{\code{data.frame} resulting from \code{\link[=run_spatialDE]{run_spatialDE()}} filtered
+based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
+}
+\value{
+\code{data.frame} of model_search results.
 }
 \description{
-Wrapper for SpatialDE.model_search python function
+Classify DE genes to interpretable fitting classes.
+}
+\examples{
+ncells <- 100
+ngenes <- 1000
+counts <- matrix(rpois(ncells * ngenes, lambda = 3),
+                 nrow = ngenes, ncol = ncells)
+
+## Provide total counts for library size normalization and coordinates
+sample_info <- data.frame(total_counts = colSums(counts))
+coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+
+stabilized <- stabilize(counts)
+regressed <- regress_out(sample_info, stabilized)
+
+## Run SpatialDE
+de_results <- run_spatialDE(coordinates, regressed)
+
+## Run model search
+ms_results <- run_model_search(coordinates, regressed, de_results)
+
 }

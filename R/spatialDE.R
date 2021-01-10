@@ -1,14 +1,33 @@
-#' Wrapper for SpatialDE.run python function
+# TODO: add more details regarding DE results format in @return
+
+#' Perform SpatialDE test
+#'
+#' Wraps the `run` function from the
+#' [SpatialDE](https://github.com/Teichlab/SpatialDE) Python package.
 #'
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #'
 #' @param regressed_counts `data.frame` or `matrix` resulting from
-#' `naiveDE_regress_out`
+#' [regress_out()].
 #'
-#' @note both functions of SpatialDE run with tqdm python library, which
-#' allow to view a progress bar and it's not suitable for R.
-#' TODO: hide prints of progress bar
+#' @return `data.frame` with DE results.
+#'
+#' @examples
+#' ncells <- 100
+#' ngenes <- 1000
+#' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
+#'                  nrow = ngenes, ncol = ncells)
+#'
+#' ## Provide total counts for library size normalization and coordinates
+#' sample_info <- data.frame(total_counts = colSums(counts))
+#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#'
+#' stabilized <- stabilize(counts)
+#' regressed <- regress_out(sample_info, stabilized)
+#'
+#' ## Run SpatialDE
+#' de_results <- run_spatialDE(coordinates, regressed)
 #'
 #' @export
 run_spatialDE <- function(coordinates, regressed_counts) {
@@ -20,6 +39,9 @@ run_spatialDE <- function(coordinates, regressed_counts) {
     out
 }
 
+# NOTE: both functions of SpatialDE run with tqdm python library, which
+# allow to view a progress bar and it's not suitable for R.
+# TODO: hide prints of progress bar
 
 #' @importFrom reticulate import r_to_py
 .spatialDE_run <- function(coordinates, regressed_counts) {
@@ -33,16 +55,40 @@ run_spatialDE <- function(coordinates, regressed_counts) {
 }
 
 
+# TODO: add more details regarding model_search results in @return
 
-#' Wrapper for SpatialDE.model_search python function
+#' Compare model fits with different models
+#'
+#' Classify DE genes to interpretable fitting classes.
 #'
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #'
-#' @param regressed_counts `data.frame` resulting from `naiveDE_regress_out`
+#' @param regressed_counts `data.frame` resulting from [regress_out()]
 #'
-#' @param de_results `data.frame` resulting from `spatialDE_run` filtered based
-#' on qvalue < threshold (e.g. qvalue < 0.05)
+#' @param de_results `data.frame` resulting from [run_spatialDE()] filtered
+#' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
+#'
+#' @return `data.frame` of model_search results.
+#'
+#' @examples
+#' ncells <- 100
+#' ngenes <- 1000
+#' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
+#'                  nrow = ngenes, ncol = ncells)
+#'
+#' ## Provide total counts for library size normalization and coordinates
+#' sample_info <- data.frame(total_counts = colSums(counts))
+#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#'
+#' stabilized <- stabilize(counts)
+#' regressed <- regress_out(sample_info, stabilized)
+#'
+#' ## Run SpatialDE
+#' de_results <- run_spatialDE(coordinates, regressed)
+#'
+#' ## Run model search
+#' ms_results <- run_model_search(coordinates, regressed, de_results)
 #'
 #' @export
 run_model_search <- function(coordinates, regressed_counts, de_results) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatialDE.R
 \name{run_spatialDE}
 \alias{run_spatialDE}
-\title{Wrapper for SpatialDE.run python function}
+\title{Perform SpatialDE test}
 \usage{
 run_spatialDE(coordinates, regressed_counts)
 }
@@ -11,13 +11,29 @@ run_spatialDE(coordinates, regressed_counts)
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
 \item{regressed_counts}{\code{data.frame} or \code{matrix} resulting from
-\code{naiveDE_regress_out}}
+\code{\link[=regress_out]{regress_out()}}.}
+}
+\value{
+\code{data.frame} with DE results.
 }
 \description{
-Wrapper for SpatialDE.run python function
+Wraps the \code{run} function from the
+\href{https://github.com/Teichlab/SpatialDE}{SpatialDE} Python package.
 }
-\note{
-both functions of SpatialDE run with tqdm python library, which
-allow to view a progress bar and it's not suitable for R.
-TODO: hide prints of progress bar
+\examples{
+ncells <- 100
+ngenes <- 1000
+counts <- matrix(rpois(ncells * ngenes, lambda = 3),
+                 nrow = ngenes, ncol = ncells)
+
+## Provide total counts for library size normalization and coordinates
+sample_info <- data.frame(total_counts = colSums(counts))
+coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+
+stabilized <- stabilize(counts)
+regressed <- regress_out(sample_info, stabilized)
+
+## Run SpatialDE
+de_results <- run_spatialDE(coordinates, regressed)
+
 }
