@@ -2,15 +2,27 @@
 % Please edit documentation in R/naiveDE.R
 \name{stabilize}
 \alias{stabilize}
-\title{Wrapper for NaiveDE.stabilize python function}
+\title{Stabilize variance of counts}
 \usage{
 stabilize(counts)
 }
 \arguments{
-\item{counts}{\code{matrix} or \code{data.frame} with the expression values.
-Columns should be samples, and Rows genes}
+\item{counts}{\code{matrix} or \code{data.frame} with expression values for samples in
+columns and genes in rows.}
+}
+\value{
+\code{matrix} of variance stabilized counts.
 }
 \description{
-Wrapped functions from NaiveDE python package
-\href{https://github.com/Teichlab/NaiveDE}{NaiveDE}
+Stabilize variance of negative binomial data using Anscombe's approximation.
+This function is a wrapper for \code{stabilize} from the
+\href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
+}
+\examples{
+ncells <- 100
+ngenes <- 1000
+counts <- matrix(rpois(ncells * ngenes, lambda = 3),
+                 nrow = ngenes, ncol = ncells)
+stabilized <- stabilize(counts)
+
 }

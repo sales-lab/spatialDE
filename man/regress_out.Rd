@@ -2,17 +2,35 @@
 % Please edit documentation in R/naiveDE.R
 \name{regress_out}
 \alias{regress_out}
-\title{Wrapper for NaiveDE.regress_out python function}
+\title{Regress out library size effect}
 \usage{
 regress_out(sample_info, stabilized_counts)
 }
 \arguments{
-\item{sample_info}{\code{data.frame} with samples as rows,
-'x', 'y' coordinates and  total raw counts as columns.}
+\item{sample_info}{\code{data.frame} with samples as rows and at least a column
+with \code{total_counts}.}
 
-\item{stabilized_counts}{\code{matrix} or \code{data.frame} resulting from
-naiveDE_stabilize}
+\item{stabilized_counts}{\code{matrix} or \code{data.frame} of variance stabilized
+counts, e.g. resulting from \code{\link[=stabilize]{stabilize()}}.}
+}
+\value{
+\code{matrix} of normalized counts.
 }
 \description{
-Wrapper for NaiveDE.regress_out python function
+Regresses out the effect of library size.
+This function is a wrapper for \code{regress_out} from the
+\href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
+}
+\examples{
+ncells <- 100
+ngenes <- 1000
+counts <- matrix(rpois(ncells * ngenes, lambda = 3),
+                 nrow = ngenes, ncol = ncells)
+
+## Provide total counts for library size normalization
+sample_info <- data.frame(total_counts = colSums(counts))
+
+stabilized <- stabilize(counts)
+regressed <- regress_out(sample_info, stabilized)
+
 }
