@@ -14,6 +14,7 @@
 #' @return `data.frame` with DE results.
 #'
 #' @examples
+#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -28,7 +29,7 @@
 #'
 #' ## Run SpatialDE
 #' de_results <- run_spatialDE(coordinates, regressed)
-#'
+#' }
 #' @export
 run_spatialDE <- function(coordinates, regressed_counts) {
     out <- basilisk::basiliskRun(
@@ -72,6 +73,7 @@ run_spatialDE <- function(coordinates, regressed_counts) {
 #' @return `data.frame` of model_search results.
 #'
 #' @examples
+#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -89,7 +91,7 @@ run_spatialDE <- function(coordinates, regressed_counts) {
 #'
 #' ## Run model search
 #' ms_results <- run_model_search(coordinates, regressed, de_results)
-#'
+#' }
 #' @export
 run_model_search <- function(coordinates, regressed_counts, de_results) {
     out <- basilisk::basiliskRun(
