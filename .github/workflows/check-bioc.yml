@@ -230,6 +230,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run BiocCheck
+        if: github.ref == 'refs/heads/main'
         run: |
           BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
