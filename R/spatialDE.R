@@ -11,6 +11,8 @@
 #' @param regressed_counts `data.frame` or `matrix` resulting from
 #' [regress_out()].
 #'
+#' @param verbose `bool` controlling the display of the progress bar.
+#'
 #' @return `data.frame` with DE results.
 #'
 #' @examples
@@ -31,11 +33,12 @@
 #' de_results <- run_spatialDE(coordinates, regressed)
 #' }
 #' @export
-run_spatialDE <- function(coordinates, regressed_counts) {
+run_spatialDE <- function(coordinates, regressed_counts, verbose = FALSE) {
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_run,
-        coordinates = coordinates, regressed_counts = regressed_counts
+        coordinates = coordinates, regressed_counts = regressed_counts,
+        verbose = verbose
     )
     out
 }
@@ -44,9 +47,9 @@ run_spatialDE <- function(coordinates, regressed_counts) {
 # allow to view a progress bar and it's not suitable for R.
 # TODO: hide prints of progress bar
 
-#' @importFrom reticulate import r_to_py
-.spatialDE_run <- function(coordinates, regressed_counts) {
-    spatialDE <- import("SpatialDE")
+#' @importFrom reticulate r_to_py
+.spatialDE_run <- function(coordinates, regressed_counts, verbose) {
+    spatialDE <- .importPyModule(!verbose)
 
     X <- r_to_py(coordinates)
     ## Need to transpose counts for `spatialDE$run`
@@ -69,6 +72,8 @@ run_spatialDE <- function(coordinates, regressed_counts) {
 #'
 #' @param de_results `data.frame` resulting from [run_spatialDE()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
+#'
+#' @param verbose `bool` controlling the display of the progress bar.
 #'
 #' @return `data.frame` of model_search results.
 #'
@@ -93,20 +98,22 @@ run_spatialDE <- function(coordinates, regressed_counts) {
 #' ms_results <- run_model_search(coordinates, regressed, de_results)
 #' }
 #' @export
-run_model_search <- function(coordinates, regressed_counts, de_results) {
+run_model_search <- function(coordinates, regressed_counts, de_results,
+                             verbose = FALSE) {
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_model_search,
         coordinates = coordinates, regressed_counts = regressed_counts,
-        de_results = de_results
+        de_results = de_results, verbose = verbose
     )
     out
 }
 
 
-#' @importFrom reticulate import r_to_py
-.spatialDE_model_search <- function(coordinates, regressed_counts, de_results) {
-    spatialDE <- import("SpatialDE")
+#' @importFrom reticulate r_to_py
+.spatialDE_model_search <- function(coordinates, regressed_counts, de_results,
+                                    verbose) {
+    spatialDE <- .importPyModule(!verbose)
 
     X <- r_to_py(coordinates)
 

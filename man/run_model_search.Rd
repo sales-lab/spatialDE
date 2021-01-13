@@ -4,7 +4,7 @@
 \alias{run_model_search}
 \title{Compare model fits with different models}
 \usage{
-run_model_search(coordinates, regressed_counts, de_results)
+run_model_search(coordinates, regressed_counts, de_results, verbose = FALSE)
 }
 \arguments{
 \item{coordinates}{\code{data.frame} with sample coordinates.
@@ -14,6 +14,8 @@ Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run_spatialDE]{run_spatialDE()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
+
+\item{verbose}{\code{bool} controlling the display of the progress bar.}
 }
 \value{
 \code{data.frame} of model_search results.

@@ -4,7 +4,7 @@
 \alias{run_spatialDE}
 \title{Perform SpatialDE test}
 \usage{
-run_spatialDE(coordinates, regressed_counts)
+run_spatialDE(coordinates, regressed_counts, verbose = FALSE)
 }
 \arguments{
 \item{coordinates}{\code{data.frame} with sample coordinates.
@@ -12,6 +12,8 @@ Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
 \item{regressed_counts}{\code{data.frame} or \code{matrix} resulting from
 \code{\link[=regress_out]{regress_out()}}.}
+
+\item{verbose}{\code{bool} controlling the display of the progress bar.}
 }
 \value{
 \code{data.frame} with DE results.
