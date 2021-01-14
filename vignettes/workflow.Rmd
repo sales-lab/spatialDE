@@ -1,22 +1,28 @@
 ---
-title: "Introduction to spatialDE"
+title: "Workflow of spatialDE"
 author:
 - name: Davide Corso
   affiliation: University of Padova
   email: davide.corso.2@phd.unipd.it
 date: "`r doc_date()`"
 output:
-  pdf_document:
+  html_document:
     toc: yes
     toc_depth: '2'
+    df_print: paged
   BiocStyle::html_document:
     self_contained: yes
     toc: yes
     toc_float: yes
     toc_depth: 2
     code_folding: show
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 vignette: |
-  %\VignetteIndexEntry{Introduction to spatialDE} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Workflow of spatialDE} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -26,12 +32,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Example from original [SpatialDE](https://github.com/Teichlab/SpatialDE): Mouse Olfactory Bulb ([MouseOB](https://github.com/Teichlab/SpatialDE/tree/master/Analysis/MouseOB))
 ```{r setup}
-library(spatialDE)
+# library(spatialDE)
 ```
 
-# Example from original [SpatialDE](https://github.com/Teichlab/SpatialDE)
-## Mouse Olfactory Bulb (MouseOB)
+
+### Download files
 ```{r}
 # Expression file used in python SpatialDE
 # 8.4 Mb
@@ -46,53 +53,54 @@ download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad41
               destfile = coordinate_csv)
 ```
 
-# Loading the `expression_csv` file
+
+### Loading the `expression_csv` file
 ```{r}
 df <- read.csv(expression_csv, header = TRUE, row.names = 1 )
-df
+df[1:5, 1:5]
 ```
 
-# Loading the `coordinate_csv` file
+### Loading the `coordinate_csv` file
 ```{r}
 sample_info <- read.csv(coordinate_csv, row.names = 1)
-sample_info
+head(sample_info)
 ```
 
-# filter out pratically unobserved genes
+#### Filter out pratically unobserved genes
 ```{r}
 df <- df[, colSums(df)>=3]
 ```
 
-
+#### Get total_counts for every spot
 ```{r}
-sample_info$total_counts <- rowSums(df[row.names(sample_info), ])
-sample_info
+sample_info$total_counts <- rowSums(df[, ])
+head(sample_info)
 ```
 
+#### Get coordinates from `sample_info`
 ```{r}
 X<-sample_info[, c('x', 'y')]
-X
+head(X)
 ```
 
-## The first step is to execute `stabilize`.
-
-### `stabilize` function takes in input a dataframe of expression values with 
-### samples in columns and genes in rows. 
-### So, in this case, we have to transpose the dataframe.
+### `NaiveDE.stabilize`
+`stabilize` function takes in input a dataframe of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the dataframe.
 ```{r}
 tdf <- t(df)
 
 norm_expr <- spatialDE::stabilize(tdf)
-as.data.frame(norm_expr)
+as.data.frame(norm_expr)[1:5,1:5]
 ```
 
+### `NaiveDE.regress_out`
 ```{r}
 resid_expr <- regress_out(sample_info, norm_expr)
-as.data.frame(resid_expr)
+as.data.frame(resid_expr)[1:5,1:5]
 ```
 
+### `SpatialDE.run`
 ```{r}
-results <- spatialDE::run_spatialDE(X, resid_expr)
-results
+# results <- spatialDE::run_spatialDE(X, resid_expr)
+# results
 ```
 
