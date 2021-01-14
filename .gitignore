@@ -5,3 +5,5 @@
 *.Rproj
 dev/
 inst/doc
+doc
+Meta
