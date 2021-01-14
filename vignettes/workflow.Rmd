@@ -1,0 +1,98 @@
+---
+title: "Introduction to spatialDE"
+author:
+- name: Davide Corso
+  affiliation: University of Padova
+  email: davide.corso.2@phd.unipd.it
+date: "`r doc_date()`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+  BiocStyle::html_document:
+    self_contained: yes
+    toc: yes
+    toc_float: yes
+    toc_depth: 2
+    code_folding: show
+vignette: |
+  %\VignetteIndexEntry{Introduction to spatialDE} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(spatialDE)
+```
+
+# Example from original [SpatialDE](https://github.com/Teichlab/SpatialDE)
+## Mouse Olfactory Bulb (MouseOB)
+```{r}
+# Expression file used in python SpatialDE
+# 8.4 Mb
+expression_csv <- "Rep11_MOB_0.csv"
+download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv",
+              destfile = expression_csv)
+
+# Sample Info file used in python SpatialDE
+# 7 KB
+coordinate_csv <- "MOB_sample_info.csv"
+download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/MOB_sample_info.csv",
+              destfile = coordinate_csv)
+```
+
+# Loading the `expression_csv` file
+```{r}
+df <- read.csv(expression_csv, header = TRUE, row.names = 1 )
+df
+```
+
+# Loading the `coordinate_csv` file
+```{r}
+sample_info <- read.csv(coordinate_csv, row.names = 1)
+sample_info
+```
+
+# filter out pratically unobserved genes
+```{r}
+df <- df[, colSums(df)>=3]
+```
+
+
+```{r}
+sample_info$total_counts <- rowSums(df[row.names(sample_info), ])
+sample_info
+```
+
+```{r}
+X<-sample_info[, c('x', 'y')]
+X
+```
+
+## The first step is to execute `stabilize`.
+
+### `stabilize` function takes in input a dataframe of expression values with 
+### samples in columns and genes in rows. 
+### So, in this case, we have to transpose the dataframe.
+```{r}
+tdf <- t(df)
+
+norm_expr <- spatialDE::stabilize(tdf)
+as.data.frame(norm_expr)
+```
+
+```{r}
+resid_expr <- regress_out(sample_info, norm_expr)
+as.data.frame(resid_expr)
+```
+
+```{r}
+results <- spatialDE::run_spatialDE(X, resid_expr)
+results
+```
+
