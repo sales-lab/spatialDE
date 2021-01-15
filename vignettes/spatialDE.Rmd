@@ -5,6 +5,10 @@ author:
     affiliation:
     - University of Padova
     email: davide.corso.2@phd.unipd.it
+  - name: Milan Malfait
+    affiliation:
+    - Ghent University
+    email: milan.malfait94@gmail.com
 output: 
   BiocStyle::html_document:
     self_contained: yes
@@ -66,6 +70,7 @@ coordinate_csv <-
 ```
 
 Loading the `expression_csv` file.
+Note that this data has __genes in columns and samples in rows__.
 
 ```{r}
 df <- read.csv(expression_csv, header = TRUE, row.names = 1)
@@ -103,9 +108,10 @@ head(X)
 
 ## `stabilize`
 
-`stabilize` function takes in input a dataframe of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the dataframe.
+The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distibuted counts data using Anscombe's approximation.
+The `stabilize` function takes as input a `data.frame` of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the data.
 
-```{r}
+```{r stabilize}
 tdf <- t(df)
 
 norm_expr <- spatialDE::stabilize(tdf)
@@ -114,33 +120,43 @@ as.data.frame(norm_expr)[1:5, 1:5]
 
 ## `regress_out`
 
-```{r}
+Next, we account for differences in library size between the samples by regressing out the effect of the total counts for each gene using linear regression.
+
+```{r regres_out}
 resid_expr <- regress_out(sample_info, norm_expr)
 as.data.frame(resid_expr)[1:5, 1:5]
 ```
 
 ## `run`
 
-```{r}
+To reduce running time, the SpatialDE test is run on a subset of 1000 genes.
+Running it on the complete data set takes about 10 minutes.
+
+```{r run-spatialDE}
 # results <- spatialDE::run(X, resid_expr)
 
 # For this example, run spatialDE on the first 1000 genes
 sample_resid_expr <- head(resid_expr, 1000)
 
 results <- spatialDE::run(X, sample_resid_expr)
-head(results)
+head(results[order(results$qval), ])
 ```
 
 ## `model_search`
 
-```{r}
+Finally, we can classify the DE genes to interpetable DE classes using the `model_search` function.
+We apply the model search on filtered DE results, using a threshold of 0.05 for the Q-values.
+
+```{r model_search}
 de_results <- results[results$qval < 0.05, ]
 # ms_results <- spatialDE::model_search(X, resid_expr, de_results)
 ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
-head(ms_results)
+head(ms_results[order(ms_results$qval), ])
 ```
 
 ## Plots
+
+Visualizing one of the most significant genes.
 
 ```{r}
 gene <- "Pcp4"
