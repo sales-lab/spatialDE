@@ -111,23 +111,18 @@ head(results)
 de_results <- results[results$qval<0.05, ]
 # ms_results <- spatialDE::model_search(X, resid_expr, de_results)
 ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
-ms_results
+head(ms_results)
 ```
 
 ### Plots
 ```{r}
-svgs <- de_results[order(de_results$qval), ]$g
+gene <- "Pcp4"
 
-for (gene in svgs) {
-  g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
-    geom_point(size=7) +
-    ggtitle(gene)
+g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
+  geom_point(size=7) +
+  ggtitle(gene)
 
-  g1<-g + scale_color_viridis_c() + labs(color = gene)
+g1<-g + scale_color_viridis_c() + labs(color = gene)
 
-  print(g1)
-}
-
+g1
 ```
-
-
