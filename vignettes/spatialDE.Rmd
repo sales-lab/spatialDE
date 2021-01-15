@@ -29,8 +29,7 @@ knitr::opts_chunk$set(
 ## Example from original [SpatialDE](https://github.com/Teichlab/SpatialDE): Mouse Olfactory Bulb ([MouseOB](https://github.com/Teichlab/SpatialDE/tree/master/Analysis/MouseOB))
 ```{r setup}
 library(spatialDE)
-library(ggplot2)
-library(ggforce)
+# library(ggplot2)
 ```
 
 
@@ -116,13 +115,15 @@ head(ms_results)
 
 ### Plots
 ```{r}
-gene <- "Pcp4"
+# Uncomment here
 
-g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
-  geom_point(size=7) +
-  ggtitle(gene)
-
-g1<-g + scale_color_viridis_c() + labs(color = gene)
-
-g1
+# gene <- "Pcp4"
+# 
+# g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
+#   geom_point(size=7) +
+#   ggtitle(gene)
+# 
+# g1<-g + scale_color_viridis_c() + labs(color = gene)
+# 
+# g1
 ```
