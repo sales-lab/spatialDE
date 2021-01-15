@@ -156,3 +156,14 @@ g1 <- g + scale_color_viridis_c() + labs(color = gene)
 
 g1
 ```
+
+# `sessionInfo` {-}
+
+<details><summary>Session info</summary>
+
+```{r session_info, echo=FALSE, cache=FALSE}
+Sys.time()
+sessionInfo()
+```
+
+</details>
