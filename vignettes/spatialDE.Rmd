@@ -45,7 +45,7 @@ download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad41
 # Sample Info file used in python SpatialDE
 # 7 KB
 coordinate_csv <- "MOB_sample_info.csv"
-download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/MOB_sample_info.csv",
+download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv",
               destfile = coordinate_csv)
 ```
 
@@ -69,6 +69,7 @@ df <- df[, colSums(df)>=3]
 
 #### Get total_counts for every spot
 ```{r}
+df <- df[row.names(sample_info), ]
 sample_info$total_counts <- rowSums(df[, ])
 head(sample_info)
 ```
@@ -79,7 +80,7 @@ X<-sample_info[, c('x', 'y')]
 head(X)
 ```
 
-### `NaiveDE.stabilize`
+### `stabilize`
 `stabilize` function takes in input a dataframe of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the dataframe.
 ```{r}
 tdf <- t(df)
@@ -88,18 +89,18 @@ norm_expr <- spatialDE::stabilize(tdf)
 as.data.frame(norm_expr)[1:5,1:5]
 ```
 
-### `NaiveDE.regress_out`
+### `regress_out`
 ```{r}
 resid_expr <- regress_out(sample_info, norm_expr)
 as.data.frame(resid_expr)[1:5,1:5]
 ```
 
-### `SpatialDE.run`
+### `run_spatialDE`
 ```{r}
 results <- spatialDE::run_spatialDE(X, resid_expr)
 head(results)
 ```
-### `SpatialDE.model_search`
+### `model_search`
 ```{r}
 de_results <- results[results$qval<0.05, ]
 ms_results <- spatialDE::run_model_search(X, resid_expr, de_results)
@@ -108,7 +109,7 @@ ms_results
 
 ### Plots
 ```{r}
-svgs <- de_results[order(de_results$qval), ]$g[1:10]
+svgs <- de_results[order(de_results$qval), ]$g
 
 for (gene in svgs) {
   g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
