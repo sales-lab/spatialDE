@@ -55,17 +55,13 @@ library(ggplot2)
 ```{r}
 # Expression file used in python SpatialDE
 # 8.4 Mb
-expression_csv <- "Rep11_MOB_0.csv"
-download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv",
-    destfile = expression_csv
-)
+expression_csv <-
+  "https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv"
 
 # Sample Info file used in python SpatialDE
 # 7 KB
-coordinate_csv <- "MOB_sample_info.csv"
-download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv",
-    destfile = coordinate_csv
-)
+coordinate_csv <-
+  "https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv"
 ```
 
 Loading the `expression_csv` file.
