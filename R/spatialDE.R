@@ -95,10 +95,10 @@ run_spatialDE <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' de_results <- run_spatialDE(coordinates, regressed)
 #'
 #' ## Run model search
-#' ms_results <- run_model_search(coordinates, regressed, de_results)
+#' ms_results <- model_search(coordinates, regressed, de_results)
 #' }
 #' @export
-run_model_search <- function(coordinates, regressed_counts, de_results,
+model_search <- function(coordinates, regressed_counts, de_results,
                              verbose = FALSE) {
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
