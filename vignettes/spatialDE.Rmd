@@ -12,6 +12,7 @@ output:
     toc_float: true
     toc_depth: 2
     code_folding: show
+    df_print: paged
 date: "`r doc_date()`"
 vignette: >
   %\VignetteIndexEntry{Introduction to spatialDE}
