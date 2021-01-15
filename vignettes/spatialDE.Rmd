@@ -21,109 +21,138 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
-## Example from original [SpatialDE](https://github.com/Teichlab/SpatialDE): Mouse Olfactory Bulb ([MouseOB](https://github.com/Teichlab/SpatialDE/tree/master/Analysis/MouseOB))
+# Introduction
+
+[SpatialDE](https://github.com/Teichlab/SpatialDE) by [Svensson et al., 2018](https://www.nature.com/articles/nmeth.4636), is a method to identify spatially variable genes (SVGs) in spatially resolved transcriptomics data.
+
+
+# Installation
+
+```{r, eval=FALSE}
+## Install development version from GitHub
+BiocManager::install("sales-lab/spatialDE")
+```
+
+
+# Example: [Mouse Olfactory Bulb](https://github.com/Teichlab/SpatialDE/tree/master/Analysis/MouseOB)
+
+Reproducing the
+[example analysis](https://github.com/Teichlab/SpatialDE#spatialde-significance-test-example-use) from the original `r basilisk::PyPiLink("SpatialDE")` Python package.
+
 ```{r setup}
 library(spatialDE)
 library(ggplot2)
 ```
 
 
-### Download files
+## Load data
+
 ```{r}
 # Expression file used in python SpatialDE
 # 8.4 Mb
 expression_csv <- "Rep11_MOB_0.csv"
 download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv",
-              destfile = expression_csv)
+    destfile = expression_csv
+)
 
 # Sample Info file used in python SpatialDE
 # 7 KB
 coordinate_csv <- "MOB_sample_info.csv"
 download.file("https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv",
-              destfile = coordinate_csv)
+    destfile = coordinate_csv
+)
 ```
 
+Loading the `expression_csv` file.
 
-### Loading the `expression_csv` file
 ```{r}
-df <- read.csv(expression_csv, header = TRUE, row.names = 1 )
+df <- read.csv(expression_csv, header = TRUE, row.names = 1)
 df[1:5, 1:5]
 ```
 
-### Loading the `coordinate_csv` file
+Loading the `coordinate_csv` file.
+
 ```{r}
 sample_info <- read.csv(coordinate_csv, row.names = 1)
 head(sample_info)
 ```
 
-#### Filter out pratically unobserved genes
+### Filter out pratically unobserved genes
+
 ```{r}
-df <- df[, colSums(df)>=3]
+df <- df[, colSums(df) >= 3]
 ```
 
-#### Get total_counts for every spot
+### Get total_counts for every spot
+
 ```{r}
 df <- df[row.names(sample_info), ]
 sample_info$total_counts <- rowSums(df[, ])
 head(sample_info)
 ```
 
-#### Get coordinates from `sample_info`
+### Get coordinates from `sample_info`
+
 ```{r}
-X<-sample_info[, c('x', 'y')]
+X <- sample_info[, c("x", "y")]
 head(X)
 ```
 
-### `stabilize`
+
+## `stabilize`
+
 `stabilize` function takes in input a dataframe of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the dataframe.
+
 ```{r}
 tdf <- t(df)
 
 norm_expr <- spatialDE::stabilize(tdf)
-as.data.frame(norm_expr)[1:5,1:5]
+as.data.frame(norm_expr)[1:5, 1:5]
 ```
 
-### `regress_out`
+## `regress_out`
+
 ```{r}
 resid_expr <- regress_out(sample_info, norm_expr)
-as.data.frame(resid_expr)[1:5,1:5]
+as.data.frame(resid_expr)[1:5, 1:5]
 ```
 
-### `run`
+## `run`
+
 ```{r}
 # results <- spatialDE::run(X, resid_expr)
 
-# For this example, run spatialDE on the first 1000 genes 
-sample_resid_expr = head(resid_expr, 1000)
+# For this example, run spatialDE on the first 1000 genes
+sample_resid_expr <- head(resid_expr, 1000)
 
 results <- spatialDE::run(X, sample_resid_expr)
 head(results)
 ```
 
-### `model_search`
+## `model_search`
+
 ```{r}
-de_results <- results[results$qval<0.05, ]
+de_results <- results[results$qval < 0.05, ]
 # ms_results <- spatialDE::model_search(X, resid_expr, de_results)
 ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
 head(ms_results)
 ```
 
-### Plots
-```{r}
-# Uncomment here
+## Plots
 
+```{r}
 gene <- "Pcp4"
 
-g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
-  geom_point(size=7) +
-  ggtitle(gene)
+g <- ggplot(data = sample_info, aes(y = y, x = x, color = norm_expr[gene, ])) +
+    geom_point(size = 7) +
+    ggtitle(gene)
 
-g1<-g + scale_color_viridis_c() + labs(color = gene)
+g1 <- g + scale_color_viridis_c() + labs(color = gene)
 
 g1
 ```
