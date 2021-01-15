@@ -1,0 +1,182 @@
+---
+title: "Introduction to spatialDE"
+author: 
+  - name: Davide Corso
+    affiliation:
+    - University of Padova
+    email: davide.corso.2@phd.unipd.it
+  - name: Milan Malfait
+    affiliation:
+    - Ghent University
+    email: milan.malfait94@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: yes
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+    df_print: paged
+date: "`r doc_date()`"
+vignette: >
+  %\VignetteIndexEntry{Introduction to spatialDE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+# Introduction
+
+[SpatialDE](https://github.com/Teichlab/SpatialDE) by [Svensson et al., 2018](https://www.nature.com/articles/nmeth.4636), is a method to identify spatially variable genes (SVGs) in spatially resolved transcriptomics data.
+
+
+# Installation
+
+```{r, eval=FALSE}
+## Install development version from GitHub
+BiocManager::install("sales-lab/spatialDE")
+```
+
+
+# Example: [Mouse Olfactory Bulb](https://github.com/Teichlab/SpatialDE/tree/master/Analysis/MouseOB)
+
+Reproducing the
+[example analysis](https://github.com/Teichlab/SpatialDE#spatialde-significance-test-example-use) from the original `r basilisk::PyPiLink("SpatialDE")` Python package.
+
+```{r setup}
+library(spatialDE)
+library(ggplot2)
+```
+
+
+## Load data
+
+```{r}
+# Expression file used in python SpatialDE
+# 8.4 Mb
+expression_csv <-
+  "https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv"
+
+# Sample Info file used in python SpatialDE
+# 7 KB
+coordinate_csv <-
+  "https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv"
+```
+
+Loading the `expression_csv` file.
+Note that this data has __genes in columns and samples in rows__.
+
+```{r}
+df <- read.csv(expression_csv, header = TRUE, row.names = 1)
+df[1:5, 1:5]
+```
+
+Loading the `coordinate_csv` file.
+
+```{r}
+sample_info <- read.csv(coordinate_csv, row.names = 1)
+head(sample_info)
+```
+
+### Filter out pratically unobserved genes
+
+```{r}
+df <- df[, colSums(df) >= 3]
+```
+
+### Get total_counts for every spot
+
+```{r}
+df <- df[row.names(sample_info), ]
+sample_info$total_counts <- rowSums(df[, ])
+head(sample_info)
+```
+
+### Get coordinates from `sample_info`
+
+```{r}
+X <- sample_info[, c("x", "y")]
+head(X)
+```
+
+
+## `stabilize`
+
+The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distibuted counts data using Anscombe's approximation.
+The `stabilize` function takes as input a `data.frame` of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the data.
+
+```{r stabilize}
+tdf <- t(df)
+
+norm_expr <- spatialDE::stabilize(tdf)
+as.data.frame(norm_expr)[1:5, 1:5]
+```
+
+## `regress_out`
+
+Next, we account for differences in library size between the samples by regressing out the effect of the total counts for each gene using linear regression.
+
+```{r regres_out}
+resid_expr <- regress_out(sample_info, norm_expr)
+as.data.frame(resid_expr)[1:5, 1:5]
+```
+
+## `run`
+
+To reduce running time, the SpatialDE test is run on a subset of 1000 genes.
+Running it on the complete data set takes about 10 minutes.
+
+```{r run-spatialDE}
+# results <- spatialDE::run(X, resid_expr)
+
+# For this example, run spatialDE on the first 1000 genes
+sample_resid_expr <- head(resid_expr, 1000)
+
+results <- spatialDE::run(X, sample_resid_expr)
+head(results[order(results$qval), ])
+```
+
+## `model_search`
+
+Finally, we can classify the DE genes to interpetable DE classes using the `model_search` function.
+We apply the model search on filtered DE results, using a threshold of 0.05 for the Q-values.
+
+```{r model_search}
+de_results <- results[results$qval < 0.05, ]
+# ms_results <- spatialDE::model_search(X, resid_expr, de_results)
+ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
+head(ms_results[order(ms_results$qval), ])
+```
+
+## Plots
+
+Visualizing one of the most significant genes.
+
+```{r}
+gene <- "Pcp4"
+
+g <- ggplot(data = sample_info, aes(y = y, x = x, color = norm_expr[gene, ])) +
+    geom_point(size = 7) +
+    ggtitle(gene)
+
+g1 <- g + scale_color_viridis_c() + labs(color = gene)
+
+g1
+```
+
+# `sessionInfo` {-}
+
+<details><summary>Session info</summary>
+
+```{r session_info, echo=FALSE, cache=FALSE}
+Sys.time()
+sessionInfo()
+```
+
+</details>

@@ -16,9 +16,9 @@ test_that("Wrapper functions work", {
     regressed <- regress_out(sample_info, stabilized)
     expect_false(all(is.na(regressed)))
 
-    de_results <- run_spatialDE(coordinates, regressed)
+    de_results <- run(coordinates, regressed)
     expect_false(all(is.na(de_results)))
 
-    ms_results <- run_model_search(coordinates, regressed, de_results)
+    ms_results <- model_search(coordinates, regressed, de_results)
     expect_false(all(is.na(ms_results)))
 })

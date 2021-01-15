@@ -30,10 +30,10 @@
 #' regressed <- regress_out(sample_info, stabilized)
 #'
 #' ## Run SpatialDE
-#' de_results <- run_spatialDE(coordinates, regressed)
+#' de_results <- run(coordinates, regressed)
 #' }
 #' @export
-run_spatialDE <- function(coordinates, regressed_counts, verbose = FALSE) {
+run <- function(coordinates, regressed_counts, verbose = FALSE) {
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_run,
@@ -70,7 +70,7 @@ run_spatialDE <- function(coordinates, regressed_counts, verbose = FALSE) {
 #'
 #' @param regressed_counts `data.frame` resulting from [regress_out()]
 #'
-#' @param de_results `data.frame` resulting from [run_spatialDE()] filtered
+#' @param de_results `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
 #'
 #' @param verbose `bool` controlling the display of the progress bar.
@@ -92,13 +92,13 @@ run_spatialDE <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' regressed <- regress_out(sample_info, stabilized)
 #'
 #' ## Run SpatialDE
-#' de_results <- run_spatialDE(coordinates, regressed)
+#' de_results <- run(coordinates, regressed)
 #'
 #' ## Run model search
-#' ms_results <- run_model_search(coordinates, regressed, de_results)
+#' ms_results <- model_search(coordinates, regressed, de_results)
 #' }
 #' @export
-run_model_search <- function(coordinates, regressed_counts, de_results,
+model_search <- function(coordinates, regressed_counts, de_results,
                              verbose = FALSE) {
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
