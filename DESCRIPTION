@@ -24,6 +24,7 @@ Suggests:
     knitr,
     BiocStyle,
     rmarkdown,
+    ggplot2,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 biocViews:
