@@ -95,22 +95,22 @@ resid_expr <- regress_out(sample_info, norm_expr)
 as.data.frame(resid_expr)[1:5,1:5]
 ```
 
-### `run_spatialDE`
+### `run`
 ```{r}
-# results <- spatialDE::run_spatialDE(X, resid_expr)
+# results <- spatialDE::run(X, resid_expr)
 
 # For this example, run spatialDE on the first 1000 genes 
 sample_resid_expr = head(resid_expr, 1000)
 
-results <- spatialDE::run_spatialDE(X, sample_resid_expr)
+results <- spatialDE::run(X, sample_resid_expr)
 head(results)
 ```
 
 ### `model_search`
 ```{r}
 de_results <- results[results$qval<0.05, ]
-# ms_results <- spatialDE::run_model_search(X, resid_expr, de_results)
-ms_results <- spatialDE::run_model_search(X, sample_resid_expr, de_results)
+# ms_results <- spatialDE::model_search(X, resid_expr, de_results)
+ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
 ms_results
 ```
 
