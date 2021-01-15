@@ -97,13 +97,20 @@ as.data.frame(resid_expr)[1:5,1:5]
 
 ### `run_spatialDE`
 ```{r}
-results <- spatialDE::run_spatialDE(X, resid_expr)
+# results <- spatialDE::run_spatialDE(X, resid_expr)
+
+# For this example, run spatialDE on the first 1000 genes 
+sample_resid_expr = head(resid_expr, 1000)
+
+results <- spatialDE::run_spatialDE(X, sample_resid_expr)
 head(results)
 ```
+
 ### `model_search`
 ```{r}
 de_results <- results[results$qval<0.05, ]
-ms_results <- spatialDE::run_model_search(X, resid_expr, de_results)
+# ms_results <- spatialDE::run_model_search(X, resid_expr, de_results)
+ms_results <- spatialDE::run_model_search(X, sample_resid_expr, de_results)
 ms_results
 ```
 
@@ -115,7 +122,7 @@ for (gene in svgs) {
   g<-ggplot(data=sample_info, aes(y=y, x=x, color=norm_expr[gene, ])) +
     geom_point(size=7) +
     ggtitle(gene)
-    
+
   g1<-g + scale_color_viridis_c() + labs(color = gene)
 
   print(g1)
