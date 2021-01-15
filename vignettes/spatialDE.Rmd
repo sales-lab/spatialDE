@@ -1,10 +1,10 @@
 ---
 title: "Introduction to spatialDE"
 author: 
-  - name: Your name
+  - name: Davide Corso
     affiliation:
-    - Your institution
-    email: your.email@somewhere.com
+    - University of Padova
+    email: davide.corso.2@phd.unipd.it
 output: 
   BiocStyle::html_document:
     self_contained: yes
