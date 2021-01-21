@@ -43,10 +43,6 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
     out
 }
 
-# NOTE: both functions of SpatialDE run with tqdm python library, which
-# allow to view a progress bar and it's not suitable for R.
-# TODO: hide prints of progress bar
-
 #' @importFrom reticulate r_to_py
 .spatialDE_run <- function(coordinates, regressed_counts, verbose) {
     spatialDE <- .importPyModule(!verbose)
