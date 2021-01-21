@@ -17,7 +17,7 @@ output:
     toc_depth: 2
     code_folding: show
     df_print: paged
-date: "`r doc_date()`"
+date: "`r BiocStyle::doc_date()`"
 vignette: >
   %\VignetteIndexEntry{Introduction to spatialDE}
   %\VignetteEngine{knitr::rmarkdown}
