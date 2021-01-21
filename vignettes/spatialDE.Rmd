@@ -105,7 +105,6 @@ X <- sample_info[, c("x", "y")]
 head(X)
 ```
 
-
 ## `stabilize`
 
 The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distibuted counts data using Anscombe's approximation.
@@ -152,6 +151,17 @@ de_results <- results[results$qval < 0.05, ]
 # ms_results <- spatialDE::model_search(X, resid_expr, de_results)
 ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
 head(ms_results[order(ms_results$qval), ])
+```
+
+## `spatial_patterns`
+
+Furthermore, we can group spatially variable genes (SVGs) into spatial patterns using automatic expression histology (AEH).
+
+```{r spatial_patterns}
+sres <- results[results$qval < 0.05, ]
+
+sp <- spatial_patterns(X, sample_resid_expr, sres, 4L, 1.5)
+sp$pattern_results
 ```
 
 ## Plots
