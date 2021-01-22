@@ -23,6 +23,11 @@ stabilize <- function(counts) {
         fun = .naiveDE_stabilize,
         counts = counts
     )
+
+    if (all(is.na(out))) {
+        warning("Stabilized values are all NA.")
+    }
+
     out
 }
 
