@@ -21,6 +21,14 @@ test_that("Wrapper functions work", {
 
     ms_results <- model_search(coordinates, regressed, de_results)
     expect_false(all(is.na(ms_results)))
+
+    sp_results <- spatial_patterns(
+        coordinates = coordinates, regressed_counts = regressed,
+        sres = de_results, C = 5L, l = 1.5
+    )
+    expect_false(all(is.na(sp_results[[1]])))
+    expect_false(all(is.na(sp_results[[2]])))
+
 })
 
 test_that("stabilize() warns about NA output", {
@@ -43,16 +51,32 @@ test_that("run() returns correct output", {
                      regressed_counts = counts))
 })
 
-test_that("model_search() returns correct output", {
+test_that("model_search() and spatial_patterns() return correct output", {
     de_res <- run(coordinates, counts)
+
+    ## model_search()
     out <- model_search(coordinates = coordinates,
                         regressed_counts = counts,
                         de_results = de_res)
     expect_equal(nrow(out), nrow(counts))
     expect_true(is.data.frame(out))
 
+    ## spatial_patterns()
+    sp <- spatial_patterns(
+        coordinates = coordinates, regressed_counts = counts,
+        sres = de_res, C = 1L, l = 1
+    )
+    pat_res <- sp$pattern_results
+    pat <- sp$patterns
+    expect_equal(nrow(pat_res), nrow(counts))
+    expect_equal(nrow(pat), ncol(counts))
+
+
     ## Check breaking errors (incompatible dimensions)
     expect_error(model_search(coordinates = coordinates[1:3, ],
                               regressed_counts = counts,
                               de_results = de_res))
+    expect_error(spatial_patterns(coordinates = coordinates[1:3, ],
+                              regressed_counts = counts,
+                              sres = de_res, C = 2L, l = 1))
 })
