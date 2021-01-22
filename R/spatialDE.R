@@ -166,8 +166,8 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' sres <- results[results$qval<0.05, ]
 #'
 #' ## Run Spatial_patterns
-#' sp <- spatial_patterns(coordinates, regressed, res, 5, 1.5)
-#' 
+#' sp <- spatial_patterns(coordinates, regressed, sres = sres, C = 5, l = 1.5)
+#'
 #' sp$pattern_results
 #' sp$patterns
 #' }
