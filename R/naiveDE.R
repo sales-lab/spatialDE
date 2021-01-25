@@ -10,11 +10,13 @@
 #' @return `matrix` of variance stabilized counts.
 #'
 #' @examples
+#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
 #'                  nrow = ngenes, ncol = ncells)
 #' stabilized <- stabilize(counts)
+#'}
 #'
 #' @export
 #' @importFrom checkmate assert_matrix test_matrix
@@ -65,6 +67,7 @@ stabilize <- function(counts) {
 #' @return `matrix` of normalized counts.
 #'
 #' @examples
+#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -75,12 +78,13 @@ stabilize <- function(counts) {
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
+#'}
 #'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 regress_out <- function(sample_info, stabilized_counts) {
     assert_data_frame(sample_info, any.missing = FALSE)
-    assert_names(colnames(sample_info), must.include = c("x", "y") )
+    assert_names(colnames(sample_info), must.include = c("x", "y"))
     assert_matrix(stabilized_counts, any.missing = FALSE)
     
     out <- basilisk::basiliskRun(
