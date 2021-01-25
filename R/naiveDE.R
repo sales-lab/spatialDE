@@ -17,15 +17,18 @@
 #' stabilized <- stabilize(counts)
 #'
 #' @export
+#' @importFrom checkmate assert_matrix test_matrix
 stabilize <- function(counts) {
+    assert_matrix(counts, any.missing = FALSE)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .naiveDE_stabilize,
         counts = counts
     )
 
-    if (all(is.na(out))) {
-        warning("Stabilized values are all NA.")
+    if (!test_matrix(out, all.missing = FALSE)) {
+        warning("Warning: Stabilized values are all NA.\n")
     }
 
     out
@@ -74,7 +77,12 @@ stabilize <- function(counts) {
 #' regressed <- regress_out(sample_info, stabilized)
 #'
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 regress_out <- function(sample_info, stabilized_counts) {
+    assert_data_frame(sample_info, any.missing = FALSE)
+    assert_names(colnames(sample_info), must.include = c("x", "y") )
+    assert_matrix(stabilized_counts, any.missing = FALSE)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .naiveDE_regress_out,
