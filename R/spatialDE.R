@@ -22,8 +22,9 @@
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(total_counts = colSums(counts))
-#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts)) 
+#' coordinates <- sample_info[, c("x", "y")]
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
@@ -87,8 +88,9 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(total_counts = colSums(counts))
-#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts)) 
+#' coordinates <- sample_info[, c("x", "y")]
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
