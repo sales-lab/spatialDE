@@ -7,7 +7,7 @@
 stabilize(counts)
 }
 \arguments{
-\item{counts}{\code{matrix} or \code{data.frame} with expression values for samples in
+\item{counts}{\code{matrix} with expression values for samples in
 columns and genes in rows.}
 }
 \value{

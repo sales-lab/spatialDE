@@ -4,7 +4,7 @@
 #' This function is a wrapper for `stabilize` from the
 #' [NaiveDE](https://github.com/Teichlab/NaiveDE) Python package.
 #'
-#' @param counts `matrix` or `data.frame` with expression values for samples in
+#' @param counts `matrix` with expression values for samples in
 #' columns and genes in rows.
 #'
 #' @return `matrix` of variance stabilized counts.
@@ -59,7 +59,7 @@ stabilize <- function(counts) {
 #' @param sample_info `data.frame` with samples as rows and at least a column
 #' with `total_counts`.
 #'
-#' @param stabilized_counts `matrix` or `data.frame` of variance stabilized
+#' @param stabilized_counts `matrix` of variance stabilized
 #' counts, e.g. resulting from [stabilize()].
 #'
 #' @return `matrix` of normalized counts.

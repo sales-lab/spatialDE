@@ -8,8 +8,7 @@
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #'
-#' @param regressed_counts `data.frame` or `matrix` resulting from
-#' [regress_out()].
+#' @param regressed_counts `matrix` resulting from [regress_out()].
 #'
 #' @param verbose `bool` controlling the display of the progress bar.
 #'
@@ -71,7 +70,7 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #'
-#' @param regressed_counts `data.frame` resulting from [regress_out()]
+#' @param regressed_counts `matrix` resulting from [regress_out()]
 #'
 #' @param de_results `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
@@ -144,20 +143,19 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #' 
-#' @param regressed_counts `data.frame` or `matrix` resulting from
-#' [regress_out()].
+#' @param regressed_counts `matrix` resulting from [regress_out()].
 #' 
 #' @param sres `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
 #' 
 #' @param C `integer` The number of spatial patterns
 #' 
-#' @param l `numeric`The charancteristic length scale of the clusters
+#' @param l `numeric` The charancteristic length scale of the clusters
 #' 
 #' @param verbose `bool` controlling the display of the progress messages.
 #'
 #' @return `list` of two dataframe (pattern_results, patterns):
-#' `pattern_results` dataframe with pattern membersehip information for each 
+#' `pattern_results` dataframe with pattern membership information for each 
 #' gene.
 #' `patterns` the posterior mean underlying expression fro genes in given 
 #' spatial patterns.

@@ -10,7 +10,7 @@ regress_out(sample_info, stabilized_counts)
 \item{sample_info}{\code{data.frame} with samples as rows and at least a column
 with \code{total_counts}.}
 
-\item{stabilized_counts}{\code{matrix} or \code{data.frame} of variance stabilized
+\item{stabilized_counts}{\code{matrix} of variance stabilized
 counts, e.g. resulting from \code{\link[=stabilize]{stabilize()}}.}
 }
 \value{

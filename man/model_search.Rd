@@ -10,7 +10,7 @@ model_search(coordinates, regressed_counts, de_results, verbose = FALSE)
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
-\item{regressed_counts}{\code{data.frame} resulting from \code{\link[=regress_out]{regress_out()}}}
+\item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
