@@ -19,7 +19,8 @@ URL: https://github.com/sales-lab/spatialDE
 BugReports: https://github.com/sales-lab/spatialDE/issues
 Imports: 
     reticulate,
-    basilisk
+    basilisk,
+    checkmate
 Suggests: 
     knitr,
     BiocStyle,

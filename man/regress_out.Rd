@@ -22,6 +22,7 @@ This function is a wrapper for \code{regress_out} from the
 \href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
 }
 \examples{
+\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -32,5 +33,6 @@ sample_info <- data.frame(total_counts = colSums(counts))
 
 stabilized <- stabilize(counts)
 regressed <- regress_out(sample_info, stabilized)
+}
 
 }
