@@ -74,7 +74,8 @@ stabilize <- function(counts) {
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization
-#' sample_info <- data.frame(total_counts = colSums(counts))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts))
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
