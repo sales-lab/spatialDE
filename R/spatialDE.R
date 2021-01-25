@@ -33,7 +33,14 @@
 #' de_results <- run(coordinates, regressed)
 #' }
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_flag
 run <- function(coordinates, regressed_counts, verbose = FALSE) {
+    assert_data_frame(coordinates, any.missing = FALSE)
+    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_matrix(regressed_counts, any.missing = FALSE)
+    assert_flag(verbose)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_run,
@@ -94,8 +101,16 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' ms_results <- model_search(coordinates, regressed, de_results)
 #' }
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_flag
 model_search <- function(coordinates, regressed_counts, de_results,
                              verbose = FALSE) {
+    assert_data_frame(coordinates, any.missing = FALSE)
+    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_matrix(regressed_counts, any.missing = FALSE)
+    assert_data_frame(de_results, all.missing = FALSE)
+    assert_flag(verbose)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_model_search,
@@ -173,8 +188,18 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' }
 #' 
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_int assert_number assert_flag
 spatial_patterns <- function(coordinates, regressed_counts, sres, C, l, 
                              verbose=FALSE) {
+    assert_data_frame(coordinates, any.missing = FALSE)
+    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_matrix(regressed_counts, any.missing = FALSE)
+    assert_data_frame(sres, all.missing = FALSE)
+    assert_int(C, coerce = TRUE)
+    assert_number(l)
+    assert_flag(verbose)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_spatial_patterns,
