@@ -34,7 +34,6 @@ Group spatially variable genes into spatial patterns using automatic
 expression histology (AEH)
 }
 \examples{
-\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -57,6 +56,5 @@ sp <- spatial_patterns(coordinates, regressed, sres = sres, C = 5, l = 1.5)
 
 sp$pattern_results
 sp$patterns
-}
 
 }

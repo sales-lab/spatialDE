@@ -22,7 +22,6 @@ Wraps the \code{run} function from the
 \href{https://github.com/Teichlab/SpatialDE}{SpatialDE} Python package.
 }
 \examples{
-\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -38,5 +37,5 @@ regressed <- regress_out(sample_info, stabilized)
 
 ## Run SpatialDE
 de_results <- run(coordinates, regressed)
-}
+
 }

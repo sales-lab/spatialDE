@@ -24,7 +24,6 @@ based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 Classify DE genes to interpretable fitting classes.
 }
 \examples{
-\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -43,5 +42,5 @@ de_results <- run(coordinates, regressed)
 
 ## Run model search
 ms_results <- model_search(coordinates, regressed, de_results)
-}
+
 }

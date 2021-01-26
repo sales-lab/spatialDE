@@ -19,12 +19,10 @@ This function is a wrapper for \code{stabilize} from the
 \href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
 }
 \examples{
-\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
 stabilized <- stabilize(counts)
-}
 
 }
