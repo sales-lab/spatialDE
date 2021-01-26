@@ -15,7 +15,6 @@
 #' @return `data.frame` with DE results.
 #'
 #' @examples
-#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -31,7 +30,7 @@
 #'
 #' ## Run SpatialDE
 #' de_results <- run(coordinates, regressed)
-#' }
+#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 #' @importFrom checkmate assert_flag
@@ -81,7 +80,6 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' @return `data.frame` of model_search results.
 #'
 #' @examples
-#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -100,7 +98,7 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #'
 #' ## Run model search
 #' ms_results <- model_search(coordinates, regressed, de_results)
-#' }
+#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 #' @importFrom checkmate assert_flag
@@ -163,7 +161,6 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' spatial patterns.
 #' 
 #' @examples
-#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
@@ -186,7 +183,6 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #'
 #' sp$pattern_results
 #' sp$patterns
-#' }
 #' 
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
