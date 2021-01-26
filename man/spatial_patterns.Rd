@@ -11,21 +11,20 @@ spatial_patterns(coordinates, regressed_counts, sres, C, l, verbose = FALSE)
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
-\item{regressed_counts}{\code{data.frame} or \code{matrix} resulting from
-\code{\link[=regress_out]{regress_out()}}.}
+\item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}.}
 
 \item{sres}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 
 \item{C}{\code{integer} The number of spatial patterns}
 
-\item{l}{\code{numeric}The charancteristic length scale of the clusters}
+\item{l}{\code{numeric} The charancteristic length scale of the clusters}
 
 \item{verbose}{\code{bool} controlling the display of the progress messages.}
 }
 \value{
 \code{list} of two dataframe (pattern_results, patterns):
-\code{pattern_results} dataframe with pattern membersehip information for each
+\code{pattern_results} dataframe with pattern membership information for each
 gene.
 \code{patterns} the posterior mean underlying expression fro genes in given
 spatial patterns.
@@ -42,8 +41,9 @@ counts <- matrix(rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
 
 ## Provide total counts for library size normalization and coordinates
-sample_info <- data.frame(total_counts = colSums(counts))
-coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+                          total_counts = colSums(counts)) 
+coordinates <- sample_info[, c("x", "y")]
 
 stabilized <- stabilize(counts)
 regressed <- regress_out(sample_info, stabilized)
@@ -53,7 +53,7 @@ results <- run(coordinates, regressed)
 sres <- results[results$qval<0.05, ]
 
 ## Run Spatial_patterns
-sp <- spatial_patterns(coordinates, regressed, res, 5, 1.5)
+sp <- spatial_patterns(coordinates, regressed, sres = sres, C = 5, l = 1.5)
 
 sp$pattern_results
 sp$patterns

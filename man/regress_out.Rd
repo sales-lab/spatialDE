@@ -10,7 +10,7 @@ regress_out(sample_info, stabilized_counts)
 \item{sample_info}{\code{data.frame} with samples as rows and at least a column
 with \code{total_counts}.}
 
-\item{stabilized_counts}{\code{matrix} or \code{data.frame} of variance stabilized
+\item{stabilized_counts}{\code{matrix} of variance stabilized
 counts, e.g. resulting from \code{\link[=stabilize]{stabilize()}}.}
 }
 \value{
@@ -22,15 +22,18 @@ This function is a wrapper for \code{regress_out} from the
 \href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
 }
 \examples{
+\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
 
 ## Provide total counts for library size normalization
-sample_info <- data.frame(total_counts = colSums(counts))
+sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+                          total_counts = colSums(counts))
 
 stabilized <- stabilize(counts)
 regressed <- regress_out(sample_info, stabilized)
+}
 
 }

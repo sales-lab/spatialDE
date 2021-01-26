@@ -6,8 +6,9 @@ ngenes <- 100
 set.seed(1)
 counts <- matrix(stats::rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
-sample_info <- data.frame(total_counts = colSums(counts))
-coordinates <- data.frame(x = stats::rnorm(ncells), y = stats::rnorm(ncells))
+sample_info <- data.frame(x = stats::rnorm(ncells), y = stats::rnorm(ncells), 
+                          total_counts = colSums(counts))
+coordinates <- sample_info[, c("x", "y")]
 
 test_that("Wrapper functions work", {
     stabilized <- stabilize(counts)

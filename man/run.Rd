@@ -10,8 +10,7 @@ run(coordinates, regressed_counts, verbose = FALSE)
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
-\item{regressed_counts}{\code{data.frame} or \code{matrix} resulting from
-\code{\link[=regress_out]{regress_out()}}.}
+\item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}.}
 
 \item{verbose}{\code{bool} controlling the display of the progress bar.}
 }
@@ -30,8 +29,9 @@ counts <- matrix(rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
 
 ## Provide total counts for library size normalization and coordinates
-sample_info <- data.frame(total_counts = colSums(counts))
-coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+                          total_counts = colSums(counts)) 
+coordinates <- sample_info[, c("x", "y")]
 
 stabilized <- stabilize(counts)
 regressed <- regress_out(sample_info, stabilized)

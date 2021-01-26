@@ -8,32 +8,38 @@
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #'
-#' @param regressed_counts `data.frame` or `matrix` resulting from
-#' [regress_out()].
+#' @param regressed_counts `matrix` resulting from [regress_out()].
 #'
 #' @param verbose `bool` controlling the display of the progress bar.
 #'
 #' @return `data.frame` with DE results.
 #'
 #' @examples
-#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(total_counts = colSums(counts))
-#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts)) 
+#' coordinates <- sample_info[, c("x", "y")]
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
 #'
 #' ## Run SpatialDE
 #' de_results <- run(coordinates, regressed)
-#' }
+#'
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_flag
 run <- function(coordinates, regressed_counts, verbose = FALSE) {
+    assert_data_frame(coordinates, any.missing = FALSE)
+    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_matrix(regressed_counts, any.missing = FALSE)
+    assert_flag(verbose)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_run,
@@ -64,7 +70,7 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #'
-#' @param regressed_counts `data.frame` resulting from [regress_out()]
+#' @param regressed_counts `matrix` resulting from [regress_out()]
 #'
 #' @param de_results `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
@@ -74,15 +80,15 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' @return `data.frame` of model_search results.
 #'
 #' @examples
-#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(total_counts = colSums(counts))
-#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts)) 
+#' coordinates <- sample_info[, c("x", "y")]
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
@@ -92,10 +98,18 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #'
 #' ## Run model search
 #' ms_results <- model_search(coordinates, regressed, de_results)
-#' }
+#'
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_flag
 model_search <- function(coordinates, regressed_counts, de_results,
                              verbose = FALSE) {
+    assert_data_frame(coordinates, any.missing = FALSE)
+    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_matrix(regressed_counts, any.missing = FALSE)
+    assert_data_frame(de_results, all.missing = FALSE)
+    assert_flag(verbose)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_model_search,
@@ -129,34 +143,33 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #' 
-#' @param regressed_counts `data.frame` or `matrix` resulting from
-#' [regress_out()].
+#' @param regressed_counts `matrix` resulting from [regress_out()].
 #' 
 #' @param sres `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
 #' 
 #' @param C `integer` The number of spatial patterns
 #' 
-#' @param l `numeric`The charancteristic length scale of the clusters
+#' @param l `numeric` The charancteristic length scale of the clusters
 #' 
 #' @param verbose `bool` controlling the display of the progress messages.
 #'
 #' @return `list` of two dataframe (pattern_results, patterns):
-#' `pattern_results` dataframe with pattern membersehip information for each 
+#' `pattern_results` dataframe with pattern membership information for each 
 #' gene.
 #' `patterns` the posterior mean underlying expression fro genes in given 
 #' spatial patterns.
 #' 
 #' @examples
-#' \dontrun{
 #' ncells <- 100
 #' ngenes <- 1000
 #' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(total_counts = colSums(counts))
-#' coordinates <- data.frame(x = rnorm(ncells), y = rnorm(ncells))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts)) 
+#' coordinates <- sample_info[, c("x", "y")]
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
@@ -170,11 +183,20 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #'
 #' sp$pattern_results
 #' sp$patterns
-#' }
 #' 
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_int assert_number assert_flag
 spatial_patterns <- function(coordinates, regressed_counts, sres, C, l, 
                              verbose=FALSE) {
+    assert_data_frame(coordinates, any.missing = FALSE)
+    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_matrix(regressed_counts, any.missing = FALSE)
+    assert_data_frame(sres, all.missing = FALSE)
+    assert_int(C, coerce = TRUE)
+    assert_number(l)
+    assert_flag(verbose)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_spatial_patterns,

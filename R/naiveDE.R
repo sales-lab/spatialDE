@@ -4,7 +4,7 @@
 #' This function is a wrapper for `stabilize` from the
 #' [NaiveDE](https://github.com/Teichlab/NaiveDE) Python package.
 #'
-#' @param counts `matrix` or `data.frame` with expression values for samples in
+#' @param counts `matrix` with expression values for samples in
 #' columns and genes in rows.
 #'
 #' @return `matrix` of variance stabilized counts.
@@ -17,15 +17,18 @@
 #' stabilized <- stabilize(counts)
 #'
 #' @export
+#' @importFrom checkmate assert_matrix test_matrix
 stabilize <- function(counts) {
+    assert_matrix(counts, any.missing = FALSE)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .naiveDE_stabilize,
         counts = counts
     )
 
-    if (all(is.na(out))) {
-        warning("Stabilized values are all NA.")
+    if (!test_matrix(out, all.missing = FALSE)) {
+        warning("Warning: Stabilized values are all NA.\n")
     }
 
     out
@@ -56,7 +59,7 @@ stabilize <- function(counts) {
 #' @param sample_info `data.frame` with samples as rows and at least a column
 #' with `total_counts`.
 #'
-#' @param stabilized_counts `matrix` or `data.frame` of variance stabilized
+#' @param stabilized_counts `matrix` of variance stabilized
 #' counts, e.g. resulting from [stabilize()].
 #'
 #' @return `matrix` of normalized counts.
@@ -68,13 +71,19 @@ stabilize <- function(counts) {
 #'                  nrow = ngenes, ncol = ncells)
 #'
 #' ## Provide total counts for library size normalization
-#' sample_info <- data.frame(total_counts = colSums(counts))
+#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
+#'                           total_counts = colSums(counts))
 #'
 #' stabilized <- stabilize(counts)
 #' regressed <- regress_out(sample_info, stabilized)
 #'
 #' @export
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 regress_out <- function(sample_info, stabilized_counts) {
+    assert_data_frame(sample_info, any.missing = FALSE)
+    assert_names(colnames(sample_info), must.include = c("x", "y"))
+    assert_matrix(stabilized_counts, any.missing = FALSE)
+    
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .naiveDE_regress_out,

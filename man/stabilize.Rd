@@ -7,7 +7,7 @@
 stabilize(counts)
 }
 \arguments{
-\item{counts}{\code{matrix} or \code{data.frame} with expression values for samples in
+\item{counts}{\code{matrix} with expression values for samples in
 columns and genes in rows.}
 }
 \value{
@@ -19,10 +19,12 @@ This function is a wrapper for \code{stabilize} from the
 \href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
 }
 \examples{
+\dontrun{
 ncells <- 100
 ngenes <- 1000
 counts <- matrix(rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
 stabilized <- stabilize(counts)
+}
 
 }
