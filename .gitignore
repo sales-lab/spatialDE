@@ -2,8 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rprofile
 *.Rproj
 dev/
 inst/doc
 doc
 Meta
+renv/
+renv.lock
