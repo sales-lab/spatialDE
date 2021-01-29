@@ -15,28 +15,22 @@
 #' @return `data.frame` with DE results.
 #'
 #' @examples
-#' ncells <- 100
-#' ngenes <- 1000
-#' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-#'                  nrow = ngenes, ncol = ncells)
-#'
-#' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
-#'                           total_counts = colSums(counts)) 
-#' coordinates <- sample_info[, c("x", "y")]
-#'
-#' stabilized <- stabilize(counts)
-#' regressed <- regress_out(sample_info, stabilized)
-#'
+#' set.seed(42)
+#' mock <- mockSVG(10, 1000, 10)
+#' stabilized <- stabilize(mock$counts)
+#' samples_info <- mock$coordinates
+#' samples_info$total_counts <- colSums(mock$counts)
+#' regressed <- regress_out(samples_info, stabilized)
+#' 
 #' ## Run SpatialDE
-#' de_results <- run(coordinates, regressed)
+#' de_results <- run(mock$coordinates, regressed)
 #'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 #' @importFrom checkmate assert_flag
 run <- function(coordinates, regressed_counts, verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
-    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(regressed_counts, any.missing = FALSE)
     assert_flag(verbose)
     
@@ -80,21 +74,15 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' @return `data.frame` of model_search results.
 #'
 #' @examples
-#' ncells <- 100
-#' ngenes <- 1000
-#' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-#'                  nrow = ngenes, ncol = ncells)
-#'
-#' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
-#'                           total_counts = colSums(counts)) 
-#' coordinates <- sample_info[, c("x", "y")]
-#'
-#' stabilized <- stabilize(counts)
-#' regressed <- regress_out(sample_info, stabilized)
-#'
+#' set.seed(42)
+#' mock <- mockSVG(10, 1000, 10)
+#' stabilized <- stabilize(mock$counts)
+#' samples_info <- mock$coordinates
+#' samples_info$total_counts <- colSums(mock$counts)
+#' regressed <- regress_out(samples_info, stabilized)
+#' 
 #' ## Run SpatialDE
-#' de_results <- run(coordinates, regressed)
+#' de_results <- run(mock$coordinates, regressed)
 #'
 #' ## Run model search
 #' ms_results <- model_search(coordinates, regressed, de_results)
@@ -105,7 +93,7 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 model_search <- function(coordinates, regressed_counts, de_results,
                              verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
-    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(regressed_counts, any.missing = FALSE)
     assert_data_frame(de_results, all.missing = FALSE)
     assert_flag(verbose)
@@ -145,7 +133,7 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' 
 #' @param regressed_counts `matrix` resulting from [regress_out()].
 #' 
-#' @param sres `data.frame` resulting from [run()] filtered
+#' @param de_results `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
 #' 
 #' @param C `integer` The number of spatial patterns
@@ -161,25 +149,20 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' spatial patterns.
 #' 
 #' @examples
-#' ncells <- 100
-#' ngenes <- 1000
-#' counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-#'                  nrow = ngenes, ncol = ncells)
-#'
-#' ## Provide total counts for library size normalization and coordinates
-#' sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
-#'                           total_counts = colSums(counts)) 
-#' coordinates <- sample_info[, c("x", "y")]
-#'
-#' stabilized <- stabilize(counts)
-#' regressed <- regress_out(sample_info, stabilized)
-#'
+#' set.seed(42)
+#' mock <- mockSVG(10, 1000, 10)
+#' stabilized <- stabilize(mock$counts)
+#' samples_info <- mock$coordinates
+#' samples_info$total_counts <- colSums(mock$counts)
+#' regressed <- regress_out(samples_info, stabilized)
+#' 
 #' ## Run SpatialDE
-#' results <- run(coordinates, regressed)
-#' sres <- results[results$qval<0.05, ]
+#' results <- run(mock$coordinates, regressed)
+#' de_results <- results[results$qval<0.1, ]
 #'
 #' ## Run Spatial_patterns
-#' sp <- spatial_patterns(coordinates, regressed, sres = sres, C = 5, l = 1.5)
+#' sp <- spatial_patterns(coordinates, regressed, de_results = de_results, 
+#'                        C = 5, l = 1.5)
 #'
 #' sp$pattern_results
 #' sp$patterns
@@ -187,12 +170,12 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
 #' @importFrom checkmate assert_int assert_number assert_flag
-spatial_patterns <- function(coordinates, regressed_counts, sres, C, l, 
+spatial_patterns <- function(coordinates, regressed_counts, de_results, C, l, 
                              verbose=FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
-    assert_names(colnames(coordinates), must.include = c("x", "y"))
+    assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(regressed_counts, any.missing = FALSE)
-    assert_data_frame(sres, all.missing = FALSE)
+    assert_data_frame(de_results, all.missing = FALSE)
     assert_int(C, coerce = TRUE)
     assert_number(l)
     assert_flag(verbose)
@@ -201,22 +184,22 @@ spatial_patterns <- function(coordinates, regressed_counts, sres, C, l,
         env = spatialDE_env,
         fun = .spatialDE_spatial_patterns,
         coordinates = coordinates, regressed_counts = regressed_counts, 
-        sres = sres, C = C, l = l, verbose = verbose
+        de_results = de_results, C = C, l = l, verbose = verbose
     )
     out
 }
 
 
 #' @importFrom reticulate r_to_py
-.spatialDE_spatial_patterns <- function(coordinates, regressed_counts, sres, C, 
-                                        l, verbose) {
+.spatialDE_spatial_patterns <- function(coordinates, regressed_counts, 
+                                        de_results, C, l, verbose) {
     spatialDE <- .importPyModule(!verbose)
     
     X <- r_to_py(coordinates)
     regr_out_py <- r_to_py(as.data.frame(t(regressed_counts)))
-    sres_py <- r_to_py(sres)
+    de_results_py <- r_to_py(de_results)
     
-    spatterns <- spatialDE$spatial_patterns(X, regr_out_py, sres_py, 
+    spatterns <- spatialDE$spatial_patterns(X, regr_out_py, de_results_py, 
                                             as.integer(C), l)
     return(list(
         pattern_results = spatterns[[1]],
