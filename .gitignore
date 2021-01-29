@@ -10,3 +10,4 @@ doc
 Meta
 renv/
 renv.lock
+..Rcheck
