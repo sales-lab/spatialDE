@@ -24,21 +24,15 @@ based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 Classify DE genes to interpretable fitting classes.
 }
 \examples{
-ncells <- 100
-ngenes <- 1000
-counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-                 nrow = ngenes, ncol = ncells)
-
-## Provide total counts for library size normalization and coordinates
-sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
-                          total_counts = colSums(counts)) 
-coordinates <- sample_info[, c("x", "y")]
-
-stabilized <- stabilize(counts)
-regressed <- regress_out(sample_info, stabilized)
+set.seed(42)
+mock <- mockSVG(10, 1000, 10)
+stabilized <- stabilize(mock$counts)
+samples_info <- mock$coordinates
+samples_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(samples_info, stabilized)
 
 ## Run SpatialDE
-de_results <- run(coordinates, regressed)
+de_results <- run(mock$coordinates, regressed)
 
 ## Run model search
 ms_results <- model_search(coordinates, regressed, de_results)

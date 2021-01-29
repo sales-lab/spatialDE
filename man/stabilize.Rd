@@ -19,10 +19,8 @@ This function is a wrapper for \code{stabilize} from the
 \href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
 }
 \examples{
-ncells <- 100
-ngenes <- 1000
-counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-                 nrow = ngenes, ncol = ncells)
-stabilized <- stabilize(counts)
+set.seed(42)
+mock <- mockSVG(10, 1000, 10)
+stabilized <- stabilize(mock$counts)
 
 }

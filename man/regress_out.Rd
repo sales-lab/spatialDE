@@ -22,16 +22,11 @@ This function is a wrapper for \code{regress_out} from the
 \href{https://github.com/Teichlab/NaiveDE}{NaiveDE} Python package.
 }
 \examples{
-ncells <- 100
-ngenes <- 1000
-counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-                 nrow = ngenes, ncol = ncells)
-
-## Provide total counts for library size normalization
-sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
-                          total_counts = colSums(counts))
-
-stabilized <- stabilize(counts)
-regressed <- regress_out(sample_info, stabilized)
+set.seed(42)
+mock <- mockSVG(10, 1000, 10)
+stabilized <- stabilize(mock$counts)
+samples_info <- mock$coordinates
+samples_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(samples_info, stabilized)
 
 }

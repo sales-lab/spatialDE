@@ -5,7 +5,14 @@
 \title{Group spatially variable genes into spatial patterns using automatic
 expression histology (AEH)}
 \usage{
-spatial_patterns(coordinates, regressed_counts, sres, C, l, verbose = FALSE)
+spatial_patterns(
+  coordinates,
+  regressed_counts,
+  de_results,
+  C,
+  l,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{coordinates}{\code{data.frame} with sample coordinates.
@@ -13,7 +20,7 @@ Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
 \item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}.}
 
-\item{sres}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
+\item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 
 \item{C}{\code{integer} The number of spatial patterns}
@@ -34,25 +41,20 @@ Group spatially variable genes into spatial patterns using automatic
 expression histology (AEH)
 }
 \examples{
-ncells <- 100
-ngenes <- 1000
-counts <- matrix(rpois(ncells * ngenes, lambda = 3),
-                 nrow = ngenes, ncol = ncells)
-
-## Provide total counts for library size normalization and coordinates
-sample_info <- data.frame(x = rnorm(ncells), y = rnorm(ncells), 
-                          total_counts = colSums(counts)) 
-coordinates <- sample_info[, c("x", "y")]
-
-stabilized <- stabilize(counts)
-regressed <- regress_out(sample_info, stabilized)
+set.seed(42)
+mock <- mockSVG(10, 1000, 10)
+stabilized <- stabilize(mock$counts)
+samples_info <- mock$coordinates
+samples_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(samples_info, stabilized)
 
 ## Run SpatialDE
-results <- run(coordinates, regressed)
-sres <- results[results$qval<0.05, ]
+results <- run(mock$coordinates, regressed)
+de_results <- results[results$qval<0.1, ]
 
 ## Run Spatial_patterns
-sp <- spatial_patterns(coordinates, regressed, sres = sres, C = 5, l = 1.5)
+sp <- spatial_patterns(coordinates, regressed, de_results = de_results, 
+                       C = 5, l = 1.5)
 
 sp$pattern_results
 sp$patterns
