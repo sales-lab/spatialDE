@@ -85,7 +85,7 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' de_results <- run(mock$coordinates, regressed)
 #'
 #' ## Run model search
-#' ms_results <- model_search(coordinates, regressed, de_results)
+#' ms_results <- model_search(mock$coordinates, regressed, de_results)
 #'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix 
@@ -161,7 +161,7 @@ model_search <- function(coordinates, regressed_counts, de_results,
 #' de_results <- results[results$qval<0.1, ]
 #'
 #' ## Run Spatial_patterns
-#' sp <- spatial_patterns(coordinates, regressed, de_results = de_results, 
+#' sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results, 
 #'                        C = 5, l = 1.5)
 #'
 #' sp$pattern_results
