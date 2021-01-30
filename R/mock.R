@@ -8,6 +8,7 @@
 #' * `coordinates`: `data.frame` with `x` and `y` columns;
 #' * `counts`: `matrix` with generated gene counts.
 #' @export
+#' @importFrom stats rnbinom runif
 mockSVG <- function(size, tot_genes, de_genes) {
   coordinates <- data.frame(
     x = rep(seq.int(size), size), 
