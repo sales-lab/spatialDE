@@ -53,7 +53,7 @@ results <- run(mock$coordinates, regressed)
 de_results <- results[results$qval<0.1, ]
 
 ## Run Spatial_patterns
-sp <- spatial_patterns(coordinates, regressed, de_results = de_results, 
+sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results, 
                        C = 5, l = 1.5)
 
 sp$pattern_results

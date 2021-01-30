@@ -35,6 +35,6 @@ regressed <- regress_out(samples_info, stabilized)
 de_results <- run(mock$coordinates, regressed)
 
 ## Run model search
-ms_results <- model_search(coordinates, regressed, de_results)
+ms_results <- model_search(mock$coordinates, regressed, de_results)
 
 }
