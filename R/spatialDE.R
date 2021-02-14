@@ -128,8 +128,8 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #' expression histology (AEH)
 #'
 #' @inheritParams model_search
-#' @param C `integer` The number of spatial patterns
-#' @param l `numeric` The charancteristic length scale of the clusters
+#' @param n_patterns `integer` The number of spatial patterns
+#' @param length `numeric` The characteristic length scale of the clusters
 #'
 #' @return `list` of two dataframe (pattern_results, patterns):
 #' `pattern_results` dataframe with pattern membership information for each
@@ -154,7 +154,7 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #'     x = x,
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results,
-#'     C = 5, l = 1.5
+#'     n_patterns = 5, length = 1.5
 #' )
 #'
 #' sp$pattern_results
@@ -163,14 +163,15 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_int assert_number assert_flag
-spatial_patterns <- function(x, coordinates, de_results, C, l,
-                             verbose=FALSE) {
+spatial_patterns <- function(x, coordinates, de_results,
+                             n_patterns, length,
+                             verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(x, any.missing = FALSE)
     assert_data_frame(de_results, all.missing = FALSE)
-    assert_int(C, coerce = TRUE)
-    assert_number(l)
+    assert_int(n_patterns, coerce = TRUE)
+    assert_number(length)
     assert_flag(verbose)
 
     out <- basilisk::basiliskRun(
@@ -178,14 +179,18 @@ spatial_patterns <- function(x, coordinates, de_results, C, l,
         fun = .spatialDE_spatial_patterns,
         x = x,
         coordinates = coordinates,
-        de_results = de_results, C = C, l = l, verbose = verbose
+        de_results = de_results,
+        n_patterns = n_patterns,
+        length = length,
+        verbose = verbose
     )
     out
 }
 
 
 #' @importFrom reticulate r_to_py
-.spatialDE_spatial_patterns <- function(x, coordinates, de_results, C, l,
+.spatialDE_spatial_patterns <- function(x, coordinates, de_results,
+                                        n_patterns, length,
                                         verbose) {
     spatialDE <- .importPyModule(!verbose)
 
@@ -193,10 +198,12 @@ spatial_patterns <- function(x, coordinates, de_results, C, l,
     regr_out_py <- r_to_py(as.data.frame(t(x)))
     de_results_py <- r_to_py(de_results)
 
-    spatterns <- spatialDE$spatial_patterns(X, regr_out_py, de_results_py,
-                                            as.integer(C), l)
-    return(list(
+    spatterns <- spatialDE$spatial_patterns(
+        X, regr_out_py, de_results_py,
+        as.integer(n_patterns), length
+    )
+    list(
         pattern_results = spatterns[[1]],
         patterns = spatterns[[2]]
-    ))
+    )
 }

@@ -5,7 +5,14 @@
 \title{Group spatially variable genes into spatial patterns using automatic
 expression histology (AEH)}
 \usage{
-spatial_patterns(x, coordinates, de_results, C, l, verbose = FALSE)
+spatial_patterns(
+  x,
+  coordinates,
+  de_results,
+  n_patterns,
+  length,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x}{\code{matrix}-like object of normalized counts. E.g. resulting from
@@ -17,9 +24,9 @@ Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 
-\item{C}{\code{integer} The number of spatial patterns}
+\item{n_patterns}{\code{integer} The number of spatial patterns}
 
-\item{l}{\code{numeric} The charancteristic length scale of the clusters}
+\item{length}{\code{numeric} The characteristic length scale of the clusters}
 
 \item{verbose}{\code{logical} controlling the display of the progress bar.}
 }
@@ -51,7 +58,7 @@ sp <- spatial_patterns(
     x = x,
     coordinates = mock$coordinates,
     de_results = de_results,
-    C = 5, l = 1.5
+    n_patterns = 5, length = 1.5
 )
 
 sp$pattern_results

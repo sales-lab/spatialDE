@@ -28,7 +28,7 @@ test_that("Wrapper functions work", {
 
     sp_results <- spatial_patterns(
         x = regressed, coordinates = coordinates,
-        de_results = de_results, C = 5L, l = 1.5
+        de_results = de_results, n_patterns = 5L, length = 1.5
     )
     expect_false(all(is.na(sp_results[[1]])))
     expect_false(all(is.na(sp_results[[2]])))
@@ -82,16 +82,16 @@ test_that("model_search() and spatial_patterns() return correct output", {
     expect_equal(nrow(out), nrow(de_results))
     expect_true(is.data.frame(out))
 
-    C = 1L
+    n_patterns = 1L
     ## spatial_patterns()
     sp <- spatial_patterns(
         x = regressed, coordinates = mock$coordinates,
-        de_results = de_results, C = C, l = 1
+        de_results = de_results, n_patterns = n_patterns, length = 1
     )
     pat_res <- sp$pattern_results
     pat <- sp$patterns
     expect_equal(nrow(pat_res), nrow(de_results))
-    expect_equal(ncol(pat), C)
+    expect_equal(ncol(pat), n_patterns)
     expect_true(all(unique(pat_res$pattern) %in% colnames(pat)))
 
 
@@ -102,5 +102,5 @@ test_that("model_search() and spatial_patterns() return correct output", {
     ))
     expect_error(spatial_patterns(
         x = mock$counts, coordinates = mock$coordinates[1:3, ],
-        de_results = de_results, C = 2L, l = 1))
+        de_results = de_results, n_patterns = 2L, length = 1))
 })
