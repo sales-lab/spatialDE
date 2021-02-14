@@ -1,7 +1,7 @@
 Package: spatialDE
 Title: R wrapper for SpatialDE
-Date: 2021-01-11
-Version: 0.1.7
+Date: 2021-02-14
+Version: 0.1.8
 Authors@R: c(
     person("Davide", "Corso", role = c("aut", "cre"),
            email = "corso.davide.92@gmail.com"),
@@ -20,7 +20,8 @@ BugReports: https://github.com/sales-lab/spatialDE/issues
 Imports: 
     reticulate,
     basilisk,
-    checkmate
+    checkmate,
+    stats
 Suggests: 
     knitr,
     BiocStyle,
