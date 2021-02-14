@@ -122,7 +122,7 @@ as.data.frame(norm_expr)[1:5, 1:5]
 Next, we account for differences in library size between the samples by regressing out the effect of the total counts for each gene using linear regression.
 
 ```{r regres_out}
-resid_expr <- regress_out(sample_info, norm_expr)
+resid_expr <- regress_out(norm_expr, sample_info = sample_info)
 as.data.frame(resid_expr)[1:5, 1:5]
 ```
 
@@ -137,7 +137,7 @@ Running it on the complete data set takes about 10 minutes.
 # For this example, run spatialDE on the first 1000 genes
 sample_resid_expr <- head(resid_expr, 1000)
 
-results <- spatialDE::run(X, sample_resid_expr)
+results <- spatialDE::run(sample_resid_expr, coordinates = X)
 head(results[order(results$qval), ])
 ```
 
@@ -148,19 +148,27 @@ We apply the model search on filtered DE results, using a threshold of 0.05 for 
 
 ```{r model_search}
 de_results <- results[results$qval < 0.05, ]
-# ms_results <- spatialDE::model_search(X, resid_expr, de_results)
-ms_results <- spatialDE::model_search(X, sample_resid_expr, de_results)
+
+ms_results <- model_search(
+  sample_resid_expr, coordinates = X,
+  de_results =  de_results
+)
+
 head(ms_results[order(ms_results$qval), ])
 ```
 
 ## `spatial_patterns`
 
+<!-- TO DO: maybe add some more explanation of what the `n_patterns` and `length` parameters are? -->
+
 Furthermore, we can group spatially variable genes (SVGs) into spatial patterns using automatic expression histology (AEH).
 
 ```{r spatial_patterns}
-sres <- results[results$qval < 0.05, ]
-
-sp <- spatial_patterns(X, sample_resid_expr, sres, 4L, 1.5)
+sp <- spatial_patterns(
+  sample_resid_expr, coordinates = X,
+  de_results = de_results,
+  n_patterns = 4L, length =  1.5
+)
 sp$pattern_results
 ```
 
@@ -171,13 +179,11 @@ Visualizing one of the most significant genes.
 ```{r}
 gene <- "Pcp4"
 
-g <- ggplot(data = sample_info, aes(y = y, x = x, color = norm_expr[gene, ])) +
-    geom_point(size = 7) +
-    ggtitle(gene)
-
-g1 <- g + scale_color_viridis_c() + labs(color = gene)
-
-g1
+ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
+  geom_point(size = 7) +
+  ggtitle(gene) +
+  scale_color_viridis_c() +
+  labs(color = gene)
 ```
 
 # `sessionInfo` {-}
