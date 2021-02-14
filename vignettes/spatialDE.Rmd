@@ -61,12 +61,12 @@ library(ggplot2)
 # Expression file used in python SpatialDE
 # 8.4 Mb
 expression_csv <-
-  "https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv"
+    "https://media.githubusercontent.com/media/Teichlab/SpatialDE/ad411d51e887575a34c90d3f12fd9c6844e35c9f/Analysis/MouseOB/data/Rep11_MOB_0.csv"
 
 # Sample Info file used in python SpatialDE
 # 7 KB
 coordinate_csv <-
-  "https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv"
+    "https://media.githubusercontent.com/media/Teichlab/SpatialDE/master/Analysis/MouseOB/MOB_sample_info.csv"
 ```
 
 Loading the `expression_csv` file.
@@ -150,8 +150,9 @@ We apply the model search on filtered DE results, using a threshold of 0.05 for 
 de_results <- results[results$qval < 0.05, ]
 
 ms_results <- model_search(
-  sample_resid_expr, coordinates = X,
-  de_results =  de_results
+    sample_resid_expr,
+    coordinates = X,
+    de_results = de_results
 )
 
 head(ms_results[order(ms_results$qval), ])
@@ -165,9 +166,10 @@ Furthermore, we can group spatially variable genes (SVGs) into spatial patterns 
 
 ```{r spatial_patterns}
 sp <- spatial_patterns(
-  sample_resid_expr, coordinates = X,
-  de_results = de_results,
-  n_patterns = 4L, length =  1.5
+    sample_resid_expr,
+    coordinates = X,
+    de_results = de_results,
+    n_patterns = 4L, length = 1.5
 )
 sp$pattern_results
 ```
@@ -180,10 +182,10 @@ Visualizing one of the most significant genes.
 gene <- "Pcp4"
 
 ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
-  geom_point(size = 7) +
-  ggtitle(gene) +
-  scale_color_viridis_c() +
-  labs(color = gene)
+    geom_point(size = 7) +
+    ggtitle(gene) +
+    scale_color_viridis_c() +
+    labs(color = gene)
 ```
 
 # `sessionInfo` {-}

@@ -32,5 +32,4 @@ regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 ## Run SpatialDE
 de_results <- run(counts = regressed, coordinates = mock$coordinates)
-
 }

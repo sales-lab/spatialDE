@@ -22,5 +22,4 @@ This function is a wrapper for \code{stabilize} from the
 set.seed(42)
 mock <- mockSVG(10, 1000, 10)
 stabilized <- stabilize(mock$counts)
-
 }

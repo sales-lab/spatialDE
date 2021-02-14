@@ -42,5 +42,4 @@ ms_results <- model_search(
     coordinates = mock$coordinates,
     de_results = de_results
 )
-
 }

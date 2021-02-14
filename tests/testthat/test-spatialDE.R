@@ -5,9 +5,12 @@ ngenes <- 100
 ## Setting a seed to get the same counts for which stabilize() works for now
 set.seed(1)
 counts <- matrix(stats::rpois(ncells * ngenes, lambda = 3),
-                 nrow = ngenes, ncol = ncells)
-sample_info <- data.frame(x = stats::rnorm(ncells), y = stats::rnorm(ncells),
-                          total_counts = colSums(counts))
+    nrow = ngenes, ncol = ncells
+)
+sample_info <- data.frame(
+    x = stats::rnorm(ncells), y = stats::rnorm(ncells),
+    total_counts = colSums(counts)
+)
 coordinates <- sample_info[, c("x", "y")]
 
 test_that("Wrapper functions work", {
@@ -32,14 +35,14 @@ test_that("Wrapper functions work", {
     )
     expect_false(all(is.na(sp_results[[1]])))
     expect_false(all(is.na(sp_results[[2]])))
-
 })
 
 test_that("stabilize() warns about NA output", {
     ## Setting a seed to get counts for which stabilize() doesn't work
     set.seed(42)
     counts <- matrix(stats::rpois(ncells * ngenes, lambda = 3),
-                     nrow = ngenes, ncol = ncells)
+        nrow = ngenes, ncol = ncells
+    )
 
     expect_warning(stabilized <- stabilize(counts))
     expect_true(all(is.na(stabilized)))
@@ -82,7 +85,7 @@ test_that("model_search() and spatial_patterns() return correct output", {
     expect_equal(nrow(out), nrow(de_results))
     expect_true(is.data.frame(out))
 
-    n_patterns = 1L
+    n_patterns <- 1L
     ## spatial_patterns()
     sp <- spatial_patterns(
         x = regressed, coordinates = mock$coordinates,
@@ -102,5 +105,6 @@ test_that("model_search() and spatial_patterns() return correct output", {
     ))
     expect_error(spatial_patterns(
         x = mock$counts, coordinates = mock$coordinates[1:3, ],
-        de_results = de_results, n_patterns = 2L, length = 1))
+        de_results = de_results, n_patterns = 2L, length = 1
+    ))
 })

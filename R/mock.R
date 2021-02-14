@@ -10,16 +10,19 @@
 #' @export
 #' @importFrom stats rnbinom runif
 mockSVG <- function(size, tot_genes, de_genes) {
-  coordinates <- data.frame(
-    x = rep(seq.int(size), size), 
-    y = rep(seq.int(size), each=size)
-  ) 
-  
-  mu <- 2^runif(tot_genes, -1, 5)
-  counts <- matrix(rnbinom(tot_genes*size*size, mu=mu, size=10), nrow=tot_genes)
-  m <- (size/2)+1
-  mask <- coordinates$x < m & coordinates$y < m
-  counts[seq.int(de_genes), mask] <- counts[seq.int(de_genes), mask] + 20 
-  
-  list(coordinates=coordinates, counts=counts)
+    coordinates <- data.frame(
+        x = rep(seq.int(size), size),
+        y = rep(seq.int(size), each = size)
+    )
+
+    mu <- 2^runif(tot_genes, -1, 5)
+    counts <- matrix(
+        rnbinom(tot_genes * size * size, mu = mu, size = 10),
+        nrow = tot_genes
+    )
+    m <- (size / 2) + 1
+    mask <- coordinates$x < m & coordinates$y < m
+    counts[seq.int(de_genes), mask] <- counts[seq.int(de_genes), mask] + 20
+
+    list(coordinates = coordinates, counts = counts)
 }

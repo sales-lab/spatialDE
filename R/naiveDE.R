@@ -13,7 +13,6 @@
 #' set.seed(42)
 #' mock <- mockSVG(10, 1000, 10)
 #' stabilized <- stabilize(mock$counts)
-#'
 #' @export
 #' @importFrom checkmate assert_matrix test_matrix
 stabilize <- function(counts) {
@@ -68,13 +67,13 @@ stabilize <- function(counts) {
 #' sample_info <- mock$coordinates
 #' sample_info$total_counts <- colSums(mock$counts)
 #' regressed <- regress_out(counts = stabilized, sample_info = sample_info)
-#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 regress_out <- function(counts, sample_info) {
     assert_data_frame(sample_info, any.missing = FALSE)
     assert_names(colnames(sample_info),
-                 identical.to = c("x", "y", "total_counts"))
+        identical.to = c("x", "y", "total_counts")
+    )
     assert_matrix(counts, any.missing = FALSE)
 
     out <- basilisk::basiliskRun(

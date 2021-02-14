@@ -23,7 +23,6 @@
 #'
 #' ## Run SpatialDE
 #' de_results <- run(counts = regressed, coordinates = mock$coordinates)
-#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
@@ -85,7 +84,6 @@ run <- function(x, coordinates, verbose = FALSE) {
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results
 #' )
-#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
@@ -147,7 +145,7 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #'
 #' ## Run SpatialDE
 #' results <- run(x = regressed, coordinates = mock$coordinates)
-#' de_results <- results[results$qval<0.1, ]
+#' de_results <- results[results$qval < 0.1, ]
 #'
 #' ## Run Spatial_patterns
 #' sp <- spatial_patterns(

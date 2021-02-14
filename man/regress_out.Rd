@@ -28,5 +28,4 @@ stabilized <- stabilize(mock$counts)
 sample_info <- mock$coordinates
 sample_info$total_counts <- colSums(mock$counts)
 regressed <- regress_out(counts = stabilized, sample_info = sample_info)
-
 }

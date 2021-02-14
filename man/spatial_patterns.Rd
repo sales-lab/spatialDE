@@ -51,7 +51,7 @@ regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 ## Run SpatialDE
 results <- run(x = regressed, coordinates = mock$coordinates)
-de_results <- results[results$qval<0.1, ]
+de_results <- results[results$qval < 0.1, ]
 
 ## Run Spatial_patterns
 sp <- spatial_patterns(

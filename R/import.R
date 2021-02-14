@@ -24,7 +24,7 @@ SpatialDE.base.tqdm = tqdm.autonotebook.tqdm
 #' @importFrom reticulate import py_run_string
 #'
 .importPyModule <- function(patch_tqdm) {
-  mod <- import("SpatialDE")
-  py_run_string(ifelse(patch_tqdm, .set_fake_tqdm, .set_real_tqdm))
-  return(mod)
+    mod <- import("SpatialDE")
+    py_run_string(ifelse(patch_tqdm, .set_fake_tqdm, .set_real_tqdm))
+    return(mod)
 }
