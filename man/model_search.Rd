@@ -25,7 +25,7 @@ Classify DE genes to interpretable fitting classes.
 }
 \examples{
 set.seed(42)
-mock <- mockSVG(10, 1000, 10)
+mock <- mockSVG(size = 10, tot_genes = 300, de_genes = 10)
 stabilized <- stabilize(mock$counts)
 samples_info <- mock$coordinates
 samples_info$total_counts <- colSums(mock$counts)

@@ -42,7 +42,7 @@ expression histology (AEH)
 }
 \examples{
 set.seed(42)
-mock <- mockSVG(10, 1000, 10)
+mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
 stabilized <- stabilize(mock$counts)
 samples_info <- mock$coordinates
 samples_info$total_counts <- colSums(mock$counts)
@@ -53,7 +53,7 @@ results <- run(mock$coordinates, regressed)
 de_results <- results[results$qval<0.1, ]
 
 ## Run Spatial_patterns
-sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results, 
+sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results,
                        C = 5, l = 1.5)
 
 sp$pattern_results

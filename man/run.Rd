@@ -23,7 +23,7 @@ Wraps the \code{run} function from the
 }
 \examples{
 set.seed(42)
-mock <- mockSVG(10, 1000, 10)
+mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
 stabilized <- stabilize(mock$counts)
 samples_info <- mock$coordinates
 samples_info$total_counts <- colSums(mock$counts)

@@ -16,24 +16,24 @@
 #'
 #' @examples
 #' set.seed(42)
-#' mock <- mockSVG(10, 1000, 10)
+#' mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
 #' stabilized <- stabilize(mock$counts)
 #' samples_info <- mock$coordinates
 #' samples_info$total_counts <- colSums(mock$counts)
 #' regressed <- regress_out(samples_info, stabilized)
-#' 
+#'
 #' ## Run SpatialDE
 #' de_results <- run(mock$coordinates, regressed)
 #'
 #' @export
-#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
 run <- function(coordinates, regressed_counts, verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(regressed_counts, any.missing = FALSE)
     assert_flag(verbose)
-    
+
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_run,
@@ -75,12 +75,12 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #'
 #' @examples
 #' set.seed(42)
-#' mock <- mockSVG(10, 1000, 10)
+#' mock <- mockSVG(size = 10, tot_genes = 300, de_genes = 10)
 #' stabilized <- stabilize(mock$counts)
 #' samples_info <- mock$coordinates
 #' samples_info$total_counts <- colSums(mock$counts)
 #' regressed <- regress_out(samples_info, stabilized)
-#' 
+#'
 #' ## Run SpatialDE
 #' de_results <- run(mock$coordinates, regressed)
 #'
@@ -88,7 +88,7 @@ run <- function(coordinates, regressed_counts, verbose = FALSE) {
 #' ms_results <- model_search(mock$coordinates, regressed, de_results)
 #'
 #' @export
-#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
 model_search <- function(coordinates, regressed_counts, de_results,
                              verbose = FALSE) {
@@ -97,7 +97,7 @@ model_search <- function(coordinates, regressed_counts, de_results,
     assert_matrix(regressed_counts, any.missing = FALSE)
     assert_data_frame(de_results, all.missing = FALSE)
     assert_flag(verbose)
-    
+
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_model_search,
@@ -125,52 +125,52 @@ model_search <- function(coordinates, regressed_counts, de_results,
 
 
 
-#' Group spatially variable genes into spatial patterns using automatic 
+#' Group spatially variable genes into spatial patterns using automatic
 #' expression histology (AEH)
 #'
 #' @param coordinates `data.frame` with sample coordinates.
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
-#' 
+#'
 #' @param regressed_counts `matrix` resulting from [regress_out()].
-#' 
+#'
 #' @param de_results `data.frame` resulting from [run()] filtered
 #' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
-#' 
+#'
 #' @param C `integer` The number of spatial patterns
-#' 
+#'
 #' @param l `numeric` The charancteristic length scale of the clusters
-#' 
+#'
 #' @param verbose `bool` controlling the display of the progress messages.
 #'
 #' @return `list` of two dataframe (pattern_results, patterns):
-#' `pattern_results` dataframe with pattern membership information for each 
+#' `pattern_results` dataframe with pattern membership information for each
 #' gene.
-#' `patterns` the posterior mean underlying expression fro genes in given 
+#' `patterns` the posterior mean underlying expression fro genes in given
 #' spatial patterns.
-#' 
+#'
 #' @examples
 #' set.seed(42)
-#' mock <- mockSVG(10, 1000, 10)
+#' mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
 #' stabilized <- stabilize(mock$counts)
 #' samples_info <- mock$coordinates
 #' samples_info$total_counts <- colSums(mock$counts)
 #' regressed <- regress_out(samples_info, stabilized)
-#' 
+#'
 #' ## Run SpatialDE
 #' results <- run(mock$coordinates, regressed)
 #' de_results <- results[results$qval<0.1, ]
 #'
 #' ## Run Spatial_patterns
-#' sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results, 
+#' sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results,
 #'                        C = 5, l = 1.5)
 #'
 #' sp$pattern_results
 #' sp$patterns
-#' 
+#'
 #' @export
-#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_int assert_number assert_flag
-spatial_patterns <- function(coordinates, regressed_counts, de_results, C, l, 
+spatial_patterns <- function(coordinates, regressed_counts, de_results, C, l,
                              verbose=FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
@@ -179,11 +179,11 @@ spatial_patterns <- function(coordinates, regressed_counts, de_results, C, l,
     assert_int(C, coerce = TRUE)
     assert_number(l)
     assert_flag(verbose)
-    
+
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .spatialDE_spatial_patterns,
-        coordinates = coordinates, regressed_counts = regressed_counts, 
+        coordinates = coordinates, regressed_counts = regressed_counts,
         de_results = de_results, C = C, l = l, verbose = verbose
     )
     out
@@ -191,15 +191,15 @@ spatial_patterns <- function(coordinates, regressed_counts, de_results, C, l,
 
 
 #' @importFrom reticulate r_to_py
-.spatialDE_spatial_patterns <- function(coordinates, regressed_counts, 
+.spatialDE_spatial_patterns <- function(coordinates, regressed_counts,
                                         de_results, C, l, verbose) {
     spatialDE <- .importPyModule(!verbose)
-    
+
     X <- r_to_py(coordinates)
     regr_out_py <- r_to_py(as.data.frame(t(regressed_counts)))
     de_results_py <- r_to_py(de_results)
-    
-    spatterns <- spatialDE$spatial_patterns(X, regr_out_py, de_results_py, 
+
+    spatterns <- spatialDE$spatial_patterns(X, regr_out_py, de_results_py,
                                             as.integer(C), l)
     return(list(
         pattern_results = spatterns[[1]],
