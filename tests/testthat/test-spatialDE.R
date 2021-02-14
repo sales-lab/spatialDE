@@ -50,39 +50,30 @@ mock <- mockSVG(10, 100, 10)
 sample_info <- mock$coordinates
 sample_info$total_counts <- colSums(mock$counts)
 
+stabilized <- stabilize(mock$counts)
+regressed <- regress_out(counts = stabilized, sample_info = sample_info)
+de_results <- run(x = regressed, coordinates = mock$coordinates)
+
 test_that("stabilize() returns correct output", {
-    out <- stabilize(mock$counts)
-    expect_equal(nrow(out), nrow(mock$counts))
-    expect_true(is.matrix(out))
+    expect_equal(nrow(stabilized), nrow(mock$counts))
+    expect_true(is.matrix(stabilized))
 })
 
 test_that("regress_out() returns correct output", {
-    stabilized <- stabilize(mock$counts)
-    out <- regress_out(counts = stabilized, sample_info = sample_info)
-    expect_equal(nrow(out), nrow(mock$counts))
-    expect_equal(nrow(out), nrow(stabilized))
-    expect_true(is.matrix(out))
+    expect_equal(nrow(regressed), nrow(mock$counts))
+    expect_equal(nrow(regressed), nrow(stabilized))
+    expect_true(is.matrix(regressed))
 })
 
 test_that("run() returns correct output", {
-    stabilized <- stabilize(mock$counts)
-    regressed <- regress_out(counts = stabilized, sample_info = sample_info)
-
-    out <- run(x = regressed, coordinates = mock$coordinates)
-    expect_equal(nrow(out), nrow(mock$counts))
-    expect_true(is.data.frame(out))
+    expect_equal(nrow(de_results), nrow(mock$counts))
+    expect_true(is.data.frame(de_results))
 
     ## Check breaking errors (incompatible dimensions)
     expect_error(run(x = regressed, coordinates = mock$coordinates[1:3, ]))
 })
 
 test_that("model_search() and spatial_patterns() return correct output", {
-    stabilized <- stabilize(mock$counts)
-    regressed <- regress_out(counts = stabilized, sample_info)
-
-    results <- run( x = mock$counts, coordinates = mock$coordinates)
-    de_results <- results[results$qval < 0.1, ]
-
     ## model_search()
     out <- model_search(
         x = regressed, coordinates = mock$coordinates,
