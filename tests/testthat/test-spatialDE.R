@@ -6,7 +6,7 @@ ngenes <- 100
 set.seed(1)
 counts <- matrix(stats::rpois(ncells * ngenes, lambda = 3),
                  nrow = ngenes, ncol = ncells)
-sample_info <- data.frame(x = stats::rnorm(ncells), y = stats::rnorm(ncells), 
+sample_info <- data.frame(x = stats::rnorm(ncells), y = stats::rnorm(ncells),
                           total_counts = colSums(counts))
 coordinates <- sample_info[, c("x", "y")]
 
@@ -43,7 +43,7 @@ test_that("stabilize() warns about NA output", {
 })
 
 set.seed(42)
-mock <- mockSVG(10, 1000, 10)
+mock <- mockSVG(10, 100, 10)
 samples_info <- mock$coordinates
 samples_info$total_counts <- colSums(mock$counts)
 
@@ -55,7 +55,7 @@ test_that("stabilize() returns correct output", {
 
 test_that("regress_out() returns correct output", {
     stabilized <- stabilize(mock$counts)
-    
+
     out <- regress_out(samples_info, stabilized)
     expect_equal(nrow(out), nrow(mock$counts))
     expect_equal(nrow(out), nrow(stabilized))
@@ -65,7 +65,7 @@ test_that("regress_out() returns correct output", {
 test_that("run() returns correct output", {
     stabilized <- stabilize(mock$counts)
     regressed <- regress_out(samples_info, stabilized)
-    
+
     out <- run(coordinates = mock$coordinates, regressed_counts = regressed)
     expect_equal(nrow(out), nrow(mock$counts))
     expect_true(is.data.frame(out))
@@ -78,7 +78,7 @@ test_that("run() returns correct output", {
 test_that("model_search() and spatial_patterns() return correct output", {
     stabilized <- stabilize(mock$counts)
     regressed <- regress_out(samples_info, stabilized)
-    
+
     results <- run(mock$coordinates, mock$counts)
     de_results <- results[results$qval < 0.1, ]
 
@@ -88,7 +88,7 @@ test_that("model_search() and spatial_patterns() return correct output", {
                         de_results = de_results)
     expect_equal(nrow(out), nrow(de_results))
     expect_true(is.data.frame(out))
-    
+
     C = 1L
     ## spatial_patterns()
     sp <- spatial_patterns(
