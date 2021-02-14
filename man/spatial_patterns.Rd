@@ -5,20 +5,14 @@
 \title{Group spatially variable genes into spatial patterns using automatic
 expression histology (AEH)}
 \usage{
-spatial_patterns(
-  coordinates,
-  regressed_counts,
-  de_results,
-  C,
-  l,
-  verbose = FALSE
-)
+spatial_patterns(x, coordinates, de_results, C, l, verbose = FALSE)
 }
 \arguments{
+\item{x}{\code{matrix}-like object of normalized counts. E.g. resulting from
+\code{\link[=regress_out]{regress_out()}}.}
+
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
-
-\item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}.}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
@@ -27,7 +21,7 @@ based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 
 \item{l}{\code{numeric} The charancteristic length scale of the clusters}
 
-\item{verbose}{\code{bool} controlling the display of the progress messages.}
+\item{verbose}{\code{logical} controlling the display of the progress bar.}
 }
 \value{
 \code{list} of two dataframe (pattern_results, patterns):
@@ -44,17 +38,21 @@ expression histology (AEH)
 set.seed(42)
 mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
 stabilized <- stabilize(mock$counts)
-samples_info <- mock$coordinates
-samples_info$total_counts <- colSums(mock$counts)
-regressed <- regress_out(samples_info, stabilized)
+sample_info <- mock$coordinates
+sample_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 ## Run SpatialDE
-results <- run(mock$coordinates, regressed)
+results <- run(x = regressed, coordinates = mock$coordinates)
 de_results <- results[results$qval<0.1, ]
 
 ## Run Spatial_patterns
-sp <- spatial_patterns(mock$coordinates, regressed, de_results = de_results,
-                       C = 5, l = 1.5)
+sp <- spatial_patterns(
+    x = x,
+    coordinates = mock$coordinates,
+    de_results = de_results,
+    C = 5, l = 1.5
+)
 
 sp$pattern_results
 sp$patterns

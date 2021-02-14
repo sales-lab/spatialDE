@@ -18,7 +18,7 @@
 #' @importFrom checkmate assert_matrix test_matrix
 stabilize <- function(counts) {
     assert_matrix(counts, any.missing = FALSE)
-    
+
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .naiveDE_stabilize,
@@ -54,11 +54,10 @@ stabilize <- function(counts) {
 #' This function is a wrapper for `regress_out` from the
 #' [NaiveDE](https://github.com/Teichlab/NaiveDE) Python package.
 #'
+#' @param counts `matrix` of variance stabilized
+#' counts, e.g. resulting from [stabilize()].
 #' @param sample_info `data.frame` with samples as rows and at least a column
 #' with `total_counts`.
-#'
-#' @param stabilized_counts `matrix` of variance stabilized
-#' counts, e.g. resulting from [stabilize()].
 #'
 #' @return `matrix` of normalized counts.
 #'
@@ -66,35 +65,35 @@ stabilize <- function(counts) {
 #' set.seed(42)
 #' mock <- mockSVG(10, 1000, 10)
 #' stabilized <- stabilize(mock$counts)
-#' samples_info <- mock$coordinates
-#' samples_info$total_counts <- colSums(mock$counts)
-#' regressed <- regress_out(samples_info, stabilized)
+#' sample_info <- mock$coordinates
+#' sample_info$total_counts <- colSums(mock$counts)
+#' regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 #'
 #' @export
-#' @importFrom checkmate assert_data_frame assert_names assert_matrix 
-regress_out <- function(sample_info, stabilized_counts) {
+#' @importFrom checkmate assert_data_frame assert_names assert_matrix
+regress_out <- function(counts, sample_info) {
     assert_data_frame(sample_info, any.missing = FALSE)
-    assert_names(colnames(sample_info), 
+    assert_names(colnames(sample_info),
                  identical.to = c("x", "y", "total_counts"))
-    assert_matrix(stabilized_counts, any.missing = FALSE)
-    
+    assert_matrix(counts, any.missing = FALSE)
+
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
         fun = .naiveDE_regress_out,
-        sample_info = sample_info, stabilized_counts = stabilized_counts
+        sample_info = sample_info, counts = counts
     )
     out
 }
 
 
 #' @importFrom reticulate import r_to_py
-.naiveDE_regress_out <- function(sample_info, stabilized_counts) {
+.naiveDE_regress_out <- function(counts, sample_info) {
     naiveDE <- import("NaiveDE")
 
     sample_info_py <- r_to_py(sample_info)
 
     ## NaiveDE.regress_out requires data.frame input to work
-    df_py <- r_to_py(as.data.frame(stabilized_counts))
+    df_py <- r_to_py(as.data.frame(counts))
 
     # FIXME: the call below only uses the `total_counts` column from sample_info
     # to fit the linear model. So it will probably be safer if we just create

@@ -4,18 +4,19 @@
 \alias{model_search}
 \title{Compare model fits with different models}
 \usage{
-model_search(coordinates, regressed_counts, de_results, verbose = FALSE)
+model_search(x, coordinates, de_results, verbose = FALSE)
 }
 \arguments{
+\item{x}{\code{matrix}-like object of normalized counts. E.g. resulting from
+\code{\link[=regress_out]{regress_out()}}.}
+
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
-
-\item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
 based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
 
-\item{verbose}{\code{bool} controlling the display of the progress bar.}
+\item{verbose}{\code{logical} controlling the display of the progress bar.}
 }
 \value{
 \code{data.frame} of model_search results.
@@ -32,9 +33,14 @@ samples_info$total_counts <- colSums(mock$counts)
 regressed <- regress_out(samples_info, stabilized)
 
 ## Run SpatialDE
-de_results <- run(mock$coordinates, regressed)
+de_results <- run(counts = regressed, coordinates = mock$coordinates)
 
 ## Run model search
 ms_results <- model_search(mock$coordinates, regressed, de_results)
+ms_results <- model_search(
+    x = regressed,
+    coordinates = mock$coordinates,
+    de_results = de_results
+)
 
 }

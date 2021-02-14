@@ -4,15 +4,16 @@
 \alias{run}
 \title{Perform SpatialDE test}
 \usage{
-run(coordinates, regressed_counts, verbose = FALSE)
+run(x, coordinates, verbose = FALSE)
 }
 \arguments{
+\item{x}{\code{matrix}-like object of normalized counts. E.g. resulting from
+\code{\link[=regress_out]{regress_out()}}.}
+
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
-\item{regressed_counts}{\code{matrix} resulting from \code{\link[=regress_out]{regress_out()}}.}
-
-\item{verbose}{\code{bool} controlling the display of the progress bar.}
+\item{verbose}{\code{logical} controlling the display of the progress bar.}
 }
 \value{
 \code{data.frame} with DE results.
@@ -25,11 +26,11 @@ Wraps the \code{run} function from the
 set.seed(42)
 mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
 stabilized <- stabilize(mock$counts)
-samples_info <- mock$coordinates
-samples_info$total_counts <- colSums(mock$counts)
-regressed <- regress_out(samples_info, stabilized)
+sample_info <- mock$coordinates
+sample_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 ## Run SpatialDE
-de_results <- run(mock$coordinates, regressed)
+de_results <- run(counts = regressed, coordinates = mock$coordinates)
 
 }

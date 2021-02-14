@@ -4,14 +4,14 @@
 \alias{regress_out}
 \title{Regress out library size effect}
 \usage{
-regress_out(sample_info, stabilized_counts)
+regress_out(counts, sample_info)
 }
 \arguments{
+\item{counts}{\code{matrix} of variance stabilized
+counts, e.g. resulting from \code{\link[=stabilize]{stabilize()}}.}
+
 \item{sample_info}{\code{data.frame} with samples as rows and at least a column
 with \code{total_counts}.}
-
-\item{stabilized_counts}{\code{matrix} of variance stabilized
-counts, e.g. resulting from \code{\link[=stabilize]{stabilize()}}.}
 }
 \value{
 \code{matrix} of normalized counts.
@@ -25,8 +25,8 @@ This function is a wrapper for \code{regress_out} from the
 set.seed(42)
 mock <- mockSVG(10, 1000, 10)
 stabilized <- stabilize(mock$counts)
-samples_info <- mock$coordinates
-samples_info$total_counts <- colSums(mock$counts)
-regressed <- regress_out(samples_info, stabilized)
+sample_info <- mock$coordinates
+sample_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 }

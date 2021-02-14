@@ -11,20 +11,23 @@ sample_info <- data.frame(x = stats::rnorm(ncells), y = stats::rnorm(ncells),
 coordinates <- sample_info[, c("x", "y")]
 
 test_that("Wrapper functions work", {
-    stabilized <- stabilize(counts)
+    stabilized <- stabilize(counts = counts)
     expect_false(all(is.na(stabilized)))
 
-    regressed <- regress_out(sample_info, stabilized)
+    regressed <- regress_out(counts = stabilized, sample_info = sample_info)
     expect_false(all(is.na(regressed)))
 
-    de_results <- run(coordinates, regressed)
+    de_results <- run(x = regressed, coordinates = coordinates)
     expect_false(all(is.na(de_results)))
 
-    ms_results <- model_search(coordinates, regressed, de_results)
+    ms_results <- model_search(
+        x = regressed, coordinates = coordinates,
+        de_results = de_results
+    )
     expect_false(all(is.na(ms_results)))
 
     sp_results <- spatial_patterns(
-        coordinates = coordinates, regressed_counts = regressed,
+        x = regressed, coordinates = coordinates,
         de_results = de_results, C = 5L, l = 1.5
     )
     expect_false(all(is.na(sp_results[[1]])))
@@ -44,8 +47,8 @@ test_that("stabilize() warns about NA output", {
 
 set.seed(42)
 mock <- mockSVG(10, 100, 10)
-samples_info <- mock$coordinates
-samples_info$total_counts <- colSums(mock$counts)
+sample_info <- mock$coordinates
+sample_info$total_counts <- colSums(mock$counts)
 
 test_that("stabilize() returns correct output", {
     out <- stabilize(mock$counts)
@@ -55,8 +58,7 @@ test_that("stabilize() returns correct output", {
 
 test_that("regress_out() returns correct output", {
     stabilized <- stabilize(mock$counts)
-
-    out <- regress_out(samples_info, stabilized)
+    out <- regress_out(counts = stabilized, sample_info = sample_info)
     expect_equal(nrow(out), nrow(mock$counts))
     expect_equal(nrow(out), nrow(stabilized))
     expect_true(is.matrix(out))
@@ -64,35 +66,35 @@ test_that("regress_out() returns correct output", {
 
 test_that("run() returns correct output", {
     stabilized <- stabilize(mock$counts)
-    regressed <- regress_out(samples_info, stabilized)
+    regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
-    out <- run(coordinates = mock$coordinates, regressed_counts = regressed)
+    out <- run(x = regressed, coordinates = mock$coordinates)
     expect_equal(nrow(out), nrow(mock$counts))
     expect_true(is.data.frame(out))
 
     ## Check breaking errors (incompatible dimensions)
-    expect_error(run(coordinates = mock$coordinates[1:3, ],
-                     regressed_counts = regressed))
+    expect_error(run(x = regressed, coordinates = mock$coordinates[1:3, ]))
 })
 
 test_that("model_search() and spatial_patterns() return correct output", {
     stabilized <- stabilize(mock$counts)
-    regressed <- regress_out(samples_info, stabilized)
+    regressed <- regress_out(counts = stabilized, sample_info)
 
-    results <- run(mock$coordinates, mock$counts)
+    results <- run( x = mock$counts, coordinates = mock$coordinates)
     de_results <- results[results$qval < 0.1, ]
 
     ## model_search()
-    out <- model_search(coordinates = mock$coordinates,
-                        regressed_counts = regressed,
-                        de_results = de_results)
+    out <- model_search(
+        x = regressed, coordinates = mock$coordinates,
+        de_results = de_results
+    )
     expect_equal(nrow(out), nrow(de_results))
     expect_true(is.data.frame(out))
 
     C = 1L
     ## spatial_patterns()
     sp <- spatial_patterns(
-        coordinates = mock$coordinates, regressed_counts = regressed,
+        x = regressed, coordinates = mock$coordinates,
         de_results = de_results, C = C, l = 1
     )
     pat_res <- sp$pattern_results
@@ -103,10 +105,11 @@ test_that("model_search() and spatial_patterns() return correct output", {
 
 
     ## Check breaking errors (incompatible dimensions)
-    expect_error(model_search(coordinates = mock$coordinates[1:3, ],
-                              regressed_counts = mock$counts,
-                              de_results = de_results))
-    expect_error(spatial_patterns(coordinates = mock$coordinates[1:3, ],
-                              regressed_counts = mock$counts,
-                              de_results = de_results, C = 2L, l = 1))
+    expect_error(model_search(
+        x = mock$counts, coordinates = mock$coordinates[1:3, ],
+        de_results = de_results
+    ))
+    expect_error(spatial_patterns(
+        x = mock$counts, coordinates = mock$coordinates[1:3, ],
+        de_results = de_results, C = 2L, l = 1))
 })
