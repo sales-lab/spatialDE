@@ -34,8 +34,8 @@ name: R-CMD-check-bioc
 ## Note that you can always run a GHA test without the cache by using the word
 ## "/nocache" in the commit message.
 env:
-  has_testthat: 'false'
-  run_covr: 'false'
+  has_testthat: 'true'
+  run_covr: 'true'
   run_pkgdown: 'false'
   has_RUnit: 'false'
   cache-version: 'cache-v1'
@@ -173,7 +173,7 @@ jobs:
           ## Pass #2 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE)
-          
+
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
@@ -230,6 +230,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run BiocCheck
+        if: github.ref == 'refs/heads/main'
         run: |
           BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
