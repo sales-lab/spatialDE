@@ -55,7 +55,7 @@ de_results <- results[results$qval < 0.1, ]
 
 ## Run Spatial_patterns
 sp <- spatial_patterns(
-    x = x,
+    x = regressed,
     coordinates = mock$coordinates,
     de_results = de_results,
     n_patterns = 5, length = 1.5

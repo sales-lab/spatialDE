@@ -28,15 +28,14 @@ Classify DE genes to interpretable fitting classes.
 set.seed(42)
 mock <- mockSVG(size = 10, tot_genes = 300, de_genes = 10)
 stabilized <- stabilize(mock$counts)
-samples_info <- mock$coordinates
-samples_info$total_counts <- colSums(mock$counts)
-regressed <- regress_out(samples_info, stabilized)
+sample_info <- mock$coordinates
+sample_info$total_counts <- colSums(mock$counts)
+regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 ## Run SpatialDE
-de_results <- run(counts = regressed, coordinates = mock$coordinates)
+de_results <- run(regressed, coordinates = mock$coordinates)
 
 ## Run model search
-ms_results <- model_search(mock$coordinates, regressed, de_results)
 ms_results <- model_search(
     x = regressed,
     coordinates = mock$coordinates,
