@@ -16,17 +16,67 @@ knitr::opts_chunk$set(
 # spatialDE
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R-CMD-check-bioc](https://github.com/sales-lab/spatialDE/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/sales-lab/spatialDE/actions)
+[![Codecov test coverage](https://codecov.io/gh/sales-lab/spatialDE/branch/main/graph/badge.svg)](https://codecov.io/gh/sales-lab/spatialDE?branch=main)
 <!-- badges: end -->
 
-R wrapper for SpatialDE
+The **spatialDE** package provides an R wrapper for the Python SpatialDE library,
+using `r BiocStyle::CRANpkg("reticulate")` and `r BiocStyle::Biocpkg("basilisk")`.
 
-[SpatialDE](https://github.com/Teichlab/SpatialDE) by [Svensson et al., 2018](https://www.nature.com/articles/nmeth.4636), is a method to identify spatially variable genes (SVGs) in spatially resolved 
-transcriptomics data.
+[SpatialDE](https://github.com/Teichlab/SpatialDE), by [Svensson et al., 2018][Svensson2018],
+is a method to identify spatially variable genes (SVGs) in spatially resolved transcriptomics data.
 
-## Aim of the repository
-- create a wrapper for spatialDE in R, using `reticulate` and `basilisk`
-- create a short script with an example workflow showing how to use the wrapper
+This package started as part of the
+[BiocSpatialChallenges](https://helenalc.github.io/BiocSpatialChallenges/index.html).
+
+
+## Installation instructions
+
+<!-- Get the latest stable `R` release from [CRAN](http://cran.r-project.org/). Then install `spatialDE` using from [Bioconductor](http://bioconductor.org/) the following code: -->
+
+<!-- ```{r 'install', eval = FALSE} -->
+<!-- if (!requireNamespace("BiocManager", quietly = TRUE)) { -->
+<!--     install.packages("BiocManager") -->
+<!-- } -->
+
+<!-- BiocManager::install("spatialDE") -->
+<!-- ``` -->
+
+The development version of **spatialDE** can be installed from
+[GitHub](https://github.com/sales-lab/spatialDE) with:
+
+```{r 'install_dev', eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+    
+BiocManager::install("sales-lab/spatialDE")
+```
+
+## Citation
+
+<!-- TODO: update once pkg on BioC -->
+
+Below is the citation output from using `citation('spatialDE')` in R. Please
+run this yourself to check for any updates on how to cite __spatialDE__.
+
+Please note that this package merely provides a wrapper to use the original Python methods in R. If you find these methods useful, please also consider citing the [original paper][Svensson2018].
+
+```{r 'citation', eval = requireNamespace('spatialDE'), echo = FALSE, comment = ""}
+print(citation('spatialDE'), bibtex = TRUE)
+```
+
+
+## Code of Conduct
+
+Please note that the **spatialDE** project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+
 
 ## Useful links
-- [SpatialExperiment](https://github.com/drighelli/SpatialExperiment)
+
+- `r BiocStyle::Biocpkg("SpatialExperiment")`
 - [BiocSpatialChallenges](https://helenalc.github.io/BiocSpatialChallenges/index.html)
+
+This package was developed using `r BiocStyle::Biocpkg('biocthis')`.
+
+[Svensson2018]: https://doi.org/10.1038/nmeth.4636
