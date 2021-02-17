@@ -29,7 +29,8 @@ Suggests:
     BiocStyle,
     rmarkdown,
     ggplot2,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    covr
 VignetteBuilder: knitr
 biocViews:
     Software,

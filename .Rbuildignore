@@ -9,3 +9,4 @@
 ^\.BBSoptions$
 ^doc$
 ^Meta$
+^codecov\.yml$
