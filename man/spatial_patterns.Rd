@@ -65,3 +65,8 @@ sp$pattern_results
 sp$patterns
 
 }
+\references{
+Svensson, V., Teichmann, S. & Stegle, O.
+SpatialDE: identification of spatially variable genes.
+Nat Methods 15, 343–346 (2018). \url{https://doi.org/10.1038/nmeth.4636}
+}

@@ -45,6 +45,8 @@ BiocManager::install("sales-lab/spatialDE")
 
 ## Citation
 
+<!-- TODO: update once pkg on BioC -->
+
 Below is the citation output from using `citation('spatialDE')` in R.
 Please run this yourself to check for any updates on how to cite
 **spatialDE**.
@@ -54,8 +56,6 @@ original Python methods in R. If you find these methods useful, please
 also consider citing the [original
 paper](https://doi.org/10.1038/nmeth.4636).
 
-
-    To cite package 'spatialDE' in publications use:
 
       Davide Corso and Milan Malfait (2021). spatialDE: R wrapper for
       SpatialDE. R package version 0.1.8.
@@ -69,6 +69,28 @@ paper](https://doi.org/10.1038/nmeth.4636).
         year = {2021},
         note = {R package version 0.1.8},
         url = {https://github.com/sales-lab/spatialDE},
+      }
+
+    Svensson V, Teichmann SA, Stegle O (2018). "SpatialDE: identification
+    of spatially variable genes." _Nature Methods_, *15*(5), 343-346. ISSN
+    1548-7105, doi: 10.1038/nmeth.4636 (URL:
+    https://doi.org/10.1038/nmeth.4636), <URL:
+    https://www.nature.com/articles/nmeth.4636>.
+
+    A BibTeX entry for LaTeX users is
+
+      @Article{,
+        title = {SpatialDE: identification of spatially variable genes},
+        author = {Valentine Svensson and Sarah A. Teichmann and Oliver Stegle},
+        copyright = {2018 Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved.},
+        year = {2018},
+        journal = {Nature Methods},
+        volume = {15},
+        pages = {343--346},
+        number = {5},
+        doi = {10.1038/nmeth.4636},
+        issn = {1548-7105},
+        url = {https://www.nature.com/articles/nmeth.4636},
       }
 
 ## Code of Conduct

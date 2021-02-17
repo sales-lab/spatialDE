@@ -23,6 +23,12 @@
 #'
 #' ## Run SpatialDE
 #' de_results <- run(regressed, coordinates = mock$coordinates)
+#'
+#' @references
+#' Svensson, V., Teichmann, S. & Stegle, O.
+#' SpatialDE: identification of spatially variable genes.
+#' Nat Methods 15, 343–346 (2018). \url{https://doi.org/10.1038/nmeth.4636}
+#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
@@ -83,6 +89,12 @@ run <- function(x, coordinates, verbose = FALSE) {
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results
 #' )
+#'
+#' @references
+#' Svensson, V., Teichmann, S. & Stegle, O.
+#' SpatialDE: identification of spatially variable genes.
+#' Nat Methods 15, 343–346 (2018). \url{https://doi.org/10.1038/nmeth.4636}
+#'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
@@ -156,6 +168,11 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #'
 #' sp$pattern_results
 #' sp$patterns
+#'
+#' @references
+#' Svensson, V., Teichmann, S. & Stegle, O.
+#' SpatialDE: identification of spatially variable genes.
+#' Nat Methods 15, 343–346 (2018). \url{https://doi.org/10.1038/nmeth.4636}
 #'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix

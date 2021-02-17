@@ -54,6 +54,8 @@ BiocManager::install("sales-lab/spatialDE")
 
 ## Citation
 
+<!-- TODO: update once pkg on BioC -->
+
 Below is the citation output from using `citation('spatialDE')` in R. Please
 run this yourself to check for any updates on how to cite __spatialDE__.
 

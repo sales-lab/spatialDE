@@ -1,0 +1,22 @@
+# TODO: update once pkg on BioC
+
+c(
+    citation(auto = meta),
+    bibentry(bibtype="article",
+        Title = "SpatialDE: identification of spatially variable genes",
+        Author = personList(
+            as.person("Valentine Svensson"),
+            as.person("Sarah A. Teichmann"),
+            as.person("Oliver Stegle")
+        ),
+        Copyright = "2018 Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved.",
+        Year = "2018",
+        Journal = "Nature Methods",
+        Volume = "15",
+        Pages = "343--346",
+        Number = "5",
+        Doi = "10.1038/nmeth.4636",
+        Issn = "1548-7105",
+        Url = "https://www.nature.com/articles/nmeth.4636"
+    )
+)
