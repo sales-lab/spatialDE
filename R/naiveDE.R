@@ -93,11 +93,6 @@ regress_out <- function(counts, sample_info) {
 
     ## NaiveDE.regress_out requires data.frame input to work
     df_py <- r_to_py(as.data.frame(counts))
-
-    # FIXME: the call below only uses the `total_counts` column from sample_info
-    # to fit the linear model. So it will probably be safer if we just create
-    # sample_info using the provided counts.
-
     res <- naiveDE$regress_out(sample_info_py, df_py, "np.log(total_counts)")
 
     as.matrix(res)
