@@ -23,7 +23,8 @@ Imports:
     reticulate,
     basilisk,
     checkmate,
-    stats
+    stats,
+    SpatialExperiment
 Suggests: 
     knitr,
     BiocStyle,
