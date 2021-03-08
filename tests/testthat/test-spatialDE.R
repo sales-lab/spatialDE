@@ -98,8 +98,9 @@ test_that("model_search() and spatial_patterns() return correct output", {
     expect_equal(nrow(pat_res), nrow(de_results))
     expect_equal(ncol(pat), n_patterns)
     expect_true(all(unique(pat_res$pattern) %in% colnames(pat)))
+})
 
-
+test_that("model_search() and spatial_patterns() break when necessary", {
     ## Check breaking errors (incompatible dimensions)
     expect_error(model_search(
         x = mock$counts, coordinates = mock$coordinates[1:3, ],
@@ -108,5 +109,16 @@ test_that("model_search() and spatial_patterns() return correct output", {
     expect_error(spatial_patterns(
         x = mock$counts, coordinates = mock$coordinates[1:3, ],
         de_results = de_results, filter = FALSE, n_patterns = 2L, length = 1
+    ))
+
+    ## Check for error when filtering everything out
+    expect_error(model_search(
+        x = mock$counts, coordinates = mock$coordinates,
+        de_results = de_results, filter = TRUE
+    ))
+    expect_error(spatial_patterns(
+        x = mock$counts, coordinates = mock$coordinates,
+        de_results = de_results, filter = TRUE,
+        n_patterns = 2L, length = 1
     ))
 })
