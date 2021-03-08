@@ -92,8 +92,7 @@ run <- function(x, coordinates, verbose = FALSE) {
 #'     x = regressed,
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results,
-#'     filter = TRUE,
-#'     qval_thresh = 0.05
+#'     filter = FALSE
 #' )
 #'
 #' @references Svensson, V., Teichmann, S. & Stegle, O. SpatialDE:
@@ -179,8 +178,7 @@ model_search <- function(x,
 #'     x = regressed,
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results,
-#'     filter = TRUE,
-#'     qval_thresh = 0.05,
+#'     filter = FALSE,
 #'     n_patterns = 5, length = 1.5
 #' )
 #'
