@@ -249,6 +249,7 @@ spatial_patterns <- function(x, coordinates, de_results,
 
 ## Helper to filter de_results and throw sensible error
 .filter_de_results <- function(de_results, qval_thresh) {
+    qval <- NULL
     if (qval_thresh < min(de_results$qval)) {
         stop(
             "Using `qval_thresh = ", qval_thresh, "` will filter out all genes",
