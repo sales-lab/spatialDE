@@ -67,8 +67,12 @@ run <- function(x, coordinates, verbose = FALSE) {
 #' Classify DE genes to interpretable fitting classes.
 #'
 #' @inheritParams run
-#' @param de_results `data.frame` resulting from [run()] filtered
-#' based on `qvalue < threshold` (e.g. `qvalue < 0.05`)
+#' @param de_results `data.frame` resulting from [run()].
+#' @param filter `logical`, whether to filter `de_results` based on
+#'   `qval_thresh`. Default: `TRUE`
+#' @param qval_thresh `numeric` scalar, specifying the q-value significance
+#'   threshold to filter `de_results`. Only rows in `de_results` with
+#'   `qval < qval_thresh` will be kept. Ignored if `filter = FALSE`.
 #'
 #' @return `data.frame` of model_search results.
 #'
@@ -87,23 +91,36 @@ run <- function(x, coordinates, verbose = FALSE) {
 #' ms_results <- model_search(
 #'     x = regressed,
 #'     coordinates = mock$coordinates,
-#'     de_results = de_results
+#'     de_results = de_results,
+#'     filter = TRUE,
+#'     qval_thresh = 0.05
 #' )
 #'
-#' @references
-#' Svensson, V., Teichmann, S. & Stegle, O.
-#' SpatialDE: identification of spatially variable genes.
-#' Nat Methods 15, 343–346 (2018). \url{https://doi.org/10.1038/nmeth.4636}
+#' @references Svensson, V., Teichmann, S. & Stegle, O. SpatialDE:
+#'   identification of spatially variable genes. Nat Methods 15, 343–346 (2018).
+#'   \url{https://doi.org/10.1038/nmeth.4636}
 #'
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
-model_search <- function(x, coordinates, de_results, verbose = FALSE) {
+model_search <- function(x,
+                         coordinates, de_results,
+                         filter = TRUE,
+                         qval_thresh = 0.05,
+                         verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(x, any.missing = FALSE)
     assert_data_frame(de_results, all.missing = FALSE)
+    assert_names(colnames(de_results), must.include = "qval")
     assert_flag(verbose)
+
+    ## Filter DE results
+    if (filter) {
+        de_results <- .filter_de_results(
+            de_results = de_results, qval_thresh = qval_thresh
+        )
+    }
 
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
@@ -155,14 +172,15 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #' regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 #'
 #' ## Run SpatialDE
-#' results <- run(x = regressed, coordinates = mock$coordinates)
-#' de_results <- results[results$qval < 0.1, ]
+#' de_results <- run(x = regressed, coordinates = mock$coordinates)
 #'
 #' ## Run Spatial_patterns
 #' sp <- spatial_patterns(
 #'     x = regressed,
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results,
+#'     filter = TRUE,
+#'     qval_thresh = 0.05,
 #'     n_patterns = 5, length = 1.5
 #' )
 #'
@@ -178,6 +196,8 @@ model_search <- function(x, coordinates, de_results, verbose = FALSE) {
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_int assert_number assert_flag
 spatial_patterns <- function(x, coordinates, de_results,
+                             filter = TRUE,
+                             qval_thresh = 0.05,
                              n_patterns, length,
                              verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
@@ -187,6 +207,13 @@ spatial_patterns <- function(x, coordinates, de_results,
     assert_int(n_patterns, coerce = TRUE)
     assert_number(length)
     assert_flag(verbose)
+
+    ## Filter de_results
+    if (filter) {
+        de_results <- .filter_de_results(
+            de_results = de_results, qval_thresh = qval_thresh
+        )
+    }
 
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
@@ -220,4 +247,16 @@ spatial_patterns <- function(x, coordinates, de_results,
         pattern_results = spatterns[[1]],
         patterns = spatterns[[2]]
     )
+}
+
+## Helper to filter de_results and throw sensible error
+.filter_de_results <- function(de_results, qval_thresh) {
+    if (qval_thresh < min(de_results$qval)) {
+        stop(
+            "Using `qval_thresh = ", qval_thresh, "` will filter out all genes",
+            "\nConsider setting a less stringent threshold.",
+            call. = FALSE
+        )
+    }
+    subset(de_results, qval < qval_thresh)
 }

@@ -80,7 +80,8 @@ test_that("model_search() and spatial_patterns() return correct output", {
     ## model_search()
     out <- model_search(
         x = regressed, coordinates = mock$coordinates,
-        de_results = de_results
+        de_results = de_results,
+        filter = FALSE   # disable filtering
     )
     expect_equal(nrow(out), nrow(de_results))
     expect_true(is.data.frame(out))
@@ -89,7 +90,8 @@ test_that("model_search() and spatial_patterns() return correct output", {
     ## spatial_patterns()
     sp <- spatial_patterns(
         x = regressed, coordinates = mock$coordinates,
-        de_results = de_results, n_patterns = n_patterns, length = 1
+        de_results = de_results, filter = FALSE,  # disable filtering
+        n_patterns = n_patterns, length = 1
     )
     pat_res <- sp$pattern_results
     pat <- sp$patterns
@@ -101,10 +103,10 @@ test_that("model_search() and spatial_patterns() return correct output", {
     ## Check breaking errors (incompatible dimensions)
     expect_error(model_search(
         x = mock$counts, coordinates = mock$coordinates[1:3, ],
-        de_results = de_results
+        de_results = de_results, filter = FALSE
     ))
     expect_error(spatial_patterns(
         x = mock$counts, coordinates = mock$coordinates[1:3, ],
-        de_results = de_results, n_patterns = 2L, length = 1
+        de_results = de_results, filter = FALSE, n_patterns = 2L, length = 1
     ))
 })
