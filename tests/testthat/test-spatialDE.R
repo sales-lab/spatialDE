@@ -22,19 +22,6 @@ test_that("Wrapper functions work", {
 
     de_results <- run(x = regressed, coordinates = coordinates)
     expect_false(all(is.na(de_results)))
-
-    ms_results <- model_search(
-        x = regressed, coordinates = coordinates,
-        de_results = de_results
-    )
-    expect_false(all(is.na(ms_results)))
-
-    sp_results <- spatial_patterns(
-        x = regressed, coordinates = coordinates,
-        de_results = de_results, n_patterns = 5L, length = 1.5
-    )
-    expect_false(all(is.na(sp_results[[1]])))
-    expect_false(all(is.na(sp_results[[2]])))
 })
 
 test_that("stabilize() warns about NA output", {
@@ -74,51 +61,4 @@ test_that("run() returns correct output", {
 
     ## Check breaking errors (incompatible dimensions)
     expect_error(run(x = regressed, coordinates = mock$coordinates[1:3, ]))
-})
-
-test_that("model_search() and spatial_patterns() return correct output", {
-    ## model_search()
-    out <- model_search(
-        x = regressed, coordinates = mock$coordinates,
-        de_results = de_results,
-        filter = FALSE   # disable filtering
-    )
-    expect_equal(nrow(out), nrow(de_results))
-    expect_true(is.data.frame(out))
-
-    n_patterns <- 1L
-    ## spatial_patterns()
-    sp <- spatial_patterns(
-        x = regressed, coordinates = mock$coordinates,
-        de_results = de_results, filter = FALSE,  # disable filtering
-        n_patterns = n_patterns, length = 1
-    )
-    pat_res <- sp$pattern_results
-    pat <- sp$patterns
-    expect_equal(nrow(pat_res), nrow(de_results))
-    expect_equal(ncol(pat), n_patterns)
-    expect_true(all(unique(pat_res$pattern) %in% colnames(pat)))
-})
-
-test_that("model_search() and spatial_patterns() break when necessary", {
-    ## Check breaking errors (incompatible dimensions)
-    expect_error(model_search(
-        x = mock$counts, coordinates = mock$coordinates[1:3, ],
-        de_results = de_results, filter = FALSE
-    ))
-    expect_error(spatial_patterns(
-        x = mock$counts, coordinates = mock$coordinates[1:3, ],
-        de_results = de_results, filter = FALSE, n_patterns = 2L, length = 1
-    ))
-
-    ## Check for error when filtering everything out
-    expect_error(model_search(
-        x = mock$counts, coordinates = mock$coordinates,
-        de_results = de_results, filter = TRUE
-    ))
-    expect_error(spatial_patterns(
-        x = mock$counts, coordinates = mock$coordinates,
-        de_results = de_results, filter = TRUE,
-        n_patterns = 2L, length = 1
-    ))
 })
