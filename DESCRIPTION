@@ -24,7 +24,9 @@ Imports:
     basilisk,
     checkmate,
     stats,
-    SpatialExperiment
+    SpatialExperiment,
+    methods,
+    SummarizedExperiment
 Suggests: 
     knitr,
     BiocStyle,
