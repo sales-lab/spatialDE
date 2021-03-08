@@ -53,8 +53,7 @@ ms_results <- model_search(
     x = regressed,
     coordinates = mock$coordinates,
     de_results = de_results,
-    filter = TRUE,
-    qval_thresh = 0.05
+    filter = FALSE
 )
 
 }
