@@ -9,6 +9,8 @@ spatial_patterns(
   x,
   coordinates,
   de_results,
+  filter = TRUE,
+  qval_thresh = 0.05,
   n_patterns,
   length,
   verbose = FALSE
@@ -21,8 +23,14 @@ spatial_patterns(
 \item{coordinates}{\code{data.frame} with sample coordinates.
 Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
-\item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} filtered
-based on \code{qvalue < threshold} (e.g. \code{qvalue < 0.05})}
+\item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}}.}
+
+\item{filter}{\code{logical}, whether to filter \code{de_results} based on
+\code{qval_thresh}. Default: \code{TRUE}}
+
+\item{qval_thresh}{\code{numeric} scalar, specifying the q-value significance
+threshold to filter \code{de_results}. Only rows in \code{de_results} with
+\code{qval < qval_thresh} will be kept. Ignored if \code{filter = FALSE}.}
 
 \item{n_patterns}{\code{integer} The number of spatial patterns}
 
@@ -50,14 +58,15 @@ sample_info$total_counts <- colSums(mock$counts)
 regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 
 ## Run SpatialDE
-results <- run(x = regressed, coordinates = mock$coordinates)
-de_results <- results[results$qval < 0.1, ]
+de_results <- run(x = regressed, coordinates = mock$coordinates)
 
 ## Run Spatial_patterns
 sp <- spatial_patterns(
     x = regressed,
     coordinates = mock$coordinates,
     de_results = de_results,
+    filter = TRUE,
+    qval_thresh = 0.05,
     n_patterns = 5, length = 1.5
 )
 
