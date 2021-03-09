@@ -15,7 +15,7 @@ coverage](https://codecov.io/gh/sales-lab/spatialDE/branch/main/graph/badge.svg)
 The **spatialDE** package provides an R wrapper for the Python SpatialDE
 library, using
 *[reticulate](https://CRAN.R-project.org/package=reticulate)* and
-*[basilisk](https://bioconductor.org/packages/3.12/basilisk)*.
+*[basilisk](https://bioconductor.org/packages/3.13/basilisk)*.
 
 [SpatialDE](https://github.com/Teichlab/SpatialDE), by [Svensson et al.,
 2018](https://doi.org/10.1038/nmeth.4636), is a method to identify
@@ -60,7 +60,7 @@ paper](https://doi.org/10.1038/nmeth.4636).
 
 
       Davide Corso and Milan Malfait (2021). spatialDE: R wrapper for
-      SpatialDE. R package version 0.1.8.
+      SpatialDE. R package version 0.2.0.
       https://github.com/sales-lab/spatialDE
 
     A BibTeX entry for LaTeX users is
@@ -69,7 +69,7 @@ paper](https://doi.org/10.1038/nmeth.4636).
         title = {spatialDE: R wrapper for SpatialDE},
         author = {Davide Corso and Milan Malfait},
         year = {2021},
-        note = {R package version 0.1.8},
+        note = {R package version 0.2.0},
         url = {https://github.com/sales-lab/spatialDE},
       }
 
@@ -104,8 +104,8 @@ By contributing to this project, you agree to abide by its terms.
 
 ## Useful links
 
--   *[SpatialExperiment](https://bioconductor.org/packages/3.12/SpatialExperiment)*
+-   *[SpatialExperiment](https://bioconductor.org/packages/3.13/SpatialExperiment)*
 -   [BiocSpatialChallenges](https://helenalc.github.io/BiocSpatialChallenges/index.html)
 
 This package was developed using
-*[biocthis](https://bioconductor.org/packages/3.12/biocthis)*.
+*[biocthis](https://bioconductor.org/packages/3.13/biocthis)*.
