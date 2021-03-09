@@ -1,3 +1,5 @@
+library(SpatialExperiment)
+
 ## Create mock SpatialExperiment object
 spe <- mockSVG(size = 5, tot_genes = 100, de_genes = 10, return_SPE = TRUE)
 
