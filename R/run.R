@@ -1,5 +1,3 @@
-# TODO: add more details regarding DE results format in @return
-
 #' Perform SpatialDE test
 #'
 #' Wraps the `run` function from the
@@ -11,7 +9,17 @@
 #' Each row is a sample, the columns with coordinates must be named 'x' and 'y'.
 #' @param verbose `logical` controlling the display of the progress bar.
 #'
-#' @return `data.frame` with DE results.
+#' @return A `data.frame` with DE results where each row is a gene and columns
+#'   contain relevant statistics.
+#'
+#'   The most important columns are:
+#'
+#'   * `g`: the name of the gene
+#'   * `pval`: the p-value for spatial differential expression
+#'   * `qval`: the q-value, indicating significance after correcting for
+#'   multiple testing
+#'   * `l`: A parameter indicating the distance scale a gene changes expression
+#'   over
 #'
 #' @examples
 #' set.seed(42)

@@ -16,7 +16,18 @@ Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 \item{verbose}{\code{logical} controlling the display of the progress bar.}
 }
 \value{
-\code{data.frame} with DE results.
+A \code{data.frame} with DE results where each row is a gene and columns
+contain relevant statistics.
+
+The most important columns are:
+\itemize{
+\item \code{g}: the name of the gene
+\item \code{pval}: the p-value for spatial differential expression
+\item \code{qval}: the q-value, indicating significance after correcting for
+multiple testing
+\item \code{l}: A parameter indicating the distance scale a gene changes expression
+over
+}
 }
 \description{
 Wraps the \code{run} function from the
