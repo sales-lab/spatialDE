@@ -32,20 +32,22 @@ setGeneric("spatialDE", function(x, ...) standardGeneric("spatialDE"))
 
 #' @export
 #' @rdname spatialDE
-setMethod("spatialDE", "matrix", function(x, coordinates, ...) {
-    .spatialDE(x = x, coordinates = coordinates, ...)
-})
+setMethod("spatialDE", "matrix", .spatialDE)
 
 #' @export
 #' @rdname spatialDE
 #' @importFrom SummarizedExperiment assay
 #' @importFrom SpatialExperiment spatialCoords spatialCoordsNames<-
 setMethod("spatialDE", "SpatialExperiment",
-    function(x, ..., assay_type = "counts") {
+    function(x, assay_type = "counts", verbose = FALSE) {
         ## Rename spatialCoords columns to "x", "y"
         spatialCoordsNames(x) <- c("x", "y")
         coordinates <- spatialCoords(x, as_df = TRUE)
 
-        .spatialDE(x = assay(x, assay_type), coordinates = coordinates, ...)
+        .spatialDE(
+            x = assay(x, assay_type),
+            coordinates = coordinates,
+            verbose = verbose
+        )
     }
 )
