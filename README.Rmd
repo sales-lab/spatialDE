@@ -53,6 +53,18 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install("sales-lab/spatialDE")
 ```
 
+
+## Basic usage
+
+```{r usage, eval=TRUE}
+library(spatialDE)
+spe <- mockSVG(return_SPE = TRUE)
+de_results <- spatialDE(spe)
+head(de_results)
+```
+
+
+
 ## Citation
 
 <!-- TODO: update once pkg on BioC -->
