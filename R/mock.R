@@ -1,9 +1,11 @@
 #' Generate count matrix for spatially variable genes.
 #'
-#' @param size `int` genes will be spatially arranged on a size x size grid
-#' @param tot_genes `int` total number of genes
-#' @param de_genes `int` number of spatially variable genes
-#' @param return_SPE `logical`, whether to return result as a
+#' @param size An `integer` scalar. Cells will be spatially arranged on a `size
+#'   x size` grid. Default: 10, corresponding to 100 cells.
+#' @param tot_genes An `integer` scalar. Total number of genes. Default: 1000.
+#' @param de_genes An `integer` scaler. The number of spatially variable genes.
+#'   Default: 100.
+#' @param return_SPE A `logical`, whether to return result as a
 #'   \linkS4class{SpatialExperiment}. Default: `FALSE`.
 #'
 #' @return
@@ -19,7 +21,8 @@
 #'
 #' @export
 #' @importFrom stats rnbinom runif
-mockSVG <- function(size, tot_genes, de_genes, return_SPE = FALSE) {
+mockSVG <- function(size = 10, tot_genes = 1000, de_genes = 100,
+                    return_SPE = FALSE) {
     n_cells <- size * size
     coordinates <- data.frame(
         x = rep(seq.int(size), size),
