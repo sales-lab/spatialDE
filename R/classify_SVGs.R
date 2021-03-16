@@ -6,11 +6,9 @@
 #'
 #' @inheritParams run
 #' @param de_results `data.frame` resulting from [run()].
-#' @param filter `logical`, whether to filter `de_results` based on
-#'   `qval_thresh`. Default: `TRUE`
 #' @param qval_thresh `numeric` scalar, specifying the q-value significance
 #'   threshold to filter `de_results`. Only rows in `de_results` with
-#'   `qval < qval_thresh` will be kept. Ignored if `filter = FALSE`.
+#'   `qval < qval_thresh` will be kept. To disable, set `qval_thresh = NULL`.
 #'
 #' @return `data.frame` of model_search results.
 #'
@@ -29,8 +27,7 @@
 #' ms_results <- model_search(
 #'     x = regressed,
 #'     coordinates = mock$coordinates,
-#'     de_results = de_results,
-#'     filter = FALSE
+#'     de_results = de_results
 #' )
 #'
 #' @references Svensson, V., Teichmann, S. & Stegle, O. SpatialDE:
@@ -42,7 +39,6 @@
 #' @importFrom checkmate assert_flag
 model_search <- function(x,
                          coordinates, de_results,
-                         filter = TRUE,
                          qval_thresh = 0.05,
                          verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
@@ -50,10 +46,11 @@ model_search <- function(x,
     assert_matrix(x, any.missing = FALSE)
     assert_data_frame(de_results, all.missing = FALSE)
     assert_names(colnames(de_results), must.include = "qval")
+    assert_number(qval_thresh, null.ok = TRUE)
     assert_flag(verbose)
 
     ## Filter DE results
-    if (filter) {
+    if (!is.null(qval_thresh)) {
         de_results <- .filter_de_results(
             de_results = de_results, qval_thresh = qval_thresh
         )
@@ -116,7 +113,6 @@ model_search <- function(x,
 #'     x = regressed,
 #'     coordinates = mock$coordinates,
 #'     de_results = de_results,
-#'     filter = FALSE,
 #'     n_patterns = 5, length = 1.5
 #' )
 #'
@@ -132,7 +128,6 @@ model_search <- function(x,
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_int assert_number assert_flag
 spatial_patterns <- function(x, coordinates, de_results,
-                             filter = TRUE,
                              qval_thresh = 0.05,
                              n_patterns, length,
                              verbose = FALSE) {
@@ -140,12 +135,13 @@ spatial_patterns <- function(x, coordinates, de_results,
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(x, any.missing = FALSE)
     assert_data_frame(de_results, all.missing = FALSE)
+    assert_number(qval_thresh, null.ok = TRUE)
     assert_int(n_patterns, coerce = TRUE)
     assert_number(length)
     assert_flag(verbose)
 
     ## Filter de_results
-    if (filter) {
+    if (!is.null(qval_thresh)) {
         de_results <- .filter_de_results(
             de_results = de_results, qval_thresh = qval_thresh
         )

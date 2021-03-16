@@ -4,14 +4,7 @@
 \alias{model_search}
 \title{Compare model fits with different models}
 \usage{
-model_search(
-  x,
-  coordinates,
-  de_results,
-  filter = TRUE,
-  qval_thresh = 0.05,
-  verbose = FALSE
-)
+model_search(x, coordinates, de_results, qval_thresh = 0.05, verbose = FALSE)
 }
 \arguments{
 \item{x}{\code{matrix}-like object of normalized counts. E.g. resulting from
@@ -22,12 +15,9 @@ Each row is a sample, the columns with coordinates must be named 'x' and 'y'.}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}}.}
 
-\item{filter}{\code{logical}, whether to filter \code{de_results} based on
-\code{qval_thresh}. Default: \code{TRUE}}
-
 \item{qval_thresh}{\code{numeric} scalar, specifying the q-value significance
 threshold to filter \code{de_results}. Only rows in \code{de_results} with
-\code{qval < qval_thresh} will be kept. Ignored if \code{filter = FALSE}.}
+\code{qval < qval_thresh} will be kept. To disable, set \code{qval_thresh = NULL}.}
 
 \item{verbose}{\code{logical} controlling the display of the progress bar.}
 }
@@ -52,8 +42,7 @@ de_results <- run(regressed, coordinates = mock$coordinates)
 ms_results <- model_search(
     x = regressed,
     coordinates = mock$coordinates,
-    de_results = de_results,
-    filter = FALSE
+    de_results = de_results
 )
 
 }
