@@ -42,7 +42,8 @@ de_results <- run(regressed, coordinates = mock$coordinates)
 ms_results <- model_search(
     x = regressed,
     coordinates = mock$coordinates,
-    de_results = de_results
+    de_results = de_results,
+    qval_thresh = NULL
 )
 
 }
