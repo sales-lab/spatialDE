@@ -61,6 +61,7 @@ sp <- spatial_patterns(
     x = regressed,
     coordinates = mock$coordinates,
     de_results = de_results,
+    qval_thresh = NULL,
     n_patterns = 5, length = 1.5
 )
 
