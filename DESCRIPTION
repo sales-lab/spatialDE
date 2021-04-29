@@ -4,7 +4,8 @@ Date: 2021-02-14
 Version: 0.1.8
 Authors@R: c(
     person("Davide", "Corso", role = c("aut", "cre"),
-           email = "corso.davide.92@gmail.com"),
+           email = "davide.corso.2@phd.unipd.it",
+           comment = c(ORCID = "0000-0001-8845-3693")),
     person("Milan", "Malfait", role = "aut",
            email = "milan.malfait94@gmail.com",
            comment = c(ORCID = "0000-0001-9144-3701"))
