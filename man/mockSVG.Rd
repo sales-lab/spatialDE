@@ -4,17 +4,23 @@
 \alias{mockSVG}
 \title{Generate count matrix for spatially variable genes.}
 \usage{
-mockSVG(size, tot_genes, de_genes)
+mockSVG(size = 10, tot_genes = 1000, de_genes = 100, return_SPE = FALSE)
 }
 \arguments{
-\item{size}{\code{int} genes will be spatially arranged on a size x size grid}
+\item{size}{An \code{integer} scalar. Cells will be spatially arranged on a \verb{size x size} grid. Default: 10, corresponding to 100 cells.}
 
-\item{tot_genes}{\code{int} total number of genes}
+\item{tot_genes}{An \code{integer} scalar. Total number of genes. Default: 1000.}
 
-\item{de_genes}{\code{int} number of spatially variable genes}
+\item{de_genes}{An \code{integer} scaler. The number of spatially variable genes.
+Default: 100.}
+
+\item{return_SPE}{A \code{logical}, whether to return result as a
+\linkS4class{SpatialExperiment}. Default: \code{FALSE}.}
 }
 \value{
-\code{list} containing:
+If \code{return_SPE = TRUE}, returns a \linkS4class{SpatialExperiment} object.
+
+If not, a \code{list} containing:
 \itemize{
 \item \code{coordinates}: \code{data.frame} with \code{x} and \code{y} columns;
 \item \code{counts}: \code{matrix} with generated gene counts.
@@ -22,4 +28,9 @@ mockSVG(size, tot_genes, de_genes)
 }
 \description{
 Generate count matrix for spatially variable genes.
+}
+\examples{
+spe <- mockSVG(10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
+spe
+
 }

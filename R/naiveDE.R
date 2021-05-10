@@ -72,7 +72,7 @@ stabilize <- function(counts) {
 regress_out <- function(counts, sample_info) {
     assert_data_frame(sample_info, any.missing = FALSE)
     assert_names(colnames(sample_info),
-        identical.to = c("x", "y", "total_counts")
+        must.include = "total_counts"
     )
     assert_matrix(counts, any.missing = FALSE)
 
