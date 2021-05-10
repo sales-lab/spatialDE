@@ -101,7 +101,7 @@ setMethod("spatialDE", "SpatialExperiment",
     function(x, assay_type = "counts", verbose = FALSE) {
         ## Rename spatialCoords columns to "x", "y"
         spatialCoordsNames(x) <- c("x", "y")
-        coordinates <- spatialCoords(x, as_df = TRUE)
+        coordinates <- as.data.frame(spatialCoords(x))
 
         .spatialDE(
             x = assay(x, assay_type),
