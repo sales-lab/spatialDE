@@ -28,7 +28,8 @@ Imports:
     SpatialExperiment,
     methods,
     SummarizedExperiment,
-    Matrix
+    Matrix,
+    S4Vectors
 Suggests:
     knitr,
     BiocStyle,
