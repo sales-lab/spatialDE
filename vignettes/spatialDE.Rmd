@@ -192,6 +192,28 @@ ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
     labs(color = gene)
 ```
 
+## SpatialExperiment Integration
+
+SpatialDE workflow can be executed with SpatialExperiment object in input
+
+```{r}
+# For SpatialExperiment object, we neeed to transpose the counts matrix in order
+# to have genes on rows and spot on columns. 
+# For this example, run spatialDE on the first 1000 genes
+
+partial_counts <- head(t(df), 1000)
+
+spe <- SpatialExperiment::SpatialExperiment(
+  assays = list(counts = partial_counts),
+  spatialData = S4Vectors::DataFrame(sample_info[, c("x", "y")]),
+  spatialCoordsNames = c("x", "y")
+)
+
+out <- spatialDE(spe, assay_type = "counts", verbose = FALSE)
+head(out[order(out$qval), ])
+```
+
+
 # `sessionInfo` {-}
 
 <details><summary>Session info</summary>
