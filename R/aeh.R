@@ -95,8 +95,8 @@ setGeneric("spatialPatterns", function(x, ...)
 #' @export
 #' @rdname spatial-patterns
 #' @importFrom SummarizedExperiment assay
-#' @importFrom checkmate assert_data_frame assert_number assert_int assert_flag
 #' @importFrom SpatialExperiment spatialCoords spatialCoordsNames
+#' @importFrom checkmate assert_data_frame assert_number assert_int assert_flag
 setMethod("spatialPatterns", "SpatialExperiment",
   function(x, assay_type = "counts", de_results, qval_thresh=0.05, 
             n_patterns, length, verbose = FALSE) {
