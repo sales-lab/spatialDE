@@ -57,6 +57,8 @@ spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
 ## Run spatialDE
 de_results <- spatialDE(spe)
 
+head(de_results)
+
 }
 \references{
 Svensson, V., Teichmann, S. & Stegle, O. SpatialDE: identification of

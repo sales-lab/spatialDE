@@ -39,6 +39,8 @@
 #' ## Run spatialDE
 #' de_results <- spatialDE(spe)
 #'
+#' head(de_results)
+#'
 #' @seealso
 #' The individual steps performed by this function: [stabilize()],
 #' [regress_out()] and [run()].
