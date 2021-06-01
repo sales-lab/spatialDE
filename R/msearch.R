@@ -79,7 +79,10 @@ NULL
 #' @import methods
 #' @export
 #' @rdname modelSearch
-setGeneric("modelSearch", function(x, ...) standardGeneric("modelSearch"))
+setGeneric("modelSearch",
+    function(x, de_results, ...) standardGeneric("modelSearch"),
+    signature = "x"
+)
 
 #' @export
 #' @rdname modelSearch
@@ -87,7 +90,7 @@ setGeneric("modelSearch", function(x, ...) standardGeneric("modelSearch"))
 #' @importFrom SpatialExperiment spatialCoords spatialCoordsNames<-
 #' @importFrom checkmate assert_data_frame assert_number assert_flag
 setMethod("modelSearch", "SpatialExperiment",
-  function(x, assay_type = "counts", de_results, qval_thresh=0.05,
+  function(x, de_results, assay_type = "counts", qval_thresh=0.05,
            verbose = FALSE) {
     assert_data_frame(de_results, all.missing = FALSE)
     assert_number(qval_thresh, null.ok = TRUE)

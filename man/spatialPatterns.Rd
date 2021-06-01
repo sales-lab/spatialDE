@@ -5,12 +5,12 @@
 \alias{spatialPatterns,SpatialExperiment-method}
 \title{Automatic expression histology in \strong{SpatialDE}}
 \usage{
-spatialPatterns(x, ...)
+spatialPatterns(x, de_results, ...)
 
 \S4method{spatialPatterns}{SpatialExperiment}(
   x,
-  assay_type = "counts",
   de_results,
+  assay_type = "counts",
   qval_thresh = 0.05,
   n_patterns,
   length,
@@ -20,12 +20,12 @@ spatialPatterns(x, ...)
 \arguments{
 \item{x}{\linkS4class{SpatialExperiment} object.}
 
+\item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} or \code{\link[=spatialDE]{spatialDE()}}.}
+
 \item{...}{For the generic, arguments to pass to specific methods.}
 
 \item{assay_type}{A \code{character} string specifying the assay from \code{x} to use
 as input. Defaults to \code{"counts"}.}
-
-\item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} or \code{\link[=spatialDE]{spatialDE()}}.}
 
 \item{qval_thresh}{\code{numeric} scalar, specifying the q-value significance
 threshold to filter \code{de_results}. Only rows in \code{de_results} with

@@ -91,12 +91,13 @@ NULL
   )
 }
 
-#'
 #' @import methods
 #' @export
 #' @rdname spatialPatterns
-setGeneric("spatialPatterns", function(x, ...)
-  standardGeneric("spatialPatterns"))
+setGeneric("spatialPatterns",
+    function(x, de_results, ...) standardGeneric("spatialPatterns"),
+    signature = "x"
+)
 
 #' @export
 #' @rdname spatialPatterns
@@ -104,7 +105,7 @@ setGeneric("spatialPatterns", function(x, ...)
 #' @importFrom SpatialExperiment spatialCoords spatialCoordsNames<-
 #' @importFrom checkmate assert_data_frame assert_number assert_int assert_flag
 setMethod("spatialPatterns", "SpatialExperiment",
-  function(x, assay_type = "counts", de_results, qval_thresh = 0.05,
+  function(x, de_results, assay_type = "counts", qval_thresh = 0.05,
            n_patterns, length, verbose = FALSE) {
     assert_data_frame(de_results, all.missing = FALSE)
     assert_number(qval_thresh, null.ok = TRUE)
