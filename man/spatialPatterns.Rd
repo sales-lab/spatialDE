@@ -2,30 +2,46 @@
 % Please edit documentation in R/aeh.R
 \name{spatialPatterns}
 \alias{spatialPatterns}
+\alias{spatialPatterns,matrix-method}
 \alias{spatialPatterns,SpatialExperiment-method}
 \title{Automatic expression histology in \strong{SpatialDE}}
 \usage{
 spatialPatterns(x, de_results, ...)
 
-\S4method{spatialPatterns}{SpatialExperiment}(
+\S4method{spatialPatterns}{matrix}(
   x,
   de_results,
-  assay_type = "counts",
+  coordinates,
   qval_thresh = 0.05,
   n_patterns,
   length,
   verbose = FALSE
 )
+
+\S4method{spatialPatterns}{SpatialExperiment}(
+  x,
+  de_results,
+  qval_thresh = 0.05,
+  n_patterns,
+  length,
+  assay_type = "counts",
+  verbose = FALSE
+)
 }
 \arguments{
-\item{x}{\linkS4class{SpatialExperiment} object.}
+\item{x}{A numeric \code{matrix} of counts where genes are rows and cells are columns.
+
+Alternatively, a \linkS4class{SpatialExperiment} object.}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} or \code{\link[=spatialDE]{spatialDE()}}.}
 
 \item{...}{For the generic, arguments to pass to specific methods.}
 
-\item{assay_type}{A \code{character} string specifying the assay from \code{x} to use
-as input. Defaults to \code{"counts"}.}
+\item{coordinates}{A \code{data.frame} with sample coordinates. Each row is a
+sample, the columns with coordinates should be named 'x' and 'y'.
+
+For the \emph{SpatialExperiment} method, coordinates are taken from
+\code{spatialCoords(x)}.}
 
 \item{qval_thresh}{\code{numeric} scalar, specifying the q-value significance
 threshold to filter \code{de_results}. Only rows in \code{de_results} with
@@ -37,6 +53,9 @@ threshold to filter \code{de_results}. Only rows in \code{de_results} with
 
 \item{verbose}{A \code{logical} controlling the display of a progress bar from the
 Python package.}
+
+\item{assay_type}{A \code{character} string specifying the assay from \code{x} to use
+as input. Defaults to \code{"counts"}.}
 }
 \value{
 A \code{list} of two \code{data.frame}s (pattern_results, patterns):

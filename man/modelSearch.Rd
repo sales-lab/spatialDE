@@ -2,10 +2,13 @@
 % Please edit documentation in R/msearch.R
 \name{modelSearch}
 \alias{modelSearch}
+\alias{modelSearch,matrix-method}
 \alias{modelSearch,SpatialExperiment-method}
 \title{Classify Spatially Variable Genes to interpretable fitting classes}
 \usage{
 modelSearch(x, de_results, ...)
+
+\S4method{modelSearch}{matrix}(x, de_results, coordinates, qval_thresh = 0.05, verbose = FALSE)
 
 \S4method{modelSearch}{SpatialExperiment}(
   x,
@@ -16,14 +19,19 @@ modelSearch(x, de_results, ...)
 )
 }
 \arguments{
-\item{x}{\linkS4class{SpatialExperiment} object.}
+\item{x}{A numeric \code{matrix} of counts where genes are rows and cells are columns.
+
+Alternatively, a \linkS4class{SpatialExperiment} object.}
 
 \item{de_results}{\code{data.frame} resulting from \code{\link[=run]{run()}} or \code{\link[=spatialDE]{spatialDE()}}.}
 
 \item{...}{For the generic, arguments to pass to specific methods.}
 
-\item{assay_type}{A \code{character} string specifying the assay from \code{x} to use
-as input. Defaults to \code{"counts"}.}
+\item{coordinates}{A \code{data.frame} with sample coordinates. Each row is a
+sample, the columns with coordinates should be named 'x' and 'y'.
+
+For the \emph{SpatialExperiment} method, coordinates are taken from
+\code{spatialCoords(x)}.}
 
 \item{qval_thresh}{\code{numeric} scalar, specifying the q-value significance
 threshold to filter \code{de_results}. Only rows in \code{de_results} with
@@ -31,6 +39,9 @@ threshold to filter \code{de_results}. Only rows in \code{de_results} with
 
 \item{verbose}{A \code{logical} controlling the display of a progress bar from the
 Python package.}
+
+\item{assay_type}{A \code{character} string specifying the assay from \code{x} to use
+as input. Defaults to \code{"counts"}.}
 }
 \value{
 \code{data.frame} of model_search results.
@@ -47,11 +58,10 @@ spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
 ## Run spatialDE with S4 integration
 de_results <- spatialDE(spe)
 
-## Run model search with S4 integration
+## Run model search
 model_search <- modelSearch(spe, de_results = de_results,
     qval_thresh = NULL, verbose = FALSE
 )
-
 
 }
 \references{
