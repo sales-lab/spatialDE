@@ -1,6 +1,6 @@
-#' Find spatially variable genes with **SpatialDE**
+#' Classify Spatially Variable Genes to interpretable fitting classes
 #'
-#' Identify genes that significantly depend on spatial coordinates with the
+#' Compare model fits with different models, using the
 #' [**SpatialDE**](https://github.com/Teichlab/SpatialDE) Python package.
 #'
 #' @param x A numeric `matrix` of counts where genes are rows and cells are columns.
@@ -8,45 +8,39 @@
 #'    Alternatively, a \linkS4class{SpatialExperiment} object.
 #'
 #' @param ... For the generic, arguments to pass to specific methods.
+#' @param de_results `data.frame` resulting from [run()] or [spatialDE()].
 #' @param coordinates A `data.frame` with sample coordinates. Each row is a
 #'   sample, the columns with coordinates should be named 'x' and 'y'.
 #'
 #'   For the *SpatialExperiment* method, coordinates are taken from
 #'   `spatialCoords(x)`.
 #'
+#' @param qval_thresh `numeric` scalar, specifying the q-value significance
+#'   threshold to filter `de_results`. Only rows in `de_results` with
+#'   `qval < qval_thresh` will be kept. To disable, set `qval_thresh = NULL`.
 #' @param assay_type A `character` string specifying the assay from `x` to use
 #'   as input. Defaults to `"counts"`.
 #' @param verbose A `logical` controlling the display of a progress bar from the
 #'   Python package.
 #'
-#' @return A `data.frame` with DE results where each row is a gene and columns
-#'   contain relevant statistics.
-#'
-#'   The most important columns are:
-#'
-#'   * `g`: the name of the gene
-#'   * `pval`: the p-value for spatial differential expression
-#'   * `qval`: the q-value, indicating significance after correcting for
-#'   multiple testing
-#'   * `l`: A parameter indicating the distance scale a gene changes expression
-#'   over
+#' @return `data.frame` of model_search results.
 #'
 #' @examples
 #' ## Mock up a SpatialExperiment object wit 100 cells, 200 genes
 #' set.seed(42)
 #' spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
 #'
-#' ## Run spatialDE
+#' ## Run spatialDE with S4 integration
 #' de_results <- spatialDE(spe)
 #'
-#' head(de_results)
+#' ## Run model search
+#' model_search <- modelSearch(spe, de_results = de_results,
+#'     qval_thresh = NULL, verbose = FALSE
+#' )
 #'
 #' @seealso
 #' The individual steps performed by this function: [stabilize()],
-#' [regress_out()] and [run()].
-#'
-#' For further analysis of the DE results:
-#' [model_search()] and [spatial_patterns()].
+#' [regress_out()] and [model_search()].
 #'
 #' @references
 #' Svensson, V., Teichmann, S. & Stegle, O. SpatialDE: identification of
@@ -57,56 +51,76 @@
 #' of the Python package used under the hood.
 #'
 #' @author Davide Corso, Milan Malfait
-#' @name spatialDE
+#' @name modelSearch
 NULL
 
-## Run spatialDE pipeline on any matrix-like object
 #' @importFrom Matrix colSums
-.spatialDE <- function(x, coordinates, verbose = FALSE) {
+#' @importFrom checkmate assert_data_frame assert_number assert_flag
+.modelSearch <- function(x, de_results, coordinates,
+                         qval_thresh = 0.05, verbose = FALSE) {
+    assert_data_frame(de_results, all.missing = FALSE)
+    assert_number(qval_thresh, null.ok = TRUE)
+    assert_flag(verbose)
+
+    ## Filter de_results
+    if (!is.null(qval_thresh)) {
+        de_results <- .filter_de_results(
+            de_results = de_results, qval_thresh = qval_thresh
+        )
+    }
+
     sample_info <- data.frame(coordinates, total_counts = colSums(x))
 
     out <- basilisk::basiliskRun(
         env = spatialDE_env,
-        fun = .run_spatialDE,
+        fun = .run_model_search,
         x = x,
         sample_info = sample_info,
+        de_results = de_results,
         verbose = verbose
     )
     out
 }
 
-.run_spatialDE <- function(x, sample_info, verbose = FALSE) {
+.run_model_search <- function(x, sample_info, de_results, verbose = FALSE) {
     ## Normalization
     stabilized <- .naiveDE_stabilize(counts = x)
     regressed <- .naiveDE_regress_out(counts = stabilized, sample_info)
 
     coordinates <- sample_info[, c("x", "y")]
-    .spatialDE_run(regressed, coordinates = coordinates, verbose = verbose)
+    .spatialDE_model_search(
+        x = regressed, coordinates = coordinates,
+        de_results = de_results, verbose = verbose
+    )
 }
-
 
 #' @import methods
 #' @export
-#' @rdname spatialDE
-setGeneric("spatialDE", function(x, ...) standardGeneric("spatialDE"))
+#' @rdname modelSearch
+setGeneric("modelSearch",
+    function(x, de_results, ...) standardGeneric("modelSearch"),
+    signature = "x"
+)
 
 #' @export
-#' @rdname spatialDE
-setMethod("spatialDE", "matrix", .spatialDE)
+#' @rdname modelSearch
+setMethod("modelSearch", "matrix", .modelSearch)
 
 #' @export
-#' @rdname spatialDE
+#' @rdname modelSearch
 #' @importFrom SummarizedExperiment assay
 #' @importFrom SpatialExperiment spatialCoords spatialCoordsNames<-
-setMethod("spatialDE", "SpatialExperiment",
-    function(x, assay_type = "counts", verbose = FALSE) {
+setMethod("modelSearch", "SpatialExperiment",
+    function(x, de_results, assay_type = "counts",
+             qval_thresh = 0.05, verbose = FALSE) {
+
         ## Rename spatialCoords columns to "x", "y"
         spatialCoordsNames(x) <- c("x", "y")
         coordinates <- as.data.frame(spatialCoords(x))
 
-        .spatialDE(
-            x = assay(x, assay_type),
-            coordinates = coordinates,
+        .modelSearch(
+            x = assay(x, assay_type), de_results = de_results,
+            coordinates = coordinates, qval_thresh = qval_thresh,
             verbose = verbose
         )
     }
