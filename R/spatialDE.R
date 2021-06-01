@@ -8,12 +8,6 @@
 #'    Alternatively, a \linkS4class{SpatialExperiment} object.
 #'
 #' @param ... For the generic, arguments to pass to specific methods.
-#' @param coordinates A `data.frame` with sample coordinates. Each row is a
-#'   sample, the columns with coordinates should be named 'x' and 'y'.
-#'
-#'   For the *SpatialExperiment* method, coordinates are taken from
-#'   `spatialCoords(x)`.
-#'
 #' @param assay_type A `character` string specifying the assay from `x` to use
 #'   as input. Defaults to `"counts"`.
 #' @param verbose A `logical` controlling the display of a progress bar from the
