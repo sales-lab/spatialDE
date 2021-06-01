@@ -19,6 +19,12 @@ Alternatively, a \linkS4class{SpatialExperiment} object.}
 
 \item{...}{For the generic, arguments to pass to specific methods.}
 
+\item{coordinates}{A \code{data.frame} with sample coordinates. Each row is a
+sample, the columns with coordinates should be named 'x' and 'y'.
+
+For the \emph{SpatialExperiment} method, coordinates are taken from
+\code{spatialCoords(x)}.}
+
 \item{verbose}{A \code{logical} controlling the display of a progress bar from the
 Python package.}
 
@@ -50,7 +56,6 @@ spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
 
 ## Run spatialDE
 de_results <- spatialDE(spe)
-head(de_results)
 
 }
 \references{
