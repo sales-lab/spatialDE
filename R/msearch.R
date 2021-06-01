@@ -1,6 +1,6 @@
-#' Classify SVGenes to interpretable fitting classes
+#' Classify Spatially Variable Genes to interpretable fitting classes
 #'
-#' Compare model fits with different models. 
+#' Compare model fits with different models, using the
 #' [**SpatialDE**](https://github.com/Teichlab/SpatialDE) Python package.
 #'
 #' @param x \linkS4class{SpatialExperiment} object.
@@ -24,12 +24,13 @@
 #'
 #' ## Run spatialDE with S4 integration
 #' de_results <- spatialDE(spe)
-#' 
+#'
 #' ## Run model search with S4 integration
-#' model_search <- modelSearch(spe, assay_type = "counts", 
-#' de_results = de_results, qval_thresh = NULL, verbose = FALSE)
-#' 
-#' 
+#' model_search <- modelSearch(spe, de_results = de_results,
+#'     qval_thresh = NULL, verbose = FALSE
+#' )
+#'
+#'
 #' @seealso
 #' The individual steps performed by this function: [stabilize()],
 #' [regress_out()] and [model_search()].
@@ -43,21 +44,21 @@
 #' of the Python package used under the hood.
 #'
 #' @author Davide Corso, Milan Malfait
-#' @name model-search
+#' @name modelSearch
 NULL
 
 #' @importFrom Matrix colSums
-.modelSearch <- function(counts_spe, coordinates_spe, de_results, 
+.modelSearch <- function(counts_spe, coordinates_spe, de_results,
                          verbose = FALSE) {
   sample_info <- data.frame(coordinates_spe, total_counts = colSums(counts_spe))
-  
+
   out <- basilisk::basiliskRun(
-    env = spatialDE_env,
-    fun = .run_model_search,
-    counts_spe=counts_spe, 
-    sample_info=sample_info, 
-    de_results=de_results,
-    verbose=verbose
+      env = spatialDE_env,
+      fun = .run_model_search,
+      counts_spe = counts_spe,
+      sample_info = sample_info,
+      de_results = de_results,
+      verbose = verbose
   )
   out
 }
@@ -67,44 +68,46 @@ NULL
   ## Normalization
   stabilized <- .naiveDE_stabilize(counts = counts_spe)
   regressed <- .naiveDE_regress_out(counts = stabilized, sample_info)
-  
+
   coordinates <- sample_info[, c("x", "y")]
-  .spatialDE_model_search(x = regressed, coordinates = coordinates,
-                          de_results = de_results, verbose = verbose)
+  .spatialDE_model_search(
+      x = regressed, coordinates = coordinates,
+      de_results = de_results, verbose = verbose
+  )
 }
 
-#' 
 #' @import methods
 #' @export
-#' @rdname model-search
-setGeneric("modelSearch", function(x, ...) 
-  standardGeneric("modelSearch"))
+#' @rdname modelSearch
+setGeneric("modelSearch", function(x, ...) standardGeneric("modelSearch"))
 
 #' @export
-#' @rdname model-search
+#' @rdname modelSearch
 #' @importFrom SummarizedExperiment assay
-#' @importFrom SpatialExperiment spatialCoords spatialCoordsNames
+#' @importFrom SpatialExperiment spatialCoords spatialCoordsNames<-
 #' @importFrom checkmate assert_data_frame assert_number assert_flag
 setMethod("modelSearch", "SpatialExperiment",
-  function(x, assay_type = "counts", de_results, qval_thresh=0.05, 
+  function(x, assay_type = "counts", de_results, qval_thresh=0.05,
            verbose = FALSE) {
     assert_data_frame(de_results, all.missing = FALSE)
     assert_number(qval_thresh, null.ok = TRUE)
     assert_flag(verbose)
-    
+
     ## Rename spatialCoords columns to "x", "y"
     spatialCoordsNames(x) <- c("x", "y")
     coordinates_spe <- as.data.frame(spatialCoords(x))
     counts_spe <- assay(x, assay_type)
-    
+
     ## Filter de_results
     if (!is.null(qval_thresh)) {
       de_results <- .filter_de_results(
         de_results = de_results, qval_thresh = qval_thresh
       )
     }
-    
-    .modelSearch(counts_spe=counts_spe, coordinates_spe=coordinates_spe,
-                 de_results=de_results, verbose = FALSE)
+
+    .modelSearch(
+        counts_spe = counts_spe, coordinates_spe = coordinates_spe,
+        de_results = de_results, verbose = FALSE
+    )
   }
 )
