@@ -213,6 +213,24 @@ out <- spatialDE(spe, assay_type = "counts", verbose = FALSE)
 head(out[order(out$qval), ])
 ```
 
+`model search` with S4 methods for SpatialExperiment object
+
+```{r}
+msearch <- modelSearch(spe, de_results = out, qval_thresh = 0.05, 
+                       verbose = FALSE )
+
+head(msearch)
+```
+
+`spatial patterns` with S4 methods for SpatialExperiment object
+
+```{r}
+spatterns <- spatialPatterns(spe, de_results = de_results, qval_thresh = 0.05, 
+                             n_patterns = 4L, length = 1.5, verbose = FALSE)
+
+spatterns$pattern_results
+```
+
 
 # `sessionInfo` {-}
 
