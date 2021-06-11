@@ -1,15 +1,16 @@
 Package: spatialDE
 Title: R wrapper for SpatialDE
 Date: 2021-06-01
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: c(
     person("Davide", "Corso", role = c("aut", "cre"),
            email = "davide.corso.2@phd.unipd.it",
            comment = c(ORCID = "0000-0001-8845-3693")),
     person("Milan", "Malfait", role = "aut",
            email = "milan.malfait94@gmail.com",
-           comment = c(ORCID = "0000-0001-9144-3701"))
-    )
+           comment = c(ORCID = "0000-0001-9144-3701")),
+    person("Lambda", "Moses", role = "aut", 
+           email = "dlu2@caltech.edu"))
 Description: SpatialDE is a method to find spatially variable genes (SVG) from
     spatial transcriptomics data. This package provides wrappers to use the
     Python SpatialDE library in R, using reticulate and basilisk.
@@ -29,12 +30,16 @@ Imports:
     methods,
     SummarizedExperiment,
     Matrix,
-    S4Vectors
+    S4Vectors,
+    dplyr,
+    forcats,
+    ggplot2,
+    magrittr,
+    scales
 Suggests:
     knitr,
     BiocStyle,
     rmarkdown,
-    ggplot2,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 biocViews:
