@@ -9,6 +9,10 @@ author:
     affiliation:
     - Ghent University
     email: milan.malfait94@gmail.com
+  - name: Lambda Moses
+    affiliation:
+    - California Institute of Technology
+    email: dlu2@caltech.edu
 output: 
   BiocStyle::html_document:
     self_contained: yes
@@ -229,6 +233,13 @@ spatterns <- spatialPatterns(spe, de_results = de_results, qval_thresh = 0.05,
                              n_patterns = 4L, length = 1.5, verbose = FALSE)
 
 spatterns$pattern_results
+```
+
+# Plot Fraction Spatial Variance vs Q-value
+
+```{r}
+FSV_sig(results, ms_results)
+
 ```
 
 
