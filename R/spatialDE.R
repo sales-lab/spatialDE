@@ -56,7 +56,7 @@
 #' [**SpatialDE 1.1.3**](https://pypi.org/project/SpatialDE/1.1.3/): the version
 #' of the Python package used under the hood.
 #'
-#' @author Davide Corso, Milan Malfait
+#' @author Davide Corso, Milan Malfait, Lambda Moses
 #' @name spatialDE
 NULL
 
