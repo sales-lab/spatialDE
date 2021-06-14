@@ -19,7 +19,7 @@ FSV_sig(
 \item{ms_results}{model selection results, should be a data frame with
 columns \code{g} for gene names and \code{model} for the model selected.}
 
-\item{certain_only}{only plot results with narrow 95\\% confidence interval.}
+\item{certain_only}{only plot results with narrow 95\% confidence interval.}
 
 \item{log_x}{Whether to display x axis in log scale.}
 

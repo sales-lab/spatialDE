@@ -4,7 +4,7 @@
 #' @param results results from SpatialDE.
 #' @param ms_results model selection results, should be a data frame with 
 #'   columns `g` for gene names and `model` for the model selected.
-#' @param certain_only only plot results with narrow 95\% confidence interval.
+#' @param certain_only only plot results with narrow 95% confidence interval.
 #' @param log_x Whether to display x axis in log scale.
 #' @param do_label display gene names for statistically significant genes, 
 #'   default `TRUE`.
