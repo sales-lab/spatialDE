@@ -115,7 +115,7 @@ head(X)
 
 ## `stabilize`
 
-The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distibuted counts data using Anscombe's approximation.
+The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distributed counts data using Anscombe's approximation.
 The `stabilize` function takes as input a `data.frame` of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the data.
 
 ```{r stabilize}
@@ -186,7 +186,7 @@ sp$pattern_results
 
 Visualizing one of the most significant genes.
 
-```{r}
+```{r fig1}
 gene <- "Pcp4"
 
 ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
@@ -194,6 +194,24 @@ ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
     ggtitle(gene) +
     scale_color_viridis_c() +
     labs(color = gene)
+```
+
+# Plot Spatial Patterns of Multiple Genes
+
+As an alternative to the code of the figure 1, we can make multiple plots using 
+this appropriate function 
+
+```{r fig2, fig.height = 10, fig.width = 10}
+
+ordered_de_results <- de_results[order(de_results$qval), ]
+
+multiGenePlot(normalized_counts = norm_expr, 
+              coordinates = X, 
+              ordered_de_results[1:6, ]$g, 
+              point_size = 4,
+              viridis_option = "D",
+              dark_theme = F )
+
 ```
 
 ## SpatialExperiment Integration
