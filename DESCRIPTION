@@ -37,7 +37,8 @@ Imports:
     ggplot2,
     magrittr,
     scales,
-    ggrepel
+    ggrepel,
+    gridExtra
 Suggests:
     knitr,
     BiocStyle,
