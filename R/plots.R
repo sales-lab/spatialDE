@@ -1,26 +1,33 @@
+
 #' Plot Fraction Spatial Variance vs Q-value
 #'
-#' Optionally provide model selection results to the function will color points by model.
-#' Point size corresponds to certinety of the FSV value.
+#' @param results results from SpatialDE.
+#' @param ms_results model selection results, should be a data frame with 
+#'   columns `g` for gene names and `model` for the model selected.
+#' @param certain_only only plot results with narrow 95\% confidence interval.
+#' @param log_x Whether to display x axis in log scale.
+#' @param do_label display gene names for statistically significant genes, 
+#'   default `TRUE`.
+#' @param covariate_names names of covariates as a reference, default to `NULL`.
+#'
+#' @return A `ggplot2` object.
+#' 
+#' @references
+#' Svensson, V., Teichmann, S. & Stegle, O. SpatialDE: identification of
+#' spatially variable genes. Nat Methods 15, 343–346 (2018).
+#' \url{https://doi.org/10.1038/nmeth.4636}
+#'
+#' [**SpatialDE 1.1.3**](https://pypi.org/project/SpatialDE/1.1.3/): the version
+#' of the Python package used under the hood.
 #'
 #' @author Davide Corso, Milan Malfait, Lambda Moses
-#'
-#' @param results Results from SpatialDE.
-#' @param ms_results Model selection results, should be a data frame with columns
-#'   \code{g} for gene names and \code{model} for the model selected.
-#' @param certain_only Only plot results with narrow 95\% confidence interval.
-#' @param log_x Whether to display x axis in log scale.
-#' @param do_label Display gene names for statistically significant genes, default to \code{TRUE}.
-#' @param covariate_names Names of covariates as a reference, default to \code{NULL}.
-#' 
-#' @return A \code{ggplot2} object.
 #' 
 #' @import ggplot2 forcats
 #' @importFrom dplyr mutate filter select full_join case_when
 #' @importFrom magrittr %>%
 #' @export
-FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE, log_x = FALSE,
-                    do_label = TRUE, covariate_names = NULL) {
+FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE, 
+                    log_x = FALSE, do_label = TRUE, covariate_names = NULL) {
   if (!is.null(ms_results)) {
     results <- results %>%
       full_join(ms_results[,c("g", "model")], by = "g", suffix = c("", "_bic"))
@@ -47,18 +54,20 @@ FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE, log_x = FA
   colors_use <- scales::hue_pal()(length(unique(results$model_bic)))
   p <- ggplot(results, aes(FSV, qval)) +
     geom_hline(yintercept = 0.05, linetype = 2) +
-    scale_color_manual(values = colors_use, na.translate = TRUE, na.value = "black",
+    scale_color_manual(values = colors_use, na.translate = TRUE, 
+                       na.value = "black", 
                        guide = guide_legend(title = "model")) +
     scale_y_continuous(trans = .reverse_log10()) +
     annotate(geom = "text", x = 0, y = 0.05, label = "0.05")
   if (!is.null(covariate_names)) {
     p <- p +
-      scale_shape_manual(values = c(16,4), guide = guide_legend(title = "covariate"))
+      scale_shape_manual(values = c(16,4), 
+                         guide = guide_legend(title = "covariate"))
   }
   if (!certain_only) {
     p <- p +
-      geom_point(aes(color = color_categories, size = conf_categories, shape = is_covariate),
-                 alpha = 0.5) +
+      geom_point(aes(color = color_categories, size = conf_categories, 
+                     shape = is_covariate), alpha = 0.5) +
       scale_size_manual(values = c(0.7, 1.5, 3),
                         guide = guide_legend(title = "confidence \n category"))
   } else {

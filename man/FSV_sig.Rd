@@ -14,23 +14,34 @@ FSV_sig(
 )
 }
 \arguments{
-\item{results}{Results from SpatialDE.}
+\item{results}{results from SpatialDE.}
 
-\item{ms_results}{Model selection results, should be a data frame with columns
-\code{g} for gene names and \code{model} for the model selected.}
+\item{ms_results}{model selection results, should be a data frame with
+columns \code{g} for gene names and \code{model} for the model selected.}
 
-\item{certain_only}{Only plot results with narrow 95\\% confidence interval.}
+\item{certain_only}{only plot results with narrow 95\\% confidence interval.}
 
 \item{log_x}{Whether to display x axis in log scale.}
 
-\item{do_label}{Display gene names for statistically significant genes, default to \code{TRUE}.}
+\item{do_label}{display gene names for statistically significant genes,
+default \code{TRUE}.}
 
-\item{covariate_names}{Names of covariates as a reference, default to \code{NULL}.}
+\item{covariate_names}{names of covariates as a reference, default to \code{NULL}.}
 }
 \value{
 A \code{ggplot2} object.
 }
 \description{
-Optionally provide model selection results to the function will color points by model.
-Point size corresponds to certinety of the FSV value.
+Plot Fraction Spatial Variance vs Q-value
+}
+\references{
+Svensson, V., Teichmann, S. & Stegle, O. SpatialDE: identification of
+spatially variable genes. Nat Methods 15, 343–346 (2018).
+\url{https://doi.org/10.1038/nmeth.4636}
+
+\href{https://pypi.org/project/SpatialDE/1.1.3/}{\strong{SpatialDE 1.1.3}}: the version
+of the Python package used under the hood.
+}
+\author{
+Davide Corso, Milan Malfait, Lambda Moses
 }
