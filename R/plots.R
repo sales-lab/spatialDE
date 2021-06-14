@@ -98,3 +98,50 @@ FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE,
   scales::trans_new("reverse_log10", trans, inv, scales::log_breaks(base = 10),
                     domain = c(1e-100, Inf))
 }
+
+
+#' Plot Spatial Patterns of Multiple Genes
+#'
+#' @param normalized_counts `matrix` of variance stabilized counts, 
+#'   e.g. resulting from [stabilize()].
+#' @param coordinates `data.frame` with sample coordinates.
+#'   Each row is a sample, the columns names must be named 'x' and 'y'.
+#' @param genes_plot character vector specifying which genes are to be plotted.
+#' @param viridis_option This function uses the `viridis` palette to color 
+#'   cells for gene expression. Four options are available: "magma" (or "A"), 
+#'   "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D", the default option) 
+#'   and "cividis" (or "E").
+#' @param ncol Number of columns to arrange the plots.
+#' @param point_size Point size of each plot.
+#' @param dark_theme Whether dark background should be used; this is helpful to 
+#'   highlight cells with high expression when using the \code{viridis} palette.
+#'
+#' @return This function draws a plot for each specified genes
+#' @export
+#'
+#' @importFrom gridExtra grid.arrange
+#' @importFrom checkmate assert_data_frame assert_names
+multiGenePlot <- function(normalized_counts, coordinates, genes_plot, 
+                          viridis_option = "D", ncol = 2, 
+                          point_size=1, dark_theme = TRUE) {
+  assert_data_frame(coordinates, any.missing = FALSE)
+  assert_names(colnames(coordinates), identical.to = c("x", "y"))
+  
+  pls <- lapply(seq_along(genes_plot),
+                function(i) {
+                  p <- ggplot(data = coordinates, 
+                              aes(x = x, y = y, 
+                                  color = normalized_counts[genes_plot[i], ])) +
+                    geom_point(size = point_size) +
+                    ggtitle(genes_plot[i]) +
+                    scale_color_viridis_c(option = viridis_option) +
+                    labs(color = genes_plot[i])
+                  
+                  if (dark_theme) {
+                    p <- p +
+                      theme_dark()
+                  }
+                  p
+                })
+  grid.arrange(grobs = pls, ncol = ncol)
+}
