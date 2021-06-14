@@ -36,7 +36,8 @@ Imports:
     forcats,
     ggplot2,
     magrittr,
-    scales
+    scales,
+    ggrepel
 Suggests:
     knitr,
     BiocStyle,
