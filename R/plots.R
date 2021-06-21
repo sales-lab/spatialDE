@@ -102,36 +102,82 @@ FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE,
 
 #' Plot Spatial Patterns of Multiple Genes
 #'
-#' @param normalized_counts `matrix` of variance stabilized counts, 
-#'   e.g. resulting from [stabilize()].
-#' @param coordinates `data.frame` with sample coordinates.
-#'   Each row is a sample, the columns names must be named 'x' and 'y'.
+#' @param x A numeric `matrix` of stabilized counts (e.g. resulting from 
+#' [stabilize()]) where genes are rows and cells are columns.
+#'
+#'    Alternatively, a \linkS4class{SpatialExperiment} object.
+#'
+#' @param ... For the generic, arguments to pass to specific methods.
+#' @param coordinates A `data.frame` with sample coordinates. Each row is a
+#'   sample, the columns with coordinates should be named 'x' and 'y'.
+#'
+#'   For the *SpatialExperiment* method, coordinates are taken from
+#'   `spatialCoords(x)`.
+#'
+#' @param assay_type A `character` string specifying the assay from `x` to use
+#'   as input. Defaults to `"counts"`.
 #' @param genes_plot character vector specifying which genes are to be plotted.
 #' @param viridis_option This function uses the `viridis` palette to color 
 #'   cells for gene expression. Four options are available: "magma" (or "A"), 
-#'   "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D", the default option) 
-#'   and "cividis" (or "E").
+#'   "inferno" (or "B"), "plasma" (or "C"), 
+#'   "viridis" (or "D", the default option) and "cividis" (or "E").
 #' @param ncol Number of columns to arrange the plots.
 #' @param point_size Point size of each plot.
 #' @param dark_theme Whether dark background should be used; this is helpful to 
 #'   highlight cells with high expression when using the \code{viridis} palette.
 #'
 #' @return This function draws a plot for each specified genes
-#' @export
 #'
+#' @examples
+#' ## Mock up a SpatialExperiment object wit 100 cells, 200 genes
+#' set.seed(42)
+#' spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 10, return_SPE = TRUE)
+#'
+#' ## Run spatialDE
+#' results <- spatialDE(spe)
+#' 
+#' ordered_spe_results <- results[order(results$qval), ]
+#' head(ordered_spe_results)
+#' 
+#' plots <- multiGenePlots(x = spe,
+#'                assay_type = "counts",
+#'                ordered_spe_results[1:4, ]$g, 
+#'                point_size = 4,
+#'                viridis_option = "D")
+#'
+#' @seealso
+#' The individual steps performed by this function: [stabilize()],
+#' [spatialDE()].
+#'
+#' For further analysis of the DE results:
+#' [model_search()] and [spatial_patterns()].
+#'
+#' @references
+#' Svensson, V., Teichmann, S. & Stegle, O. SpatialDE: identification of
+#' spatially variable genes. Nat Methods 15, 343–346 (2018).
+#' \url{https://doi.org/10.1038/nmeth.4636}
+#'
+#' [**SpatialDE 1.1.3**](https://pypi.org/project/SpatialDE/1.1.3/): the version
+#' of the Python package used under the hood.
+#'
+#' @author Davide Corso, Milan Malfait, Lambda Moses
+#' @name multiGenePlots
+NULL
+
 #' @importFrom gridExtra grid.arrange
 #' @importFrom checkmate assert_data_frame assert_names
-multiGenePlot <- function(normalized_counts, coordinates, genes_plot, 
-                          viridis_option = "D", ncol = 2, 
-                          point_size=1, dark_theme = TRUE) {
+.multiGenePlots <- function(x, coordinates, genes_plot, viridis_option = "D", 
+                            ncol = 2, point_size=1, dark_theme = TRUE) {
   assert_data_frame(coordinates, any.missing = FALSE)
   assert_names(colnames(coordinates), identical.to = c("x", "y"))
+  
+  stabilized <- x
   
   pls <- lapply(seq_along(genes_plot),
                 function(i) {
                   p <- ggplot(data = coordinates, 
                               aes(x = x, y = y, 
-                                  color = normalized_counts[genes_plot[i], ])) +
+                                  color = stabilized[genes_plot[i], ])) +
                     geom_point(size = point_size) +
                     ggtitle(genes_plot[i]) +
                     scale_color_viridis_c(option = viridis_option) +
@@ -145,3 +191,38 @@ multiGenePlot <- function(normalized_counts, coordinates, genes_plot,
                 })
   grid.arrange(grobs = pls, ncol = ncol)
 }
+
+#' @import methods
+#' @export
+#' @rdname multiGenePlots
+setGeneric("multiGenePlots", function(x, ...) standardGeneric("multiGenePlots"))
+
+#' @export
+#' @rdname multiGenePlots
+setMethod("multiGenePlots", "matrix", .multiGenePlots)
+
+#' @export
+#' @rdname multiGenePlots
+#' @importFrom SummarizedExperiment assay
+#' @importFrom SpatialExperiment spatialCoords spatialCoordsNames
+setMethod("multiGenePlots", "SpatialExperiment",
+          function(x, assay_type = "counts", genes_plot, viridis_option = "D", 
+                   ncol = 2, point_size=1, dark_theme = TRUE) {
+            ## Rename spatialCoords columns to "x", "y"
+            spatialCoordsNames(x) <- c("x", "y")
+            coordinates <- as.data.frame(spatialCoords(x))
+            
+            counts <- assay(x, assay_type)
+            stabilized <- .naiveDE_stabilize(counts = counts)
+            
+            .multiGenePlots(
+              x = stabilized,
+              coordinates = coordinates,
+              genes_plot = genes_plot,
+              viridis_option = viridis_option, 
+              ncol = ncol, 
+              point_size = point_size, 
+              dark_theme = dark_theme
+            )
+          }
+)
