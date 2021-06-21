@@ -196,16 +196,16 @@ ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
     labs(color = gene)
 ```
 
-# Plot Spatial Patterns of Multiple Genes
+# Plot Spatial Patterns of Multiple Genes (using matrix object)
 
 As an alternative to the code of the figure 1, we can make multiple plots using 
-this appropriate function 
+normalized counts
 
 ```{r fig2, fig.height = 10, fig.width = 10}
 
 ordered_de_results <- de_results[order(de_results$qval), ]
 
-multiGenePlot(normalized_counts = norm_expr, 
+multiGenePlots(x = norm_expr, 
               coordinates = X, 
               ordered_de_results[1:6, ]$g, 
               point_size = 4,
@@ -233,7 +233,26 @@ spe <- SpatialExperiment::SpatialExperiment(
 
 out <- spatialDE(spe, assay_type = "counts", verbose = FALSE)
 head(out[order(out$qval), ])
+
 ```
+
+# Plot Spatial Patterns of Multiple Genes (using SpatialExperiment object)
+
+We can plot spatial patterns of multiples genes using SpE object
+
+```{r fig3, fig.height = 10, fig.width = 10}
+spe_results <- out[out$qval < 0.05, ]
+
+ordered_spe_results <- spe_results[order(spe_results$qval), ]
+
+multiGenePlots(x = spe,
+               assay_type = "counts",
+               ordered_spe_results[1:6, ]$g, 
+               point_size = 4,
+               viridis_option = "D",
+               dark_theme = F )
+```
+
 
 `model search` with S4 methods for SpatialExperiment object
 
