@@ -196,87 +196,90 @@ ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
     labs(color = gene)
 ```
 
-# Plot Spatial Patterns of Multiple Genes (using matrix object)
+### Plot Spatial Patterns of Multiple Genes
 
-As an alternative to the code of the figure 1, we can make multiple plots using 
-normalized counts
+As an alternative to the previous figure, we can plot multiple genes using the
+normalized expression values.
 
 ```{r fig2, fig.height = 10, fig.width = 10}
-
 ordered_de_results <- de_results[order(de_results$qval), ]
 
-multiGenePlots(x = norm_expr, 
-              coordinates = X, 
-              ordered_de_results[1:6, ]$g, 
-              point_size = 4,
-              viridis_option = "D",
-              dark_theme = F )
-
+multiGenePlots(norm_expr,
+    coordinates = X,
+    ordered_de_results[1:6, ]$g,
+    point_size = 4,
+    viridis_option = "D",
+    dark_theme = FALSE
+)
 ```
 
-## SpatialExperiment Integration
-
-SpatialDE workflow can be executed with SpatialExperiment object in input
+## Plot Fraction Spatial Variance vs Q-value
 
 ```{r}
+FSV_sig(results, ms_results)
+```
+
+
+# SpatialExperiment integration
+
+The SpatialDE workflow can also be executed with a
+`r BiocStyle::Biocpkg("SpatialExperiment")` object as input. 
+
+```{r}
+library(SpatialExperiment)
+
 # For SpatialExperiment object, we neeed to transpose the counts matrix in order
 # to have genes on rows and spot on columns. 
 # For this example, run spatialDE on the first 1000 genes
 
 partial_counts <- head(t(df), 1000)
 
-spe <- SpatialExperiment::SpatialExperiment(
+spe <- SpatialExperiment(
   assays = list(counts = partial_counts),
-  spatialData = S4Vectors::DataFrame(sample_info[, c("x", "y")]),
+  spatialData = DataFrame(sample_info[, c("x", "y")]),
   spatialCoordsNames = c("x", "y")
 )
 
 out <- spatialDE(spe, assay_type = "counts", verbose = FALSE)
 head(out[order(out$qval), ])
-
 ```
 
-# Plot Spatial Patterns of Multiple Genes (using SpatialExperiment object)
+## Plot Spatial Patterns of Multiple Genes (using SpatialExperiment object)
 
-We can plot spatial patterns of multiples genes using SpE object
+We can plot spatial patterns of multiples genes using the `spe` object.
 
 ```{r fig3, fig.height = 10, fig.width = 10}
 spe_results <- out[out$qval < 0.05, ]
 
 ordered_spe_results <- spe_results[order(spe_results$qval), ]
 
-multiGenePlots(x = spe,
-               assay_type = "counts",
-               ordered_spe_results[1:6, ]$g, 
-               point_size = 4,
-               viridis_option = "D",
-               dark_theme = F )
+multiGenePlots(spe,
+    assay_type = "counts",
+    ordered_spe_results[1:6, ]$g,
+    point_size = 4,
+    viridis_option = "D",
+    dark_theme = FALSE
+)
 ```
 
-
-`model search` with S4 methods for SpatialExperiment object
+## Classify spatially variable genes with `model_search` and `spatial_patterns`
 
 ```{r}
-msearch <- modelSearch(spe, de_results = out, qval_thresh = 0.05, 
-                       verbose = FALSE )
+msearch <- modelSearch(spe,
+    de_results = out, qval_thresh = 0.05,
+    verbose = FALSE
+)
 
 head(msearch)
 ```
 
-`spatial patterns` with S4 methods for SpatialExperiment object
-
 ```{r}
-spatterns <- spatialPatterns(spe, de_results = de_results, qval_thresh = 0.05, 
-                             n_patterns = 4L, length = 1.5, verbose = FALSE)
+spatterns <- spatialPatterns(spe,
+    de_results = de_results, qval_thresh = 0.05,
+    n_patterns = 4L, length = 1.5, verbose = FALSE
+)
 
 spatterns$pattern_results
-```
-
-# Plot Fraction Spatial Variance vs Q-value
-
-```{r}
-FSV_sig(results, ms_results)
-
 ```
 
 
