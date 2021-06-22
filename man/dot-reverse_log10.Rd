@@ -9,3 +9,4 @@
 \description{
 Custom transform for inverted log transformed axis in ggplot2.
 }
+\keyword{internal}

@@ -76,11 +76,12 @@ results <- spatialDE(spe)
 ordered_spe_results <- results[order(results$qval), ]
 head(ordered_spe_results)
 
-multiGenePlots(x = spe,
-               assay_type = "counts",
-               ordered_spe_results[1:4, ]$g, 
-               point_size = 4,
-               viridis_option = "D")
+plots <- multiGenePlots(spe,
+    assay_type = "counts",
+    ordered_spe_results[1:4, ]$g,
+    point_size = 4,
+    viridis_option = "D"
+)
 
 }
 \references{
