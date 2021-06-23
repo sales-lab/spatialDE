@@ -40,7 +40,7 @@ spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
 ## Run spatialDE with S4 integration
 results <- spatialDE(spe)
 ## Run model search
-msearch <- modelSearch(spe, de_results = results, qval_thresh = NULL, 
+msearch <- modelSearch(spe, de_results = results, qval_thresh = NULL,
   verbose = FALSE)
 
 plot <- FSV_sig(results, msearch)
