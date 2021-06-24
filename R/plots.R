@@ -56,6 +56,8 @@ FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE,
   if (certain_only) {
       results <- results[results$conf_categories == "(0,0.1]",]
   }
+  FSV <- qval <- color_categories <- conf_categories <- is_covariate <-
+      g <- NULL
   colors_use <- scales::hue_pal()(length(unique(results$model_bic)))
   p <- ggplot(results, aes(FSV, qval)) +
       geom_hline(yintercept = 0.05, linetype = 2) +
@@ -189,7 +191,7 @@ NULL
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
 
     stabilized <- x
-
+    y <- NULL
     pls <- lapply(
         seq_along(genes_plot),
         function(i) {
