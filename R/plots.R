@@ -10,16 +10,16 @@
 #' @param covariate_names names of covariates as a reference, default to `NULL`.
 #'
 #' @return A `ggplot2` object.
-#' 
+#'
 #' @examples
 #' set.seed(42)
 #' spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
 #' ## Run spatialDE with S4 integration
 #' results <- spatialDE(spe)
 #' ## Run model search
-#' msearch <- modelSearch(spe, de_results = results, qval_thresh = NULL, 
+#' msearch <- modelSearch(spe, de_results = results, qval_thresh = NULL,
 #'   verbose = FALSE)
-#' 
+#'
 #' plot <- FSV_sig(results, msearch)
 #'
 #' @references
@@ -32,41 +32,32 @@
 #'
 #' @author Davide Corso, Milan Malfait, Lambda Moses
 #'
-#' @import ggplot2 forcats
-#' @importFrom dplyr mutate filter select full_join case_when
-#' @importFrom magrittr %>%
+#' @import ggplot2
 #' @export
 FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE,
                     log_x = FALSE, do_label = TRUE, covariate_names = NULL) {
   if (!is.null(ms_results)) {
-      results <- results %>%
-          full_join(ms_results[, c("g", "model")],
-              by = "g", suffix = c("", "_bic")
-          )
+      results <- merge(results, ms_results[, c("g", "model")],
+                       by = "g", all = TRUE, suffixes = c("", "_bic"))
   } else {
-      results <- results %>%
-          dplyr::rename(model_bic = model)
+      names(results)[names(results) == "model"] <- "model_bic"
   }
-  results <- results %>%
-      mutate(
-          FSV95conf = 2 * sqrt(s2_FSV),
-          conf_categories = fct_rev(cut(FSV95conf, c(0, 0.1, 1, Inf))),
-          is_covariate = FALSE,
-          # More user friendly model labels
-          color_categories = case_when(
-              model_bic == "SE" ~ "general",
-              model_bic == "PER" ~ "periodic",
-              model_bic == "linear" ~ "linear"
-          )
-      )
+  results$FSV95conf <- 2 * sqrt(results$s2_FSV)
+  results$conf_categories <- cut(results$FSV95conf, c(0, 0.1, 1, Inf))
+  ll <- levels(results$conf_categories)
+  results$conf_categories <- factor(results$conf_categories, levels = rev(ll))
+  results$is_covariate <- FALSE
+  results$color_categories <- ifelse(results$model_bic == "SE", "general",
+                                     ifelse(results$model_bic == "PER",
+                                            "periodic", "linear"))
   if (!is.null(covariate_names)) {
-      results <- results %>%
-          mutate(is_covariate = g %in% covariate_names)
+      results$is_covariate <- results$g %in% covariate_names
   }
   if (certain_only) {
-      results <- results %>%
-          filter(conf_categories == "(0,0.1]")
+      results <- results[results$conf_categories == "(0,0.1]",]
   }
+  FSV <- qval <- color_categories <- conf_categories <- is_covariate <-
+      g <- NULL
   colors_use <- scales::hue_pal()(length(unique(results$model_bic)))
   p <- ggplot(results, aes(FSV, qval)) +
       geom_hline(yintercept = 0.05, linetype = 2) +
@@ -106,9 +97,7 @@ FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE,
           scale_x_log10()
   }
   if (do_label) {
-      gene_label <- results %>%
-          filter(qval < 0.05) %>%
-          select(FSV, qval, g)
+      gene_label <- results[results$qval < 0.05, c("FSV", "qval", "g")]
       p <- p + ggrepel::geom_label_repel(aes(label = g), data = gene_label)
   }
   p
@@ -202,7 +191,7 @@ NULL
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
 
     stabilized <- x
-
+    y <- NULL
     pls <- lapply(
         seq_along(genes_plot),
         function(i) {
