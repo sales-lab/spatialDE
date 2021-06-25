@@ -9,6 +9,10 @@ author:
     affiliation:
     - Ghent University
     email: milan.malfait94@gmail.com
+  - name: Lambda Moses
+    affiliation:
+    - California Institute of Technology
+    email: dlu2@caltech.edu
 output: 
   BiocStyle::html_document:
     self_contained: yes
@@ -111,7 +115,7 @@ head(X)
 
 ## `stabilize`
 
-The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distibuted counts data using Anscombe's approximation.
+The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distributed counts data using Anscombe's approximation.
 The `stabilize` function takes as input a `data.frame` of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the data.
 
 ```{r stabilize}
@@ -182,7 +186,7 @@ sp$pattern_results
 
 Visualizing one of the most significant genes.
 
-```{r}
+```{r fig1}
 gene <- "Pcp4"
 
 ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
@@ -192,20 +196,47 @@ ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
     labs(color = gene)
 ```
 
-## SpatialExperiment Integration
+### Plot Spatial Patterns of Multiple Genes
 
-SpatialDE workflow can be executed with SpatialExperiment object in input
+As an alternative to the previous figure, we can plot multiple genes using the
+normalized expression values.
+
+```{r fig2, fig.height = 10, fig.width = 10}
+ordered_de_results <- de_results[order(de_results$qval), ]
+
+multiGenePlots(norm_expr,
+    coordinates = X,
+    ordered_de_results[1:6, ]$g,
+    point_size = 4,
+    viridis_option = "D",
+    dark_theme = FALSE
+)
+```
+
+## Plot Fraction Spatial Variance vs Q-value
 
 ```{r}
+FSV_sig(results, ms_results)
+```
+
+
+# SpatialExperiment integration
+
+The SpatialDE workflow can also be executed with a
+`r BiocStyle::Biocpkg("SpatialExperiment")` object as input. 
+
+```{r}
+library(SpatialExperiment)
+
 # For SpatialExperiment object, we neeed to transpose the counts matrix in order
 # to have genes on rows and spot on columns. 
 # For this example, run spatialDE on the first 1000 genes
 
 partial_counts <- head(t(df), 1000)
 
-spe <- SpatialExperiment::SpatialExperiment(
+spe <- SpatialExperiment(
   assays = list(counts = partial_counts),
-  spatialData = S4Vectors::DataFrame(sample_info[, c("x", "y")]),
+  spatialData = DataFrame(sample_info[, c("x", "y")]),
   spatialCoordsNames = c("x", "y")
 )
 
@@ -213,20 +244,40 @@ out <- spatialDE(spe, assay_type = "counts", verbose = FALSE)
 head(out[order(out$qval), ])
 ```
 
-`model search` with S4 methods for SpatialExperiment object
+## Plot Spatial Patterns of Multiple Genes (using SpatialExperiment object)
+
+We can plot spatial patterns of multiples genes using the `spe` object.
+
+```{r fig3, fig.height = 10, fig.width = 10}
+spe_results <- out[out$qval < 0.05, ]
+
+ordered_spe_results <- spe_results[order(spe_results$qval), ]
+
+multiGenePlots(spe,
+    assay_type = "counts",
+    ordered_spe_results[1:6, ]$g,
+    point_size = 4,
+    viridis_option = "D",
+    dark_theme = FALSE
+)
+```
+
+## Classify spatially variable genes with `model_search` and `spatial_patterns`
 
 ```{r}
-msearch <- modelSearch(spe, de_results = out, qval_thresh = 0.05, 
-                       verbose = FALSE )
+msearch <- modelSearch(spe,
+    de_results = out, qval_thresh = 0.05,
+    verbose = FALSE
+)
 
 head(msearch)
 ```
 
-`spatial patterns` with S4 methods for SpatialExperiment object
-
 ```{r}
-spatterns <- spatialPatterns(spe, de_results = de_results, qval_thresh = 0.05, 
-                             n_patterns = 4L, length = 1.5, verbose = FALSE)
+spatterns <- spatialPatterns(spe,
+    de_results = de_results, qval_thresh = 0.05,
+    n_patterns = 4L, length = 1.5, verbose = FALSE
+)
 
 spatterns$pattern_results
 ```

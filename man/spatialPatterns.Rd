@@ -101,5 +101,5 @@ The individual steps performed by this function: \code{\link[=stabilize]{stabili
 \code{\link[=regress_out]{regress_out()}} and \code{\link[=spatial_patterns]{spatial_patterns()}}.
 }
 \author{
-Davide Corso, Milan Malfait
+Davide Corso, Milan Malfait, Lambda Moses
 }

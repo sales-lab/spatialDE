@@ -76,5 +76,5 @@ For further analysis of the DE results:
 \code{\link[=model_search]{model_search()}} and \code{\link[=spatial_patterns]{spatial_patterns()}}.
 }
 \author{
-Davide Corso, Milan Malfait
+Davide Corso, Milan Malfait, Lambda Moses
 }
