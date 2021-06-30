@@ -103,11 +103,10 @@ FSV_sig <- function(results, ms_results = NULL, certain_only = FALSE,
   p
 }
 
-#' Inverse log scale
-#'
-#' Custom transform for inverted log transformed axis in ggplot2.
-#' @importFrom scales trans_new log_breaks
-#' @keywords internal
+# Inverse log scale
+#
+# Custom transform for inverted log transformed axis in ggplot2. 
+# Return a ggplot2 compatible transformation object
 .reverse_log10 <- function() {
     trans <- function(x) -log10(x)
     inv <- function(x) 10^(-x)
