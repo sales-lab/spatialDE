@@ -17,11 +17,12 @@ Description: SpatialDE is a method to find spatially variable genes (SVG) from
     Python SpatialDE library in R, using reticulate and basilisk.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: TRUE
+LazyData: FALSE
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 URL: https://github.com/sales-lab/spatialDE
 BugReports: https://github.com/sales-lab/spatialDE/issues
+Depends:  R (>= 4.1)
 Imports:
     reticulate,
     basilisk,
