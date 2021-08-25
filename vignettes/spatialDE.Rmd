@@ -42,9 +42,14 @@ knitr::opts_chunk$set(
 
 # Installation
 
+You can install `r BiocStyle::Biocpkg("spatialDE")` from *Bioconductor* with the
+following code:
+
 ```{r, eval=FALSE}
-## Install development version from GitHub
-BiocManager::install("sales-lab/spatialDE")
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("spatialDE")
 ```
 
 
@@ -64,65 +69,59 @@ Files originally retrieved from SpatialDE GitHub repository from the following l
 https://github.com/Teichlab/SpatialDE/blob/master/Analysis/MouseOB/data/Rep11_MOB_0.csv
 https://github.com/Teichlab/SpatialDE/blob/master/Analysis/MouseOB/MOB_sample_info.csv
 
-```{r}
+```{r load-data}
 # Expression file used in python SpatialDE. 
-
-# 8.4 Mb
-expression_csv <-
-    "https://sales.bio.unipd.it/bulk/b1678ba2e04342053efd5d3bc277d98e65280800ff4da0a1a3fc64e74c3214e8/Rep11_MOB_0.csv"
+data("Rep11_MOB_0")
 
 # Sample Info file used in python SpatialDE
-# 7 KB
-coordinate_csv <-
-    "https://sales.bio.unipd.it/bulk/b1678ba2e04342053efd5d3bc277d98e65280800ff4da0a1a3fc64e74c3214e8/MOB_sample_info.csv"
+data("MOB_sample_info")
 ```
 
-Loading the `expression_csv` file.
-Note that this data has __genes in columns and samples in rows__.
+The `Rep11_MOB_0` object contains spatial expression data for
+`r nrow(Rep11_MOB_0)` genes on `r ncol(Rep11_MOB_0)` spots, with genes as rows
+and spots as columns.
 
 ```{r}
-df <- read.csv(expression_csv, header = TRUE, row.names = 1)
-df[1:5, 1:5]
+Rep11_MOB_0[1:5, 1:5]
+dim(Rep11_MOB_0)
 ```
 
-Loading the `coordinate_csv` file.
+The `MOB_sample_info` object contains a `data.frame` with coordinates for each
+spot.
 
 ```{r}
-sample_info <- read.csv(coordinate_csv, row.names = 1)
-head(sample_info)
+head(MOB_sample_info)
 ```
 
 ### Filter out pratically unobserved genes
 
 ```{r}
-df <- df[, colSums(df) >= 3]
+Rep11_MOB_0 <- Rep11_MOB_0[rowSums(Rep11_MOB_0) >= 3, ]
 ```
 
 ### Get total_counts for every spot
 
 ```{r}
-df <- df[row.names(sample_info), ]
-sample_info$total_counts <- rowSums(df[, ])
-head(sample_info)
+Rep11_MOB_0 <- Rep11_MOB_0[, row.names(MOB_sample_info)]
+MOB_sample_info$total_counts <- colSums(Rep11_MOB_0)
+head(MOB_sample_info)
 ```
 
-### Get coordinates from `sample_info`
+### Get coordinates from `MOB_sample_info`
 
 ```{r}
-X <- sample_info[, c("x", "y")]
+X <- MOB_sample_info[, c("x", "y")]
 head(X)
 ```
 
 ## `stabilize`
 
 The SpatialDE method assumes normally distributed data, so we stabilize the variance of the negative binomial distributed counts data using Anscombe's approximation.
-The `stabilize` function takes as input a `data.frame` of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the data.
+The `stabilize()` function takes as input a `data.frame` of expression values with samples in columns and genes in rows. Thus, in this case, we have to transpose the data.
 
 ```{r stabilize}
-tdf <- t(df)
-
-norm_expr <- spatialDE::stabilize(tdf)
-as.data.frame(norm_expr)[1:5, 1:5]
+norm_expr <- stabilize(Rep11_MOB_0)
+norm_expr[1:5, 1:5]
 ```
 
 ## `regress_out`
@@ -130,8 +129,8 @@ as.data.frame(norm_expr)[1:5, 1:5]
 Next, we account for differences in library size between the samples by regressing out the effect of the total counts for each gene using linear regression.
 
 ```{r regres_out}
-resid_expr <- regress_out(norm_expr, sample_info = sample_info)
-as.data.frame(resid_expr)[1:5, 1:5]
+resid_expr <- regress_out(norm_expr, sample_info = MOB_sample_info)
+resid_expr[1:5, 1:5]
 ```
 
 ## `run`
@@ -140,8 +139,6 @@ To reduce running time, the SpatialDE test is run on a subset of 1000 genes.
 Running it on the complete data set takes about 10 minutes.
 
 ```{r run-spatialDE}
-# results <- spatialDE::run(X, resid_expr)
-
 # For this example, run spatialDE on the first 1000 genes
 sample_resid_expr <- head(resid_expr, 1000)
 
@@ -189,7 +186,7 @@ Visualizing one of the most significant genes.
 ```{r fig1}
 gene <- "Pcp4"
 
-ggplot(data = sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
+ggplot(data = MOB_sample_info, aes(x = x, y = y, color = norm_expr[gene, ])) +
     geom_point(size = 7) +
     ggtitle(gene) +
     scale_color_viridis_c() +
@@ -225,18 +222,18 @@ FSV_sig(results, ms_results)
 The SpatialDE workflow can also be executed with a
 `r BiocStyle::Biocpkg("SpatialExperiment")` object as input. 
 
-```{r}
+```{r, message=FALSE}
 library(SpatialExperiment)
 
 # For SpatialExperiment object, we neeed to transpose the counts matrix in order
 # to have genes on rows and spot on columns. 
 # For this example, run spatialDE on the first 1000 genes
 
-partial_counts <- head(t(df), 1000)
+partial_counts <- head(Rep11_MOB_0, 1000)
 
 spe <- SpatialExperiment(
   assays = list(counts = partial_counts),
-  spatialData = DataFrame(sample_info[, c("x", "y")]),
+  spatialData = DataFrame(MOB_sample_info[, c("x", "y")]),
   spatialCoordsNames = c("x", "y")
 )
 
