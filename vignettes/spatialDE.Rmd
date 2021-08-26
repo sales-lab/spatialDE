@@ -160,7 +160,10 @@ ms_results <- model_search(
     de_results = de_results
 )
 
-head(ms_results[order(ms_results$qval), ])
+# To show ms_results sorted on qvalue, uncomment the following line
+# head(ms_results[order(ms_results$qval), ])
+
+head(ms_results)
 ```
 
 ## `spatial_patterns`
