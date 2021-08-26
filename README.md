@@ -15,7 +15,7 @@ coverage](https://codecov.io/gh/sales-lab/spatialDE/branch/main/graph/badge.svg)
 The **spatialDE** package provides an R wrapper for the Python SpatialDE
 library, using
 *[reticulate](https://CRAN.R-project.org/package=reticulate)* and
-*[basilisk](https://bioconductor.org/packages/3.13/basilisk)*.
+*[basilisk](https://bioconductor.org/packages/3.14/basilisk)*.
 
 [SpatialDE](https://github.com/Teichlab/SpatialDE), by [Svensson et al.,
 2018](https://doi.org/10.1038/nmeth.4636), is a method to identify
@@ -27,13 +27,18 @@ This package started as part of the
 
 ## Installation instructions
 
-<!-- Get the latest stable `R` release from [CRAN](http://cran.r-project.org/). Then install `spatialDE` using from [Bioconductor](http://bioconductor.org/) the following code: -->
-<!-- ```{r 'install', eval = FALSE} -->
-<!-- if (!requireNamespace("BiocManager", quietly = TRUE)) { -->
-<!--     install.packages("BiocManager") -->
-<!-- } -->
-<!-- BiocManager::install("spatialDE") -->
-<!-- ``` -->
+Get the latest stable `R` release from
+[CRAN](http://cran.r-project.org/). Then install
+*[spatialDE](https://bioconductor.org/packages/3.14/spatialDE)* from
+[*Bioconductor*](http://bioconductor.org/) using the following code:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("spatialDE")
+```
 
 The development version of **spatialDE** can be installed from
 [GitHub](https://github.com/sales-lab/spatialDE) with:
@@ -52,27 +57,19 @@ library(spatialDE)
 spe <- mockSVG(return_SPE = TRUE)
 de_results <- spatialDE(spe)
 head(de_results)
-#>            FSV M         g   l    max_delta      max_ll max_mu_hat max_s2_t_hat
-#> 0 6.893971e-01 4 Gene_0001 0.5 4.480494e-01 -12.5057349  -44.97443 1.016237e+03
-#> 1 2.049747e-09 4 Gene_0002 0.5 4.851652e+08 -23.3349972  -25.89877 1.382703e-06
-#> 2 2.049747e-09 4 Gene_0003 0.5 4.851652e+08  -3.8319606  -47.30915 4.613312e-06
-#> 3 2.049747e-09 4 Gene_0004 0.5 4.851652e+08  -0.8721812  -51.75744 5.521607e-06
-#> 4 2.049747e-09 4 Gene_0006 0.5 4.851652e+08 -22.7027842  -22.22222 1.018043e-06
-#> 5 2.049747e-09 4 Gene_0008 0.5 4.851652e+08  -1.4240589  -43.55167 3.909613e-06
-#>   model   n     s2_FSV  s2_logdelta        time      BIC max_ll_null
-#> 0    SE 100  4.1604136 9.981394e+01 0.001912832 43.43215  -13.070591
-#> 1    SE 100  0.6775166 1.167603e+17 0.003101826 65.09068  -23.337514
-#> 2    SE 100  0.1014734 1.748749e+16 0.003578186 26.08460   -3.834477
-#> 3    SE 100  2.1406586 3.689118e+17 0.003778219 20.16504   -0.874698
-#> 4    SE 100 11.2472218 1.938297e+18 0.002474070 63.82625  -22.705301
-#> 5    SE 100  0.4912790 8.466489e+16 0.004010916 21.26880   -1.426576
-#>           LLR      pval      qval
-#> 0 0.564856105 0.4523102 0.9599889
-#> 1 0.002516790 0.9599888 0.9599889
-#> 2 0.002516786 0.9599888 0.9599889
-#> 3 0.002516791 0.9599888 0.9599889
-#> 4 0.002516792 0.9599888 0.9599889
-#> 5 0.002516790 0.9599888 0.9599889
+#>            FSV M         g   l    max_delta     max_ll max_mu_hat max_s2_t_hat model   n     s2_FSV
+#> 0 3.074688e-01 4 Gene_0002 0.5 2.239898e+00  27.113603  -55.03064 8.000749e+02    SE 100 3.73071016
+#> 1 3.017120e-01 4 Gene_0004 0.5 2.301610e+00  35.763216  -57.36624 8.554689e+02    SE 100 1.99898724
+#> 2 2.049747e-09 4 Gene_0006 0.5 4.851652e+08 -10.167477  -22.81806 1.073316e-06    SE 100 0.29282481
+#> 3 6.858088e-01 4 Gene_0007 0.5 4.555970e-01 -14.364735  -15.97606 1.277957e+02    SE 100 2.47725743
+#> 4 2.049747e-09 4 Gene_0008 0.5 4.851652e+08  -6.548344  -36.02852 2.675626e-06    SE 100 0.08574946
+#>    s2_logdelta        time       BIC max_ll_null         LLR      pval      qval
+#> 0 9.032307e+01 0.001175642 -35.80652    26.99552 0.118087315 0.7311183 0.9599889
+#> 1 4.923999e+01 0.001230001 -53.10575    35.61040 0.152812057 0.6958624 0.9599889
+#> 2 5.046415e+16 0.001981974  38.75563   -10.16999 0.002516789 0.9599888 0.9599889
+#> 3 5.883172e+01 0.001137972  47.15015   -15.09198 0.727241191 0.3937789 0.9599889
+#> 4 1.477769e+16 0.002668858  31.51737    -6.55086 0.002516785 0.9599889 0.9599889
+#>  [ reached 'max' / getOption("max.print") -- omitted 1 rows ]
 ```
 
 ## Citation
@@ -89,24 +86,22 @@ also consider citing the [original
 paper](https://doi.org/10.1038/nmeth.4636).
 
 
-      Davide Corso, Milan Malfait and Lambda Moses (2021). spatialDE: R wrapper 
-      for SpatialDE. R package version 0.99.6.
-      https://github.com/sales-lab/spatialDE
+      Davide Corso, Milan Malfait and Lambda Moses (2021). spatialDE: R wrapper for
+      SpatialDE. R package version 0.99.7. https://github.com/sales-lab/spatialDE
 
     A BibTeX entry for LaTeX users is
 
       @Manual{,
         title = {spatialDE: R wrapper for SpatialDE},
-        author = {Davide Corso, Milan Malfait and Lambda Moses},
+        author = {Davide Corso and Milan Malfait and Lambda Moses},
         year = {2021},
-        note = {R package version 0.99.6},
+        note = {R package version 0.99.7},
         url = {https://github.com/sales-lab/spatialDE},
       }
 
-    Svensson V, Teichmann SA, Stegle O (2018). "SpatialDE: identification
-    of spatially variable genes." _Nature Methods_, *15*(5), 343-346. ISSN
-    1548-7105, doi: 10.1038/nmeth.4636 (URL:
-    https://doi.org/10.1038/nmeth.4636), <URL:
+    Svensson V, Teichmann SA, Stegle O (2018). "SpatialDE: identification of spatially
+    variable genes." _Nature Methods_, *15*(5), 343-346. ISSN 1548-7105, doi:
+    10.1038/nmeth.4636 (URL: https://doi.org/10.1038/nmeth.4636), <URL:
     https://www.nature.com/articles/nmeth.4636>.
 
     A BibTeX entry for LaTeX users is
@@ -134,8 +129,8 @@ By contributing to this project, you agree to abide by its terms.
 
 ## Useful links
 
--   *[SpatialExperiment](https://bioconductor.org/packages/3.13/SpatialExperiment)*
+-   *[SpatialExperiment](https://bioconductor.org/packages/3.14/SpatialExperiment)*
 -   [BiocSpatialChallenges](https://helenalc.github.io/BiocSpatialChallenges/index.html)
 
 This package was developed using
-*[biocthis](https://bioconductor.org/packages/3.13/biocthis)*.
+*[biocthis](https://bioconductor.org/packages/3.14/biocthis)*.

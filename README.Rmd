@@ -33,15 +33,17 @@ This package started as part of the
 
 ## Installation instructions
 
-<!-- Get the latest stable `R` release from [CRAN](http://cran.r-project.org/). Then install `spatialDE` using from [Bioconductor](http://bioconductor.org/) the following code: -->
+Get the latest stable `R` release from [CRAN](http://cran.r-project.org/). Then
+install `r BiocStyle::Biocpkg("spatialDE")` from
+[*Bioconductor*](http://bioconductor.org/) using the following code:
 
-<!-- ```{r 'install', eval = FALSE} -->
-<!-- if (!requireNamespace("BiocManager", quietly = TRUE)) { -->
-<!--     install.packages("BiocManager") -->
-<!-- } -->
+```{r 'install', eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
 
-<!-- BiocManager::install("spatialDE") -->
-<!-- ``` -->
+BiocManager::install("spatialDE")
+```
 
 The development version of **spatialDE** can be installed from
 [GitHub](https://github.com/sales-lab/spatialDE) with:
@@ -62,7 +64,6 @@ spe <- mockSVG(return_SPE = TRUE)
 de_results <- spatialDE(spe)
 head(de_results)
 ```
-
 
 
 ## Citation
