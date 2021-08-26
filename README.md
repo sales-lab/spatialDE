@@ -87,7 +87,7 @@ paper](https://doi.org/10.1038/nmeth.4636).
 
 
       Davide Corso, Milan Malfait and Lambda Moses (2021). spatialDE: R wrapper for
-      SpatialDE. R package version 0.99.7. https://github.com/sales-lab/spatialDE
+      SpatialDE. R package version 0.99.8. https://github.com/sales-lab/spatialDE
 
     A BibTeX entry for LaTeX users is
 
@@ -95,7 +95,7 @@ paper](https://doi.org/10.1038/nmeth.4636).
         title = {spatialDE: R wrapper for SpatialDE},
         author = {Davide Corso and Milan Malfait and Lambda Moses},
         year = {2021},
-        note = {R package version 0.99.7},
+        note = {R package version 0.99.8},
         url = {https://github.com/sales-lab/spatialDE},
       }
 
