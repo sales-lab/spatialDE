@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R-CMD-check-bioc](https://github.com/sales-lab/spatialDE/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/sales-lab/spatialDE/actions)
 [![Codecov test coverage](https://codecov.io/gh/sales-lab/spatialDE/branch/main/graph/badge.svg)](https://codecov.io/gh/sales-lab/spatialDE?branch=main)
+[![BioC release status](http://www.bioconductor.org/shields/build/release/bioc/spatialDE.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/spatialDE)
+[![BioC devel status](http://www.bioconductor.org/shields/build/devel/bioc/spatialDE.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/spatialDE)
 <!-- badges: end -->
 
 The **spatialDE** package provides an R wrapper for the Python SpatialDE library,
@@ -67,8 +69,6 @@ head(de_results)
 
 
 ## Citation
-
-<!-- TODO: update once pkg on BioC -->
 
 Below is the citation output from using `citation('spatialDE')` in R. Please
 run this yourself to check for any updates on how to cite __spatialDE__.
