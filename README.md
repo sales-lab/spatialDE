@@ -98,7 +98,7 @@ paper](https://doi.org/10.1038/nmeth.4636).
 
     Corso D, Malfait M, Moses L (2021). _spatialDE: R wrapper for
     SpatialDE_. doi: 10.18129/B9.bioc.spatialDE (URL:
-    https://doi.org/10.18129/B9.bioc.spatialDE), R package version 0.99.8,
+    https://doi.org/10.18129/B9.bioc.spatialDE), R package version 0.99.9,
     <URL: http://www.bioconductor.org/packages/spatialDE>.
 
     A BibTeX entry for LaTeX users is
@@ -108,7 +108,7 @@ paper](https://doi.org/10.1038/nmeth.4636).
         author = {Davide Corso and Milan Malfait and Lambda Moses},
         year = {2021},
         url = {http://www.bioconductor.org/packages/spatialDE},
-        note = {R package version 0.99.8},
+        note = {R package version 0.99.9},
         doi = {10.18129/B9.bioc.spatialDE},
       }
 
