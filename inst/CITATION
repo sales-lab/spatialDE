@@ -1,7 +1,22 @@
-# TODO: update once pkg on BioC
+pkgVer <- function(pkg) {
+    if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
+    ver <- meta$Version
+    paste0('R package version ', ver)
+}
 
 c(
-    citation(auto = meta),
+    bibentry(bibtype="manual",
+        title = "spatialDE: R wrapper for SpatialDE",
+        author = personList(
+            as.person("Davide Corso"),
+            as.person("Milan Malfait"),
+            as.person("Lambda Moses")
+        ),
+        year = format(Sys.Date(), "%Y"),
+        url = "http://www.bioconductor.org/packages/spatialDE",
+        note = pkgVer('spatialDE'),
+        doi = '10.18129/B9.bioc.spatialDE'
+    ),
     bibentry(bibtype="article",
         Title = "SpatialDE: identification of spatially variable genes",
         Author = personList(

@@ -10,6 +10,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check-bioc](https://github.com/sales-lab/spatialDE/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/sales-lab/spatialDE/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/sales-lab/spatialDE/branch/main/graph/badge.svg)](https://codecov.io/gh/sales-lab/spatialDE?branch=main)
+[![BioC release
+status](http://www.bioconductor.org/shields/build/release/bioc/spatialDE.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/spatialDE)
+[![BioC devel
+status](http://www.bioconductor.org/shields/build/devel/bioc/spatialDE.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/spatialDE)
 <!-- badges: end -->
 
 The **spatialDE** package provides an R wrapper for the Python SpatialDE
@@ -57,24 +61,30 @@ library(spatialDE)
 spe <- mockSVG(return_SPE = TRUE)
 de_results <- spatialDE(spe)
 head(de_results)
-#>            FSV M         g   l    max_delta     max_ll max_mu_hat max_s2_t_hat model   n     s2_FSV
-#> 0 3.074688e-01 4 Gene_0002 0.5 2.239898e+00  27.113603  -55.03064 8.000749e+02    SE 100 3.73071016
-#> 1 3.017120e-01 4 Gene_0004 0.5 2.301610e+00  35.763216  -57.36624 8.554689e+02    SE 100 1.99898724
-#> 2 2.049747e-09 4 Gene_0006 0.5 4.851652e+08 -10.167477  -22.81806 1.073316e-06    SE 100 0.29282481
-#> 3 6.858088e-01 4 Gene_0007 0.5 4.555970e-01 -14.364735  -15.97606 1.277957e+02    SE 100 2.47725743
-#> 4 2.049747e-09 4 Gene_0008 0.5 4.851652e+08  -6.548344  -36.02852 2.675626e-06    SE 100 0.08574946
-#>    s2_logdelta        time       BIC max_ll_null         LLR      pval      qval
-#> 0 9.032307e+01 0.001175642 -35.80652    26.99552 0.118087315 0.7311183 0.9599889
-#> 1 4.923999e+01 0.001230001 -53.10575    35.61040 0.152812057 0.6958624 0.9599889
-#> 2 5.046415e+16 0.001981974  38.75563   -10.16999 0.002516789 0.9599888 0.9599889
-#> 3 5.883172e+01 0.001137972  47.15015   -15.09198 0.727241191 0.3937789 0.9599889
-#> 4 1.477769e+16 0.002668858  31.51737    -6.55086 0.002516785 0.9599889 0.9599889
-#>  [ reached 'max' / getOption("max.print") -- omitted 1 rows ]
+#>            FSV M         g   l    max_delta     max_ll max_mu_hat max_s2_t_hat
+#> 0 4.946946e-01 4 Gene_0001 0.5 1.015796e+00  -7.715790  -47.30293 8.742130e+02
+#> 1 2.049747e-09 4 Gene_0002 0.5 4.851652e+08 -17.352297  -26.79089 1.479568e-06
+#> 2 2.049747e-09 4 Gene_0003 0.5 4.851652e+08  -9.481849  -38.45693 3.048459e-06
+#> 3 2.049747e-09 4 Gene_0004 0.5 4.851652e+08 -14.894579  -35.35717 2.576871e-06
+#> 4 2.049747e-09 4 Gene_0005 0.5 4.851652e+08  13.885792  -55.54492 6.359242e-06
+#> 5 2.049747e-09 4 Gene_0006 0.5 4.851652e+08  11.482157  -57.63152 6.845996e-06
+#>   model   n     s2_FSV  s2_logdelta        time       BIC max_ll_null
+#> 0    SE 100 53.9651552 1.010988e+03 0.000910759 33.852260   -7.742764
+#> 1    SE 100  0.3600476 6.204903e+16 0.001962900 53.125275  -17.354814
+#> 2    SE 100  0.1909887 3.291416e+16 0.001904011 37.384378   -9.484365
+#> 3    SE 100  7.6755366 1.322769e+18 0.001726151 48.209838  -14.897096
+#> 4    SE 100  0.2844247 4.901652e+16 0.001929998 -9.350904   13.883275
+#> 5    SE 100  0.1535535 2.646274e+16 0.002086878 -4.543633   11.479640
+#>           LLR      pval      qval
+#> 0 0.026974403 0.8695431 0.9599889
+#> 1 0.002516789 0.9599888 0.9599889
+#> 2 0.002516788 0.9599888 0.9599889
+#> 3 0.002516792 0.9599888 0.9599889
+#> 4 0.002516789 0.9599888 0.9599889
+#> 5 0.002516787 0.9599888 0.9599889
 ```
 
 ## Citation
-
-<!-- TODO: update once pkg on BioC -->
 
 Below is the citation output from using `citation('spatialDE')` in R.
 Please run this yourself to check for any updates on how to cite
@@ -86,8 +96,10 @@ also consider citing the [original
 paper](https://doi.org/10.1038/nmeth.4636).
 
 
-      Davide Corso, Milan Malfait and Lambda Moses (2021). spatialDE: R wrapper for
-      SpatialDE. R package version 0.99.8. https://github.com/sales-lab/spatialDE
+    Corso D, Malfait M, Moses L (2021). _spatialDE: R wrapper for
+    SpatialDE_. doi: 10.18129/B9.bioc.spatialDE (URL:
+    https://doi.org/10.18129/B9.bioc.spatialDE), R package version 0.99.8,
+    <URL: http://www.bioconductor.org/packages/spatialDE>.
 
     A BibTeX entry for LaTeX users is
 
@@ -95,13 +107,15 @@ paper](https://doi.org/10.1038/nmeth.4636).
         title = {spatialDE: R wrapper for SpatialDE},
         author = {Davide Corso and Milan Malfait and Lambda Moses},
         year = {2021},
+        url = {http://www.bioconductor.org/packages/spatialDE},
         note = {R package version 0.99.8},
-        url = {https://github.com/sales-lab/spatialDE},
+        doi = {10.18129/B9.bioc.spatialDE},
       }
 
-    Svensson V, Teichmann SA, Stegle O (2018). "SpatialDE: identification of spatially
-    variable genes." _Nature Methods_, *15*(5), 343-346. ISSN 1548-7105, doi:
-    10.1038/nmeth.4636 (URL: https://doi.org/10.1038/nmeth.4636), <URL:
+    Svensson V, Teichmann SA, Stegle O (2018). "SpatialDE: identification
+    of spatially variable genes." _Nature Methods_, *15*(5), 343-346. ISSN
+    1548-7105, doi: 10.1038/nmeth.4636 (URL:
+    https://doi.org/10.1038/nmeth.4636), <URL:
     https://www.nature.com/articles/nmeth.4636>.
 
     A BibTeX entry for LaTeX users is
