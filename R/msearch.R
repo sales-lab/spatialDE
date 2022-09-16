@@ -70,28 +70,37 @@ NULL
     }
 
     sample_info <- data.frame(coordinates, total_counts = colSums(x))
-
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .run_model_search,
-        x = x,
-        sample_info = sample_info,
-        de_results = de_results,
+    
+    .run_model_search(x = x, sample_info = sample_info, de_results = de_results,
         verbose = verbose
     )
-    out
 }
 
 .run_model_search <- function(x, sample_info, de_results, verbose = FALSE) {
-    ## Normalization
-    stabilized <- .naiveDE_stabilize(counts = x)
-    regressed <- .naiveDE_regress_out(counts = stabilized, sample_info)
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    
+    # Normalization
+    ## Stabilize
+    .naiveDE_stabilize(proc, x)
+    stabilized <- basiliskRun(proc, function(store) {
+        as.matrix(store$stabilized)
+    }, persist=TRUE)
+    
+    ## Regress_out
+    .naiveDE_regress_out(proc, stabilized, sample_info)
+    regressed <- basiliskRun(proc, function(store) {
+        as.matrix(store$regressed)
+    }, persist=TRUE)
 
     coordinates <- sample_info[, c("x", "y")]
-    .spatialDE_model_search(
-        x = regressed, coordinates = coordinates,
-        de_results = de_results, verbose = verbose
-    )
+    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .spatialDE_model_search(proc, regressed, coordinates, de_results)
+    
+    out <- basiliskRun(proc, function(store) {
+        store$model_search
+    }, persist=TRUE)
+    
+    out
 }
 
 #' @import methods

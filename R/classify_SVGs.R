@@ -38,6 +38,7 @@
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
+#' @importFrom basilisk basiliskRun basiliskStart
 model_search <- function(x,
                          coordinates, de_results,
                          qval_thresh = 0.05,
@@ -56,31 +57,36 @@ model_search <- function(x,
             de_results = de_results, qval_thresh = qval_thresh
         )
     }
+    
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
 
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .spatialDE_model_search,
-        x = x,
-        coordinates = coordinates,
-        de_results = de_results, verbose = verbose
-    )
+    .spatialDE_model_search(proc, x, coordinates, de_results)
+    
+    out <- basiliskRun(proc, function(store) {
+        store$model_search
+    }, persist=TRUE)
+    
     out
 }
 
 
 #' @importFrom reticulate r_to_py
-.spatialDE_model_search <- function(x, coordinates, de_results,
-                                    verbose) {
-    spatialDE <- .importPyModule(!verbose)
-
-    X <- r_to_py(coordinates)
-
-    ## Need to transpose counts for `spatialDE$model_search`
-    res_py <- r_to_py(as.data.frame(t(x)))
-
-    de_results_py <- r_to_py(de_results)
-
-    spatialDE$model_search(X, res_py, de_results_py)
+#' @importFrom basilisk basiliskRun
+.spatialDE_model_search <- function(proc, x, coordinates, de_results) {
+    basiliskRun(proc, function(x, coordinates, de_results, store) {
+        spatialDE <- store$spatialDE
+        X <- r_to_py(coordinates)
+        
+        ## Need to transpose counts for `spatialDE$model_search`
+        res_py <- r_to_py(as.data.frame(t(x)))
+        
+        de_results_py <- r_to_py(de_results)
+        
+        out <- spatialDE$model_search(X, res_py, de_results_py)
+        store$model_search <- out
+        invisible(NULL)        
+    }, x = x, coordinates = coordinates, de_results = de_results, persist=TRUE)
 }
 
 
@@ -129,6 +135,7 @@ model_search <- function(x,
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_int assert_number assert_flag
+#' @importFrom basilisk basiliskRun basiliskStart
 spatial_patterns <- function(x, coordinates, de_results,
                              qval_thresh = 0.05,
                              n_patterns, length,
@@ -148,39 +155,47 @@ spatial_patterns <- function(x, coordinates, de_results,
             de_results = de_results, qval_thresh = qval_thresh
         )
     }
+    
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    
+    .spatialDE_spatial_patterns(proc, x, coordinates, de_results, n_patterns, 
+                                length)
 
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .spatialDE_spatial_patterns,
-        x = x,
-        coordinates = coordinates,
-        de_results = de_results,
-        n_patterns = n_patterns,
-        length = length,
-        verbose = verbose
-    )
+    out <- basiliskRun(proc, function(store) {
+        store$spatial_pattern
+    }, persist=TRUE)
+    
     out
 }
 
 
 #' @importFrom reticulate r_to_py
-.spatialDE_spatial_patterns <- function(x, coordinates, de_results,
-                                        n_patterns, length,
-                                        verbose) {
-    spatialDE <- .importPyModule(!verbose)
-
-    X <- r_to_py(coordinates)
-    regr_out_py <- r_to_py(as.data.frame(t(x)))
-    de_results_py <- r_to_py(de_results)
-
-    spatterns <- spatialDE$spatial_patterns(
-        X, regr_out_py, de_results_py,
-        as.integer(n_patterns), length
-    )
-    list(
-        pattern_results = spatterns[[1]],
-        patterns = spatterns[[2]]
-    )
+#' @importFrom basilisk basiliskRun
+.spatialDE_spatial_patterns <- function(proc, x, coordinates, de_results,
+                                        n_patterns, length) {
+    basiliskRun(proc, function(x, coordinates, de_results, n_patterns, length, 
+                               store) {
+        spatialDE <- store$spatialDE
+        
+        X <- r_to_py(coordinates)
+        regr_out_py <- r_to_py(as.data.frame(t(x)))
+        de_results_py <- r_to_py(de_results)
+        
+        spatterns <- spatialDE$spatial_patterns(
+            X, regr_out_py, de_results_py,
+            as.integer(n_patterns), length
+        )
+        
+        out <- list(
+            pattern_results = spatterns[[1]],
+            patterns = spatterns[[2]]
+        )
+        
+        store$spatial_pattern <- out        
+        invisible(NULL)
+    }, x=x, coordinates=coordinates, de_results = de_results,
+    n_patterns = n_patterns, length = length, persist=TRUE)
 }
 
 ## Helper to filter de_results and throw sensible error

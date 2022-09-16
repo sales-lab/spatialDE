@@ -83,35 +83,47 @@ NULL
             de_results = de_results, qval_thresh = qval_thresh
         )
     }
-
+    
     sample_info <- data.frame(coordinates, total_counts = colSums(x))
-
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .run_spatial_patterns,
-        x = x,
-        sample_info = sample_info,
-        de_results = de_results,
-        n_patterns = n_patterns,
-        length = length,
-        verbose = verbose
-    )
-    out
+    .run_spatial_patterns(x, sample_info, de_results, n_patterns, length,
+                          verbose = FALSE)
 }
 
+#' @importFrom basilisk basiliskStart basiliskRun
 .run_spatial_patterns <- function(x, sample_info, de_results,
                                   n_patterns, length,
                                   verbose = FALSE) {
-    ## Normalization
-    stabilized <- .naiveDE_stabilize(counts = x)
-    regressed <- .naiveDE_regress_out(counts = stabilized, sample_info)
-
+    
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    
+    # Normalization
+    ## Stabilize
+    .naiveDE_stabilize(proc, x)
+    stabilized <- basiliskRun(proc, function(store) {
+        as.matrix(store$stabilized)
+    }, persist=TRUE)
+    
+    ## Regress_out
+    .naiveDE_regress_out(proc, stabilized, sample_info)
+    regressed <- basiliskRun(proc, function(store) {
+        as.matrix(store$regressed)
+    }, persist=TRUE)
+    
     coordinates <- sample_info[, c("x", "y")]
+    
+    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
     .spatialDE_spatial_patterns(
+        proc = proc, 
         x = regressed, coordinates = coordinates,
         de_results = de_results, n_patterns = n_patterns,
-        length = length, verbose = verbose
+        length = length
     )
+    
+    out <- basiliskRun(proc, function(store) {
+        store$spatial_pattern
+    }, persist=TRUE)
+    
+    out
 }
 
 #' @import methods
