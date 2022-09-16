@@ -62,26 +62,45 @@ NULL
 
 ## Run spatialDE pipeline on any matrix-like object
 #' @importFrom Matrix colSums
+#' @importFrom basilisk basiliskStart basiliskRun
 .spatialDE <- function(x, coordinates, verbose = FALSE) {
     sample_info <- data.frame(coordinates, total_counts = colSums(x))
-
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .run_spatialDE,
-        x = x,
-        sample_info = sample_info,
-        verbose = verbose
+    coords <- sample_info[, c("x", "y")]
+    
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    
+    # Stabilize
+    assert_matrix(x, any.missing = FALSE)
+    .naiveDE_stabilize(proc, x)
+    stabilized <- basiliskRun(proc, function(store) {
+        as.matrix(store$stabilized)
+    }, persist=TRUE)
+    
+    # Regress_out
+    assert_data_frame(sample_info, any.missing = FALSE)
+    assert_names(colnames(sample_info),
+                 must.include = "total_counts"
     )
+    assert_matrix(stabilized, any.missing = FALSE)
+    .naiveDE_regress_out(proc, stabilized, sample_info)
+    regressed <- basiliskRun(proc, function(store) {
+        as.matrix(store$regressed)
+    }, persist=TRUE)
+    
+    # SpatialDE.run()
+    assert_data_frame(coords, any.missing = FALSE)
+    assert_names(colnames(coords), identical.to = c("x", "y"))
+    assert_matrix(regressed, any.missing = FALSE)
+    assert_flag(verbose)
+    .importPyModule(proc, verbose, .set_fake_tqdm, .set_real_tqdm)
+    .spatialDE_run(proc, regressed, coords)
+    
+    # results
+    out <- basiliskRun(proc, function(store) {
+        store$de_results
+    }, persist=TRUE)
+    
     out
-}
-
-.run_spatialDE <- function(x, sample_info, verbose = FALSE) {
-    ## Normalization
-    stabilized <- .naiveDE_stabilize(counts = x)
-    regressed <- .naiveDE_regress_out(counts = stabilized, sample_info)
-
-    coordinates <- sample_info[, c("x", "y")]
-    .spatialDE_run(regressed, coordinates = coordinates, verbose = verbose)
 }
 
 

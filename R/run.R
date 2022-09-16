@@ -40,29 +40,40 @@
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
 #' @importFrom checkmate assert_flag
+#' @importFrom basilisk basiliskStart basiliskRun
 run <- function(x, coordinates, verbose = FALSE) {
     assert_data_frame(coordinates, any.missing = FALSE)
     assert_names(colnames(coordinates), identical.to = c("x", "y"))
     assert_matrix(x, any.missing = FALSE)
     assert_flag(verbose)
-
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .spatialDE_run,
-        x = x,
-        coordinates = coordinates,
-        verbose = verbose
-    )
+    
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    
+    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .spatialDE_run(proc, x, coordinates)
+    
+    out <- basiliskRun(proc, function(store) {
+        as.data.frame(store$de_results)
+    }, persist=TRUE)
+    
     out
+
 }
 
 #' @importFrom reticulate r_to_py
-.spatialDE_run <- function(x, coordinates, verbose) {
-    spatialDE <- .importPyModule(!verbose)
-
-    X <- r_to_py(coordinates)
-    ## Need to transpose counts for `spatialDE$run`
-    res_py <- r_to_py(as.data.frame(t(x)))
-
-    spatialDE$run(X, res_py)
+#' @importFrom basilisk basiliskRun
+.spatialDE_run <- function(proc, x, coordinates) {
+    basiliskRun(proc, function(x, coordinates, store) {
+        spatialDE <- store$spatialDE
+        
+        X <- r_to_py(coordinates)
+        ## Need to transpose counts for `spatialDE$run`
+        res_py <- r_to_py(as.data.frame(t(x)))
+        
+        de_results <- spatialDE$run(X, res_py)
+        
+        store$de_results <- as.data.frame(de_results)
+        
+        invisible(NULL)
+    }, x=x, coordinates=coordinates, persist=TRUE)
 }

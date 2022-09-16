@@ -22,9 +22,14 @@ SpatialDE.base.tqdm = tqdm.autonotebook.tqdm
 #' @return An R wrapper for the SpatialDE Python module.
 #'
 #' @importFrom reticulate import py_run_string
-#'
-.importPyModule <- function(patch_tqdm) {
+#' @importFrom basilisk basiliskRun
+.importPyModule <- function(proc, patch_tqdm, set_fake_tqdm, set_real_tqdm) {
+  basiliskRun(proc, function(patch_tqdm, set_fake_tqdm, set_real_tqdm, store) {
     mod <- import("SpatialDE")
-    py_run_string(ifelse(patch_tqdm, .set_fake_tqdm, .set_real_tqdm))
-    return(mod)
+    py_run_string(ifelse(patch_tqdm, set_fake_tqdm, set_real_tqdm))
+    
+    store$spatialDE <- mod
+    invisible(NULL)
+  }, patch_tqdm=patch_tqdm, set_fake_tqdm=set_fake_tqdm, 
+  set_real_tqdm=set_fake_tqdm, persist=TRUE)
 }

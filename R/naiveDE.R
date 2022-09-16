@@ -15,14 +15,16 @@
 #' stabilized <- stabilize(mock$counts)
 #' @export
 #' @importFrom checkmate assert_matrix test_matrix
+#' @importFrom basilisk basiliskStart basiliskRun
 stabilize <- function(counts) {
     assert_matrix(counts, any.missing = FALSE)
-
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .naiveDE_stabilize,
-        counts = counts
-    )
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    
+    .naiveDE_stabilize(proc, counts)
+    
+    out <- basiliskRun(proc, function(store) {
+        as.matrix(store$stabilized)
+    }, persist=TRUE)
 
     if (!test_matrix(out, all.missing = FALSE)) {
         warning("Warning: Stabilized values are all NA.\n")
@@ -33,18 +35,19 @@ stabilize <- function(counts) {
 
 
 #' @importFrom reticulate import r_to_py
-.naiveDE_stabilize <- function(counts) {
-    naiveDE <- import("NaiveDE")
-
-    ## NaiveDE.stabilize requires data.frame input to work
-    df_py <- r_to_py(as.data.frame(counts))
-
-    stabilized <- naiveDE$stabilize(df_py)
-
-    ## Return stabilized counts as matrix
-    as.matrix(stabilized)
+#' @importFrom basilisk basiliskRun
+.naiveDE_stabilize <- function(proc, counts) {
+    basiliskRun(proc, function(counts, store) {
+        naiveDE <- import("NaiveDE")
+        
+        ## NaiveDE.stabilize requires data.frame input to work
+        df_py <- r_to_py(as.data.frame(counts))
+        stabilized <- naiveDE$stabilize(df_py)
+        
+        store$stabilized <- as.matrix(stabilized)
+        invisible(NULL)
+    }, counts=counts, persist=TRUE)
 }
-
 
 
 #' Regress out library size effect
@@ -69,31 +72,40 @@ stabilize <- function(counts) {
 #' regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix
+#' @importFrom basilisk basiliskStart basiliskRun
 regress_out <- function(counts, sample_info) {
     assert_data_frame(sample_info, any.missing = FALSE)
     assert_names(colnames(sample_info),
         must.include = "total_counts"
     )
     assert_matrix(counts, any.missing = FALSE)
-
-    out <- basilisk::basiliskRun(
-        env = spatialDE_env,
-        fun = .naiveDE_regress_out,
-        sample_info = sample_info, counts = counts
-    )
+    
+    proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+    .naiveDE_regress_out(proc, counts, sample_info)
+    
+    out <- basiliskRun(proc, function(store) {
+        as.matrix(store$regressed)
+    }, persist=TRUE)
+    
     out
 }
 
 
 #' @importFrom reticulate import r_to_py
-.naiveDE_regress_out <- function(counts, sample_info) {
-    naiveDE <- import("NaiveDE")
-
-    sample_info_py <- r_to_py(sample_info)
-
-    ## NaiveDE.regress_out requires data.frame input to work
-    df_py <- r_to_py(as.data.frame(counts))
-    res <- naiveDE$regress_out(sample_info_py, df_py, "np.log(total_counts)")
-
-    as.matrix(res)
+#' @importFrom basilisk basiliskRun
+.naiveDE_regress_out <- function(proc, counts, sample_info) {
+    basiliskRun(proc, function(counts, sample_info, store) {
+        naiveDE <- import("NaiveDE")
+        
+        sample_info_py <- r_to_py(sample_info)
+        df_py <- r_to_py(as.data.frame(counts))
+        
+        regressed <- naiveDE$regress_out(sample_info_py, 
+                                         df_py, 
+                                         "np.log(total_counts)")
+        
+        store$regressed <- as.matrix(regressed)
+        
+        invisible(NULL)
+    }, counts=counts, sample_info=sample_info, persist=TRUE)
 }
