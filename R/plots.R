@@ -229,6 +229,7 @@ setMethod("multiGenePlots", "matrix", .multiGenePlots)
 #' @rdname multiGenePlots
 #' @importFrom SummarizedExperiment assay
 #' @importFrom SpatialExperiment spatialCoords spatialCoordsNames
+#' @importFrom basilisk basiliskStart basiliskRun
 setMethod("multiGenePlots", "SpatialExperiment",
     function(x, assay_type = "counts", genes_plot, viridis_option = "D",
              ncol = 2, point_size = 1, dark_theme = TRUE) {
@@ -236,8 +237,15 @@ setMethod("multiGenePlots", "SpatialExperiment",
         spatialCoordsNames(x) <- c("x", "y")
         coordinates <- as.data.frame(spatialCoords(x))
 
+        proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
+        # Stabilize
         counts <- assay(x, assay_type)
-        stabilized <- .naiveDE_stabilize(counts = counts)
+        
+        assert_matrix(counts, any.missing = FALSE)
+        .naiveDE_stabilize(proc, counts)
+        stabilized <- basiliskRun(proc, function(store) {
+          as.matrix(store$stabilized)
+        }, persist=TRUE)
 
         .multiGenePlots(
             x = stabilized,
