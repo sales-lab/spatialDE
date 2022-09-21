@@ -4,7 +4,7 @@
 \alias{.importPyModule}
 \title{Import SpatialDE}
 \usage{
-.importPyModule(patch_tqdm)
+.importPyModule(proc, patch_tqdm, set_fake_tqdm, set_real_tqdm)
 }
 \arguments{
 \item{patch_tqdm}{If \code{TRUE} patch calls to tqdm.}
