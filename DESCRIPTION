@@ -25,7 +25,7 @@ BugReports: https://github.com/sales-lab/spatialDE/issues
 Depends: R (>= 4.1)
 Imports:
     reticulate,
-    basilisk,
+    basilisk (>= 1.9.10),
     checkmate,
     stats,
     SpatialExperiment,
