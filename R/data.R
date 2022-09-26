@@ -6,6 +6,7 @@
 #' <https://github.com/Teichlab/SpatialDE/blob/master/Analysis/MouseOB/data/Rep11_MOB_0.csv>.
 #'
 #' @format A matrix with 16218 genes as rows and 262 spots as columns.
+#' @usage data(Rep11_MOB_0)
 #'
 #' @references
 #' Ståhl, P. L. et al. (2016) 'Visualization and analysis of gene expression in
@@ -23,6 +24,7 @@
 #' @format A `data.frame` with 262 rows and 3 variables as columns: the `x` and
 #'   `y` coordinates and `total_counts` corresponding to each spot.
 #'
+#' @usage data(MOB_sample_info)
 #' @references
 #' Ståhl, P. L. et al. (2016) 'Visualization and analysis of gene expression in
 #' tissue sections by spatial transcriptomics', \emph{Science}, 353(6294), p.

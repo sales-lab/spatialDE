@@ -9,7 +9,7 @@ A \code{data.frame} with 262 rows and 3 variables as columns: the \code{x} and
 \code{y} coordinates and \code{total_counts} corresponding to each spot.
 }
 \usage{
-MOB_sample_info
+data(MOB_sample_info)
 }
 \description{
 Coordinates and total counts for the samples from the Mouse Olfactory Bulb

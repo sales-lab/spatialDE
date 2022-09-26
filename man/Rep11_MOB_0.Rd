@@ -8,7 +8,7 @@
 A matrix with 16218 genes as rows and 262 spots as columns.
 }
 \usage{
-Rep11_MOB_0
+data(Rep11_MOB_0)
 }
 \description{
 Replicate 11 from the spatially dependent gene expression data from the mouse
