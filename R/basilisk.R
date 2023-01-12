@@ -1,6 +1,7 @@
 .spatialDE_dependencies <- c(
     "numpy==1.23.5",
-    "patsy==0.5.3"
+    "patsy==0.5.3",
+    "pandas==1.5.2"
 )
 #' @importFrom basilisk BasiliskEnvironment
 spatialDE_env <- BasiliskEnvironment(
