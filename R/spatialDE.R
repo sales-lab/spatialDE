@@ -92,7 +92,7 @@ NULL
     assert_names(colnames(coords), identical.to = c("x", "y"))
     assert_matrix(regressed, any.missing = FALSE)
     assert_flag(verbose)
-    .importPyModule(proc, verbose, .set_fake_tqdm, .set_real_tqdm)
+    .importPyModule(proc, verbose)
     .spatialDE_run(proc, regressed, coords)
     
     # results

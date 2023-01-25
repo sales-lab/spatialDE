@@ -93,7 +93,7 @@ NULL
     }, persist=TRUE)
 
     coordinates <- sample_info[, c("x", "y")]
-    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .importPyModule(proc, !verbose)
     .spatialDE_model_search(proc, regressed, coordinates, de_results)
     
     out <- basiliskRun(proc, function(store) {

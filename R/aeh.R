@@ -111,7 +111,7 @@ NULL
     
     coordinates <- sample_info[, c("x", "y")]
     
-    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .importPyModule(proc, !verbose)
     .spatialDE_spatial_patterns(
         proc = proc, 
         x = regressed, coordinates = coordinates,

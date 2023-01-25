@@ -49,7 +49,7 @@ run <- function(x, coordinates, verbose = FALSE) {
     
     proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
     
-    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .importPyModule(proc, !verbose)
     .spatialDE_run(proc, x, coordinates)
     
     out <- basiliskRun(proc, function(store) {

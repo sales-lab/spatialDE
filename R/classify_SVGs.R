@@ -59,7 +59,7 @@ model_search <- function(x,
     }
     
     proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
-    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .importPyModule(proc, !verbose)
 
     .spatialDE_model_search(proc, x, coordinates, de_results)
     
@@ -157,7 +157,7 @@ spatial_patterns <- function(x, coordinates, de_results,
     }
     
     proc <- basiliskStart(spatialDE_env, testload="scipy.optimize")
-    .importPyModule(proc, !verbose, .set_fake_tqdm, .set_real_tqdm)
+    .importPyModule(proc, !verbose)
     
     .spatialDE_spatial_patterns(proc, x, coordinates, de_results, n_patterns, 
                                 length)
