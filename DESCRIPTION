@@ -9,10 +9,10 @@ Authors@R: c(
     person("Milan", "Malfait", role = "aut",
            email = "milan.malfait94@gmail.com",
            comment = c(ORCID = "0000-0001-9144-3701")),
-    person("Lambda", "Moses", role = "aut", 
+    person("Lambda", "Moses", role = "aut",
            email = "dlu2@caltech.edu",
            comment = c(ORCID = "0000-0002-7092-9427")),
-    person("Gabriele", "Sales", , role = "cre",
+    person("Gabriele", "Sales", role = "cre",
             email = "gabriele.sales@unipd.it"))
 Description: SpatialDE is a method to find spatially variable genes (SVG) from
     spatial transcriptomics data. This package provides wrappers to use the
