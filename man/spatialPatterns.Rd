@@ -72,9 +72,9 @@ Expression Histology, using the
 \href{https://github.com/Teichlab/SpatialDE}{\strong{SpatialDE}} Python package.
 }
 \examples{
-## Mock up a SpatialExperiment object wit 100 cells, 200 genes
+## Mock up a SpatialExperiment object wit 25 cells, 100 genes
 set.seed(42)
-spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
+spe <- mockSVG(size = 5, tot_genes = 100, de_genes = 10, return_SPE = TRUE)
 
 ## Run spatialDE
 de_results <- spatialDE(spe)
