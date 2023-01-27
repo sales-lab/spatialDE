@@ -34,7 +34,6 @@ Imports:
     methods,
     SummarizedExperiment,
     Matrix,
-    S4Vectors,
     ggplot2,
     ggrepel,
     scales,

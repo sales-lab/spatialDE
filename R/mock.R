@@ -49,8 +49,7 @@ mockSVG <- function(size = 10, tot_genes = 1000, de_genes = 100,
     if (return_SPE) {
         out <- SpatialExperiment::SpatialExperiment(
             assays = list(counts = counts),
-            spatialData = S4Vectors::DataFrame(coordinates),
-            spatialCoordsNames = c("x", "y")
+            spatialCoords = as.matrix(coordinates)
         )
     }
     out
