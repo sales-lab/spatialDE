@@ -1,7 +1,7 @@
 Package: spatialDE
 Title: R wrapper for SpatialDE
-Date: 2023-01-27
-Version: 1.5.3
+Date: 2023-02-02
+Version: 1.5.4
 Authors@R: c(
     person("Davide", "Corso", role = "aut",
            email = "davidecrs92@gmail.com",
