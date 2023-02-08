@@ -28,6 +28,8 @@ SpatialDE.base.tqdm = tqdm.autonotebook.tqdm
 #' @keywords internal
 .importPyModule <- function(proc, patch_tqdm) {
   imp <- function(patch_tqdm, store) {
+    py_run_string("import warnings")
+    py_run_string("warnings.simplefilter(action='ignore', category=FutureWarning)")
     mod <- import("SpatialDE")
     py_run_string(ifelse(patch_tqdm, .set_fake_tqdm, .set_real_tqdm))
 
