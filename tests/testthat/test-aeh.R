@@ -11,7 +11,8 @@ de_results <- spatialDE(spe, assay_type = "counts", verbose = FALSE)
 test_that("spatialPatterns works with matrix input", {
     out <- spatialPatterns(counts,
         de_results = de_results, coordinates = coordinates,
-        qval_thresh = NULL, n_patterns = 4L, length = 1.5
+        qval_thresh = NULL, n_patterns = 4L, length = 1.5,
+        verbose = FALSE
     )
     expect_type(out, "list")
     expect_s3_class(out$patterns, "data.frame")
@@ -27,7 +28,8 @@ test_that("spatialPatterns works with SpatialExperiment input", {
     #     qval_thresh = NULL, n_patterns = 4L, length = 1.5
     # )
     out <- spatialPatterns(spe, de_results = de_results,
-        qval_thresh = NULL, n_patterns = 4L, length = 1.5
+        qval_thresh = NULL, n_patterns = 4L, length = 1.5,
+        verbose = FALSE
     )
     expect_type(out, "list")
     expect_s3_class(out$patterns, "data.frame")

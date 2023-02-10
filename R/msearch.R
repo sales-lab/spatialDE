@@ -26,9 +26,9 @@
 #' @return `data.frame` of model_search results.
 #'
 #' @examples
-#' ## Mock up a SpatialExperiment object wit 25 cells, 100 genes
+#' ## Mock up a SpatialExperiment object wit 400 cells and 3 genes
 #' set.seed(42)
-#' spe <- mockSVG(size = 5, tot_genes = 100, de_genes = 20, return_SPE = TRUE)
+#' spe <- mockSVG(size = 20, tot_genes = 3, de_genes = 1, return_SPE = TRUE)
 #'
 #' ## Run spatialDE with S4 integration
 #' de_results <- spatialDE(spe)

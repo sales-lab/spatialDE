@@ -35,10 +35,13 @@ A \code{ggplot2} object.
 Plot Fraction Spatial Variance vs Q-value
 }
 \examples{
+## Mock up a SpatialExperiment object wit 400 cells and 3 genes
 set.seed(42)
-spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
+spe <- mockSVG(size = 20, tot_genes = 3, de_genes = 1, return_SPE = TRUE)
+
 ## Run spatialDE with S4 integration
 results <- spatialDE(spe)
+
 ## Run model search
 msearch <- modelSearch(spe, de_results = results, qval_thresh = NULL,
   verbose = FALSE)

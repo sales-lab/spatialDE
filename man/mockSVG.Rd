@@ -4,7 +4,7 @@
 \alias{mockSVG}
 \title{Generate count matrix for spatially variable genes.}
 \usage{
-mockSVG(size = 10, tot_genes = 1000, de_genes = 100, return_SPE = FALSE)
+mockSVG(size, tot_genes, de_genes, return_SPE = FALSE)
 }
 \arguments{
 \item{size}{An \code{integer} scalar. Cells will be spatially arranged on a \verb{size x size} grid. Default: 10, corresponding to 100 cells.}
@@ -30,7 +30,7 @@ If not, a \code{list} containing:
 Generate count matrix for spatially variable genes.
 }
 \examples{
-spe <- mockSVG(10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
+spe <- mockSVG(size = 20, tot_genes = 3, de_genes = 1, return_SPE = TRUE)
 spe
 
 }

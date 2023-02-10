@@ -16,13 +16,12 @@
 #' * `counts`: `matrix` with generated gene counts.
 #'
 #' @examples
-#' spe <- mockSVG(10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
+#' spe <- mockSVG(size = 20, tot_genes = 3, de_genes = 1, return_SPE = TRUE)
 #' spe
 #'
 #' @export
 #' @importFrom stats rnbinom runif
-mockSVG <- function(size = 10, tot_genes = 1000, de_genes = 100,
-                    return_SPE = FALSE) {
+mockSVG <- function(size, tot_genes, de_genes, return_SPE = FALSE) {
     n_cells <- size * size
     coordinates <- data.frame(
         x = rep(seq.int(size), size),

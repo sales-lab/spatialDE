@@ -10,8 +10,10 @@
 #' @return `matrix` of variance stabilized counts.
 #'
 #' @examples
+#' ## Mock up a SpatialExperiment object wit 400 cells and 3 genes
 #' set.seed(42)
-#' mock <- mockSVG(10, 1000, 10)
+#' mock <- mockSVG(20, 3, 1)
+#'
 #' stabilized <- stabilize(mock$counts)
 #' @export
 #' @importFrom checkmate assert_matrix test_matrix
@@ -64,11 +66,14 @@ stabilize <- function(counts) {
 #' @return `matrix` of normalized counts.
 #'
 #' @examples
+#' ## Mock up a SpatialExperiment object wit 400 cells and 3 genes
 #' set.seed(42)
-#' mock <- mockSVG(10, 1000, 10)
+#' mock <- mockSVG(20, 3, 1)
+#'
 #' stabilized <- stabilize(mock$counts)
 #' sample_info <- mock$coordinates
 #' sample_info$total_counts <- colSums(mock$counts)
+#'
 #' regressed <- regress_out(counts = stabilized, sample_info = sample_info)
 #' @export
 #' @importFrom checkmate assert_data_frame assert_names assert_matrix

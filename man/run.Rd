@@ -34,8 +34,10 @@ Wraps the \code{run} function from the
 \href{https://github.com/Teichlab/SpatialDE}{SpatialDE} Python package.
 }
 \examples{
+## Mock up a SpatialExperiment object wit 400 cells and 3 genes
 set.seed(42)
-mock <- mockSVG(size = 10, tot_genes = 500, de_genes = 10)
+mock <- mockSVG(size = 20, tot_genes = 3, de_genes = 1)
+
 stabilized <- stabilize(mock$counts)
 sample_info <- mock$coordinates
 sample_info$total_counts <- colSums(mock$counts)

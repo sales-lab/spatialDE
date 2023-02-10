@@ -32,9 +32,9 @@
 #'   over
 #'
 #' @examples
-#' ## Mock up a SpatialExperiment object wit 100 cells, 200 genes
+#' ## Mock up a SpatialExperiment object wit 400 cells and 3 genes
 #' set.seed(42)
-#' spe <- mockSVG(size = 10, tot_genes = 200, de_genes = 20, return_SPE = TRUE)
+#' spe <- mockSVG(size = 20, tot_genes = 3, de_genes = 1, return_SPE = TRUE)
 #'
 #' ## Run spatialDE
 #' de_results <- spatialDE(spe)
