@@ -1,4 +1,5 @@
 .spatialDE_dependencies <- c(
+    "python==3.11",
     "numpy==1.23.5",
     "scipy==1.9.3",
     "patsy==0.5.3",

@@ -1,7 +1,7 @@
 Package: spatialDE
 Title: R wrapper for SpatialDE
-Date: 2024-02-08
-Version: 1.9.1
+Date: 2024-04-15
+Version: 1.9.2
 Authors@R: c(
     person("Davide", "Corso", role = "aut",
            email = "davidecrs92@gmail.com",
@@ -21,7 +21,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: FALSE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 URL: https://github.com/sales-lab/spatialDE, https://bioconductor.org/packages/spatialDE/
 BugReports: https://github.com/sales-lab/spatialDE/issues
 Depends: R (>= 4.3)
